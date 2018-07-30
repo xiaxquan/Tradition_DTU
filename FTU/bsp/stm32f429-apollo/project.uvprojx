@@ -15,7 +15,7 @@
         <TargetCommonOption>
           <Device>STM32F429IGTx</Device>
           <Vendor>STMicroelectronics</Vendor>
-          <PackID>Keil.STM32F4xx_DFP.2.9.0</PackID>
+          <PackID>Keil.STM32F4xx_DFP.2.11.0</PackID>
           <PackURL>http://www.keil.com/pack</PackURL>
           <Cpu>IRAM(0x20000000,0x30000) IRAM2(0x10000000,0x10000) IROM(0x08000000,0x100000) CPUTYPE("Cortex-M4") FPU2 CLOCK(12000000) ELITTLE</Cpu>
           <FlashUtilSpec></FlashUtilSpec>
@@ -133,10 +133,10 @@
             <RunIndependent>0</RunIndependent>
             <UpdateFlashBeforeDebugging>1</UpdateFlashBeforeDebugging>
             <Capability>1</Capability>
-            <DriverSelection>4100</DriverSelection>
+            <DriverSelection>4099</DriverSelection>
           </Flash1>
-          <bUseTDR>1</bUseTDR>
-          <Flash2>STLink\ST-LINKIII-KEIL_SWO.dll</Flash2>
+          <bUseTDR>0</bUseTDR>
+          <Flash2>Segger\JL2CM3.dll</Flash2>
           <Flash3>"" ()</Flash3>
           <Flash4></Flash4>
           <pFcarmOut></pFcarmOut>
@@ -495,11 +495,6 @@
               <FilePath>drivers\drv_spi.c</FilePath>
             </File>
             <File>
-              <FileName>drv_sd2405.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\drivers\drv_sd2405.c</FilePath>
-            </File>
-            <File>
               <FileName>drv_io_spi.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\drivers\drv_io_spi.c</FilePath>
@@ -545,11 +540,6 @@
               <FilePath>.\drivers\drv_do.c</FilePath>
             </File>
             <File>
-              <FileName>drv_handheld.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\drivers\drv_handheld.c</FilePath>
-            </File>
-            <File>
               <FileName>drv_led.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\drivers\drv_led.c</FilePath>
@@ -560,9 +550,19 @@
               <FilePath>.\drivers\drv_ad7616.c</FilePath>
             </File>
             <File>
+              <FileName>drv_rtc.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\drv_rtc.c</FilePath>
+            </File>
+            <File>
               <FileName>drv_wdg.c</FileName>
               <FileType>1</FileType>
               <FilePath>.\drivers\drv_wdg.c</FilePath>
+            </File>
+            <File>
+              <FileName>drv_pcf8563.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\drivers\drv_pcf8563.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -152,7 +152,7 @@ double                              g_Udc2SampleBuf[ADC_SAMPLE_NUM * 2] = { 0 };
 /* PRIVATE VARIABLES --------------------------------------------------------*/
 
 static rt_device_t device_fram = RT_NULL;                             
-static rt_device_t device_sd2405 = RT_NULL;   
+static rt_device_t device_pcf8563 = RT_NULL;    
 
 																
 /* PUBLIC FUNCTION PROTOTYPES ------------------------------------------------*/
@@ -456,21 +456,21 @@ void ParameterCheck(void)
         }
     }
 	
-	for(i=0;i<g_tagzkDigitalInputCfg_Len;i++)
-	{
-		if(zkDigitalInputCfg[i].pAddr == &g_TelesignalAddr.batteryLossAlarm)
-		{
-			if(g_Parameter[POWERLOSS_NEGATE] == SWITCH_ON)
-			{
-				zkDigitalInputCfg[i].negate = 1;
-			}
-			else
-			{
-				zkDigitalInputCfg[i].negate = 0;
-			}
-			break;
-		}
-	}
+//	for(i=0;i<g_tagzkDigitalInputCfg_Len;i++)
+//	{
+//		if(zkDigitalInputCfg[i].pAddr == &g_TelesignalAddr.batteryLossAlarm)
+//		{
+//			if(g_Parameter[POWERLOSS_NEGATE] == SWITCH_ON)
+//			{
+//				zkDigitalInputCfg[i].negate = 1;
+//			}
+//			else
+//			{
+//				zkDigitalInputCfg[i].negate = 0;
+//			}
+//			break;
+//		}
+//	}
     
     if(g_Parameter[SWTICH_CLASS] == SWITCH_ON)
     {DBWriteSOE(g_TelesignalAddr.swtichClass,ON);}
@@ -1164,7 +1164,7 @@ void DBWriteSystemTime(struct CP56Time2a_t *pTime)
     g_SystemTime.second = MAKEWORD(pTime->msecondL, pTime->msecondH) / 1000;
     g_SystemTime.msecond = MAKEWORD(pTime->msecondL, pTime->msecondH) % 1000;
 
-    rt_device_write(device_sd2405, 0x00, (uint8_t *)&g_SystemTime, sizeof(struct SD2405Time));
+    rt_device_write(device_pcf8563, 0x00, (uint8_t *)&g_SystemTime, sizeof(struct SD2405Time));
 }
 
 /**
@@ -2324,9 +2324,9 @@ int rt_multi_common_data_init(void)
         rt_multi_common_data_config();
     }	
 	
-    device_sd2405 = rt_device_find(RT_I2C_SD2405_NAME);
+    device_pcf8563 = rt_device_find(RT_I2C_PCF8563_NAME);
 	
-    if (device_sd2405 == NULL)
+    if (device_pcf8563 == NULL)
     {
         THREAD_PRINTF("sd2405 is not found! \r\n"); 		
     }

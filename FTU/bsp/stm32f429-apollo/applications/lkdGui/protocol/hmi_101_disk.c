@@ -155,7 +155,7 @@ int DLT634_HMI_SLAVE_INIT(void)
         {
             case DLT634_HMISLAVE_DISK0:
                 DLT634_HMI_SLAVE_AppInit(pdrv);        
-                dev[pdrv] = rt_device_find(RT_USART6_NAME);
+                dev[pdrv] = rt_device_find(RT_USART3_NAME);
                 serial = (struct rt_serial_device *)(dev[pdrv]);
                 serial->config.baud_rate = BAUD_RATE_230400;
 				serial->config.parity = PARITY_EVEN;

@@ -451,32 +451,6 @@ rt_uint8_t rt_hw_do_operate(rt_uint16_t addr, rt_uint8_t operate_type)
 					break;		
 			}				
 		    break;
-	    case ADDR_REMOTE_ACTIVE:
-            switch (operate_type)	
-			{
-				case DO_CLOSE: // 电池活化
-					pin_status[INDEX_ACTIVATE_START_DO].status = DO_SET;			
-					rt_device_write(rt_do_dev, 0, &pin_status[INDEX_ACTIVATE_START_DO], sizeof(struct rt_device_pin_status));	
-					DBWriteCO(addr, ON);
-					break;
-							
-				case DO_CLOSE_RECOVERY: // 活化收回
-					pin_status[INDEX_ACTIVATE_START_DO].status = DO_CLR;			
-					rt_device_write(rt_do_dev, 0, &pin_status[INDEX_ACTIVATE_START_DO], sizeof(struct rt_device_pin_status));		
-					break;
-					
-				case DO_OPEN: // 活化结束
-					pin_status[INDEX_ACTIVATE_STOP_DO].status = DO_SET;			
-					rt_device_write(rt_do_dev, 0, &pin_status[INDEX_ACTIVATE_STOP_DO], sizeof(struct rt_device_pin_status));	    
-					DBWriteCO(addr, ON);    
-					break;
-					
-				case DO_OPEN_RECOVERY: // 活化结束收回
-					pin_status[INDEX_ACTIVATE_STOP_DO].status = DO_CLR;			
-					rt_device_write(rt_do_dev, 0, &pin_status[INDEX_ACTIVATE_STOP_DO], sizeof(struct rt_device_pin_status));	
-					break;  		
-			}						
-		    break;
 	 
 	    default:             		
 		    break;		
@@ -484,96 +458,5 @@ rt_uint8_t rt_hw_do_operate(rt_uint16_t addr, rt_uint8_t operate_type)
 
     return rtl;
 }
-
-
-/**
-  * @brief : battery_activation
-  * @param : [clock]-call cycle.
-  * @return: [none].
-  * @updata: [2017-12-21][Sunxr][newly increased]
-  */
-void rt_hw_battery_activation(rt_uint8_t clock)
-{
-    static rt_uint32_t s_cycle_counter;
-    static rt_uint32_t s_act_counter;
-    static rt_uint32_t s_fault_counter;
-    static rt_uint32_t s_recover_counter;
-    
-    if (g_TelesignalDB[g_TelesignalAddr.batteryActivationStatus] == OFF)
-    {
-        if (++s_recover_counter > 400)
-        {
-            s_recover_counter = 0;
-            rt_hw_do_operate(ADDR_REMOTE_ACTIVE, DO_OPEN_RECOVERY);
-        }         
-        
-	 	if (g_FixedValueP[BATTERY_ACTIVE_SWITCH])
-        {                       
-            if (s_cycle_counter >= g_FixedValueP[BATTERY_ACTIVE_CYCLE] * 24 * 3600 * 1000 / clock) // 换算为小时
-            {
-                s_cycle_counter = 0;
-                rt_hw_do_operate(ADDR_REMOTE_ACTIVE, DO_CLOSE);
-            }
-            else
-            {
-                s_cycle_counter++;
-            }                
-        }
-    }
-    else
-    {
-        s_cycle_counter = 0;
-        s_recover_counter = 0;        
-    }
-
-    if (g_TelesignalDB[g_TelesignalAddr.batteryActivationStatus] == ON)
-    {
-        if (s_fault_counter <= g_FixedValueP[BATTERY_ACTIVE_FAULT_TIME] + 1)
-        {
-            s_fault_counter++;
-        }
-        
-        if (s_act_counter > 500)
-        {
-            rt_hw_do_operate(ADDR_REMOTE_ACTIVE, DO_CLOSE_RECOVERY);
-        }
-
-        if ((g_TelemetryBaseDB[g_TelemetryBaseAddr.Uab] < g_FixedValueP[DOWNLIMIT_VOLTAGE_U] && g_TelemetryBaseDB[g_TelemetryBaseAddr.UCB] < g_FixedValueP[DOWNLIMIT_VOLTAGE_U]))
-        {
-            /* AC disappeared, stop activation */
-            rt_hw_do_operate(ADDR_REMOTE_ACTIVE, DO_OPEN);                
-        }
-            
-        if (g_FixedValueP[BATTERY_ACTIVE_SWITCH] && s_act_counter >= g_FixedValueP[BATTERY_ACTIVE_TIME] * 60 * 1000)
-        {
-            s_act_counter = 0;
-
-            /* stop activation */
-            rt_hw_do_operate(ADDR_REMOTE_ACTIVE, DO_OPEN);
-        }
-        else
-        {
-            s_act_counter++;
-            
-            /* Battery voltage during activation is lower than the fault voltage and reported SOE*/           
-            if (s_fault_counter <= g_FixedValueP[BATTERY_ACTIVE_FAULT_TIME])
-            {                
-                if (g_TelesignalDB[g_TelesignalAddr.batteryUnderVoltageAlarm] == ON)
-                {
-                    s_fault_counter = 0;
-                    /* stop activation */
-                    rt_hw_do_operate(ADDR_REMOTE_ACTIVE, DO_OPEN);
-                    DBWriteSOE(g_TelesignalAddr.batteryFaultAlarm, ON); // battery fault
-                }
-            }           
-        }
-    }
-    else
-    {
-        s_act_counter = 0;
-        s_fault_counter = 0;
-    }
-}
-
 
 /* END OF FILE ---------------------------------------------------------------*/

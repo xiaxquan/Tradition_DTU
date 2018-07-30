@@ -56,11 +56,11 @@ INIT_DEVICE_EXPORT(rt_hw_di_init);
   */ 
 static void rt_hw_double_point_check(float shaking_time)
 {
-    g_DiCollect.doubleState = pin_status[INDEX_SWITCH_OPEN_DI].status | (pin_status[INDEX_SWITCH_CLOSE_DI].status << 1);
+    g_DiCollect.doubleState = g_DiCollect.state[0] & 0x03;
 
     if ((g_DiCollect.doubleState == 0x00 || g_DiCollect.doubleState == 0x03))
     {		
-        if (g_FixedValueP[CONTROL_LOOP_ABNOMAL_ENABLE] == SWITCH_OFF)
+        if (g_pFixedValue[CONTROL_LOOP_ABNOMAL_ENABLE] == SWITCH_OFF)
         {
             return;
         }
@@ -115,7 +115,6 @@ static void rt_hw_double_point_check(float shaking_time)
     }
 }
 
-
 /* PUBLIC FUNCTION PROTOTYPES ------------------------------------------------*/
 /**
   * @brief : di detection
@@ -127,40 +126,147 @@ void rt_hw_di_check_task(rt_uint8_t clock)
 {
     rt_uint8_t i;
     static float s_shaking_time = 0;
-	
-    for (i = 0; i < g_tagzkDigitalInputCfg_Len; i++)
+		
+	pin_status[INDEX_KI_CS1].status = GPIO_PIN_RESET;			
+	rt_device_write(rt_di_dev, 0, &pin_status[INDEX_KI_CS1], sizeof(struct rt_device_pin_status));	
+
+    for (i = 0; i < DI_NUM; i++)
     {
-        rt_device_read(rt_di_dev, 0, &pin_status[zkDigitalInputCfg[i].pin], sizeof(struct rt_device_pin_status));
-		if(zkDigitalInputCfg[i].negate)
-		{
-			pin_status[zkDigitalInputCfg[i].pin].status = (~pin_status[zkDigitalInputCfg[i].pin].status)&0x00000001;
-		}
+        rt_device_read(rt_di_dev, 0, &pin_status[INDEX_DI1 + i], sizeof(struct rt_device_pin_status));	
+    }
+
+	pin_status[INDEX_KI_CS1].status = GPIO_PIN_SET;			
+	rt_device_write(rt_di_dev, 0, &pin_status[INDEX_KI_CS1], sizeof(struct rt_device_pin_status));		
+	
+    if(g_Parameter[POWERLOSS_NEGATE] == 0)
+    {
+        g_DiCollect.state[0] = pin_status[INDEX_DI1].status | pin_status[INDEX_DI2].status << 1 | (!pin_status[INDEX_DI3].status) << 2 | \
+                            pin_status[INDEX_DI4].status << 3 | pin_status[INDEX_DI5].status << 4 | pin_status[INDEX_DI6].status << 5 | \
+                            pin_status[INDEX_DI7].status << 6 | (!pin_status[INDEX_DI8].status) << 7;
+    }
+    else
+    {
+        g_DiCollect.state[0] = pin_status[INDEX_DI1].status | pin_status[INDEX_DI2].status << 1 | (!pin_status[INDEX_DI3].status) << 2 | \
+                            pin_status[INDEX_DI4].status << 3 | pin_status[INDEX_DI5].status << 4 | pin_status[INDEX_DI6].status << 5 | \
+                            pin_status[INDEX_DI7].status << 6 | (pin_status[INDEX_DI8].status) << 7;    
     }
 	
     s_shaking_time = (uint32_t)g_Parameter[DI_SHAKING_TIME] / clock;
 
-    for (i = 0; i < g_tagzkDigitalInputCfg_Len; i++)
+    for (i = 0; i < DI_NUM; i++)
     {
-        if (pin_status[zkDigitalInputCfg[i].pin].status == zkDigitalInputCfg[i].lastVal)
+        if ((g_DiCollect.state[0] & (0x01 << i)) == (g_DiCollect.stateLast[0] & (0x01 << i)))
         {
-            zkDigitalInputCfg[i].count = 0;
+            g_DiCollect.counter[0][i] = 0;
+            g_TelesignalDB[i] = (g_DiCollect.state[0] >> i) & 0x01 ? OFF : ON;
         }
-        else if(zkDigitalInputCfg[i].enable)
+        else
         {
-            zkDigitalInputCfg[i].count++;
+            g_DiCollect.counter[0][i]++;
 
-            if (zkDigitalInputCfg[i].count >= s_shaking_time)
+            if (g_DiCollect.counter[0][i] >= s_shaking_time)
             {
-                zkDigitalInputCfg[i].count = 0;			
-				
-                DBWriteSOE(*(zkDigitalInputCfg[i].pAddr),(pin_status[zkDigitalInputCfg[i].pin].status ? OFF : ON));
+                g_DiCollect.counter[0][i] = 0;
                 
-                zkDigitalInputCfg[i].lastVal = pin_status[zkDigitalInputCfg[i].pin].status;
+                switch(i)
+                {
+                    case 0:
+                        DBWriteSOE(g_TelesignalAddr.switchOpen,((g_DiCollect.state[0] >> i) & 0x01) ? OFF : ON);
+                        break;
+                    case 1:
+                        DBWriteSOE(g_TelesignalAddr.switchClose,((g_DiCollect.state[0] >> i) & 0x01) ? OFF : ON);
+                        break;   
+                    case 2:
+                        DBWriteSOE(g_TelesignalAddr.operatingMechanism,((g_DiCollect.state[0] >> i) & 0x01) ? OFF : ON);
+                        break;         
+                    case 3:
+                        DBWriteSOE(g_TelesignalAddr.lowPressure,((g_DiCollect.state[0] >> i) & 0x01) ? OFF : ON);
+                        break;  
+                    case 4:
+                        DBWriteSOE(g_TelesignalAddr.spareDi1,((g_DiCollect.state[0] >> i) & 0x01) ? OFF : ON);
+                        break;      
+                    case 5:
+                        DBWriteSOE(g_TelesignalAddr.spareDi2,((g_DiCollect.state[0] >> i) & 0x01) ? OFF : ON);
+                        break;      
+                    case 6:
+                        DBWriteSOE(g_TelesignalAddr.spareDi3,((g_DiCollect.state[0] >> i) & 0x01) ? OFF : ON);
+                        break;  
+                    case 7:
+                        DBWriteSOE(g_TelesignalAddr.spareDi4,((g_DiCollect.state[0] >> i) & 0x01) ? OFF : ON);
+                        break;                     
+                }			
+				
+                g_DiCollect.stateLast[0] ^= (0x01 << i);
             }
         }
     }	
 
-    rt_hw_double_point_check(s_shaking_time);
+    rt_hw_double_point_check(s_shaking_time);	
+/* 第二片 ------------------------------------------------------------------------------------------------------------------------*/
+	pin_status[INDEX_KI_CS2].status = GPIO_PIN_RESET;			
+	rt_device_write(rt_di_dev, 0, &pin_status[INDEX_KI_CS2], sizeof(struct rt_device_pin_status));		
+
+    for (i = 0; i < DI_NUM; i++)
+    {
+        rt_device_read(rt_di_dev, 0, &pin_status[INDEX_DI1 + i], sizeof(struct rt_device_pin_status));	
+    }
+
+	pin_status[INDEX_KI_CS2].status = GPIO_PIN_SET;			
+	rt_device_write(rt_di_dev, 0, &pin_status[INDEX_KI_CS2], sizeof(struct rt_device_pin_status));	
+	
+	g_DiCollect.state[1] = pin_status[INDEX_DI1].status | pin_status[INDEX_DI2].status << 1 | (pin_status[INDEX_DI3].status) << 2 | \
+						pin_status[INDEX_DI4].status << 3 | pin_status[INDEX_DI5].status << 4 | pin_status[INDEX_DI6].status << 5 | \
+						pin_status[INDEX_DI7].status << 6 | (!pin_status[INDEX_DI8].status) << 7;
+		
+    s_shaking_time = (uint32_t)g_Parameter[DI_SHAKING_TIME] / clock;
+
+    for (i = 0; i < DI_NUM; i++)
+    {
+        if ((g_DiCollect.state[1] & (0x01 << i)) == (g_DiCollect.stateLast[1] & (0x01 << i)))
+        {
+            g_DiCollect.counter[1][i] = 0;
+            g_TelesignalDB[i + 8] = (g_DiCollect.state[1] >> i) & 0x01 ? OFF : ON;
+        }
+        else
+        {
+            g_DiCollect.counter[1][i]++;
+
+            if (g_DiCollect.counter[1][i] >= s_shaking_time)
+            {
+                g_DiCollect.counter[1][i] = 0;
+                
+                switch(i)
+                {
+                    case 0:
+                        DBWriteSOE(g_TelesignalAddr.spareDi5,((g_DiCollect.state[1] >> i) & 0x01) ? OFF : ON);
+                        break;
+                    case 1:
+                        DBWriteSOE(g_TelesignalAddr.spareDi6,((g_DiCollect.state[1] >> i) & 0x01) ? OFF : ON);
+                        break;   
+                    case 2:
+                        DBWriteSOE(g_TelesignalAddr.spareDi7,((g_DiCollect.state[1] >> i) & 0x01) ? OFF : ON);
+                        break;         
+                    case 3:
+                        DBWriteSOE(g_TelesignalAddr.spareDi8,((g_DiCollect.state[1] >> i) & 0x01) ? OFF : ON);
+                        break;  
+                    case 4:
+                        DBWriteSOE(g_TelesignalAddr.spareDi9,((g_DiCollect.state[1] >> i) & 0x01) ? OFF : ON);
+                        break;      
+                    case 5:
+                        DBWriteSOE(g_TelesignalAddr.spareDi10,((g_DiCollect.state[1] >> i) & 0x01) ? OFF : ON);
+                        break;      
+                    case 6:
+                        DBWriteSOE(g_TelesignalAddr.spareDi11,((g_DiCollect.state[1] >> i) & 0x01) ? OFF : ON);
+                        break;  
+                    case 7:
+                        DBWriteSOE(g_TelesignalAddr.spareDi12,((g_DiCollect.state[1] >> i) & 0x01) ? OFF : ON);
+                        break;                     
+                }			
+				
+                g_DiCollect.stateLast[1] ^= (0x01 << i);
+            }
+        }
+    }	
     
     rt_device_read(rt_di_dev, 0, &pin_status[INDEX_MCU_POWER_ALARM_DI], sizeof(struct rt_device_pin_status));
     DBWriteSOE(g_TelesignalAddr.devicePowerDown, (pin_status[INDEX_MCU_POWER_ALARM_DI].status) ? ON : OFF);

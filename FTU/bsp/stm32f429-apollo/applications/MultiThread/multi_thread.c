@@ -53,7 +53,6 @@ static rt_uint8_t *rt_thread_slave104_stack;
 #endif /* END RT_USING_SLAVE104 */
 
 #if RT_USING_WATCH
-struct rt_event sd2405_event; // sd2405事件
 struct rt_semaphore watch_sem; // watch semaphore
 static struct rt_thread *rt_thread_watch;
 static rt_uint8_t *rt_thread_watch_stack;
@@ -337,22 +336,13 @@ static void rt_slave104_thread_entry(void *param)
 static void rt_watch_thread_entry(void *param)
 {  
     rt_err_t result;
-    rt_device_t sd2405_device;
-    
-    sd2405_device = rt_device_find(RT_I2C_SD2405_NAME);
-    
+        
     other_protect_init();
     
     rt_sem_control(&watch_sem, RT_IPC_CMD_RESET, 0);
     
     for (;;)
-    {
-        result = rt_event_recv(&sd2405_event, EVENT_RUN, RT_EVENT_FLAG_OR | RT_EVENT_FLAG_CLEAR, RT_WAITING_NO, RT_NULL);              
-        if (result == RT_EOK)
-        {
-            rt_device_read(sd2405_device, 0, RT_NULL, 0);
-        }
-        
+    {        
         /* 永久等待信号量 */
         result = rt_sem_take(&watch_sem, RT_WAITING_FOREVER);  
         if (result == RT_EOK)  
@@ -370,13 +360,8 @@ static void rt_watch_thread_entry(void *param)
 			
             /* 获取频率 */
 			GetFrequency();          
-            
-            /* 小白 */
-            rt_hw_handheld_remote_task(1);	
-
-            /* 电池活化 */
-            rt_hw_battery_activation(1);
-				/* 通道监听 */
+			
+			/* 通道监听 */
 			rt_channel_monitor_task();
         }           
     }  
@@ -407,7 +392,7 @@ static void rt_ftuidle_thread_entry(void *param)
         {   
             s_run_state = 1;			
             rt_multi_common_data_fram_update_state_write(RUN_NOMAL); // 运行正常，写FRAM
-					  DBWriteUlog(ADDR_ULOG_STARTUP,ON);
+			DBWriteUlog(ADDR_ULOG_STARTUP,ON);
         }        
     }    
 }
@@ -1070,18 +1055,7 @@ int rt_multi_event_init(void)
         THREAD_PRINTF("slave104_event rt_event failed.\n");
       #endif /* APP_DEBUG */  
     }   
-  #endif /* RT_USING_SLAVE104 */
-    
-  #if RT_USING_WATCH 	
-    result = rt_event_init(&sd2405_event, "sd2405", RT_IPC_FLAG_PRIO);
-    
-    if (result != RT_EOK)
-    {
-      #if APP_DEBUG   
-        THREAD_PRINTF("sd2405_event rt_event failed.\n");
-      #endif /* APP_DEBUG */  
-    } 
-  #endif /* RT_USING_WATCH */ 
+  #endif /* RT_USING_SLAVE104 */ 
 
     return(RT_EOK);    
 }

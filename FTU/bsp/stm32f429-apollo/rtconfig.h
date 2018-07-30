@@ -151,7 +151,7 @@
 #define RT_USING_I2C_BITOPS
 #define RT_I2C0_NAME                                                   "i2c0"
 #define RT_I2C_SD2405_NAME                                             "sd2405"
-
+#define RT_I2C_PCF8563_NAME                                            "pcf8563"
 /* Using GPIO pin framework */
 #define RT_USING_PIN
 #define RT_PIN_NAME                                                    "pin"
