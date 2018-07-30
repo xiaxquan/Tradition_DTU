@@ -830,7 +830,7 @@ static void DisplayDZ(struct DZItemsManage *dz_items_manage)
 	uint8_t value_disp_len = 158 / 2;						/* 对应的值显示的最大长度 */
 	uint8_t unit_disp_len = name_disp_len - value_disp_len;	/* 单位显示的最大长度 */
 	
-	dz_items_manage->start_itemes = dz_items_manage->current_items / DISPLAYLISTROW * DISPLAYLISTROW;
+	dz_items_manage->start_itemes = dz_items_manage->current_items / DZDISPLAYROW * DZDISPLAYROW;
 	/* 清屏 */
 	GuiFillRect(drawx + 1, drawy, GUIXMAX - 1, GUIYMAX - 1,backcolor);
 	
@@ -958,16 +958,16 @@ void DZModfiyDisplay(DzhiDisplayInfo *info,uint8_t *flag)
 		}
 		*flag = 2;break;
 	case LeftKey:
-		if(dz_items_manage.current_items >= DISPLAYLISTROW){
-			dz_items_manage.current_items -= DISPLAYLISTROW;
+		if(dz_items_manage.current_items >= DZDISPLAYROW){
+			dz_items_manage.current_items -= DZDISPLAYROW;
 		}
 		else{
 			dz_items_manage.current_items =0;
 		}
 		*flag = 2;break;
 	case RightKey:
-		if(dz_items_manage.current_items + DISPLAYLISTROW < dz_items_manage.items_num){
-			dz_items_manage.current_items += DISPLAYLISTROW;
+		if(dz_items_manage.current_items + DZDISPLAYROW < dz_items_manage.items_num){
+			dz_items_manage.current_items += DZDISPLAYROW;
 		}
 		else{
 			dz_items_manage.current_items = dz_items_manage.items_num - 1;

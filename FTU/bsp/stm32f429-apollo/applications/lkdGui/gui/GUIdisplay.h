@@ -16,7 +16,8 @@
 
 #define DZDISPLAYCOL 3		/* 定值显示列数 */
 #define YaoCeDISPLAYCOL 3	/* 遥测显示列数 */
-#define DISPLAYLISTROW 5	/* 可显示行数 */
+#define DISPLAYLISTROW 10	/* 可显示行数 */
+#define DZDISPLAYROW   5    /* 定值显示行数 */
 #define SOEDISPLAYROW 5		/* SOE显示行数 */
 #define EVENTDISPLAYROW 1	/* 操作事件显示行数 */
 #define CONSTPARDISPLAYROW 5/* 固有参数显示行数 */
