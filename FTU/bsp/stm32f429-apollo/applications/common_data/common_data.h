@@ -177,7 +177,7 @@ __packed struct CP56Time2a_t
 #define ADC_SAMPLE_NUM                       48     // 采样半波点数
 #define ADC_WAVE_SEMP_NUM                    25     // 采样全波总个数
 
-typedef struct
+typedef struct//顺序不允许修改，会影响模拟量输入配置
 {
     rt_int16_t ua[ADC_WAVE_SEMP_NUM * 2][ADC_SAMPLE_NUM];
 	rt_int16_t ub[ADC_WAVE_SEMP_NUM * 2][ADC_SAMPLE_NUM];
@@ -290,9 +290,8 @@ enum Frequency
 #define ADDR_FRAM_TELISIGNAL            0x05400  // 遥信起始地址 0x200
 //#define ADDR_FRAM_JSON_MD5              0x05600  // MDK5数值   0x20
 
-
+#define ADDR_FRAM_HARDMAP               0x07000  // 配置起始地址   0x0100
 #define ADDR_FRAM_CONFIG                0x08000  // 配置起始地址   0x1000
-
 
 /* flag */                                        
 
@@ -310,7 +309,8 @@ enum FramArea
     CO_RECODE,                         // 操作记录  
     LOG_RECODE,                        // 日志记录   
 		MEMORY_FLAG,                       // 记录标志缓存
-    CFG_RECODE,                        // 配置    
+    CFG_RECODE,                        // 配置   
+    HARDMAP_RECODE,                        // 硬件映射    
     TELESIGNAL,                        // 遥信数据
 		PASSPHRASE,                        // 密码管理
     CURRENT_SN,                        // 当前定值区号
@@ -341,19 +341,19 @@ typedef struct TagTelesignalAddr
 	switchOpen,	
 	switchClose,
     operatingMechanism,                             // 未储能开入
-    lowPressure,                                    // 低气压
-    spareDi1,                                       // 备用1
-    spareDi2,                                       // 备用2
-    spareDi3,                                       // 备用3
-    spareDi4,                                       // 备用4
-    spareDi5,                                       // 备用5
-    spareDi6,                                       // 备用6
-    spareDi7,                                       // 备用7
-    spareDi8,                                       // 备用8
-    spareDi9,                                       // 备用9
-    spareDi10,                                      // 备用10
-    spareDi11,                                      // 备用11
-    spareDi12,                                      // 备用12		
+    lowPressure,                                    // 低气压	
+    di00,                                            // 硬开入
+    di01,                                            // 硬开入
+    di02,                                            // 硬开入
+    di03,                                            // 硬开入
+    di04,                                            // 硬开入    
+    di05,                                            // 硬开入
+    di06,                                            // 硬开入
+    di07,                                            // 硬开入
+    di08,                                            // 硬开入
+    di09,                                            // 硬开入
+    di10,                                            // 硬开入
+    di11,                                            // 硬开入
     swtichClass,                                    // 开关类型
     modBreakHardStrap,                              // 分断硬压板
     modContactHardStrap,                            // 联络硬压板
@@ -1059,6 +1059,16 @@ struct ConfigurationSetDatabase
 #define NEWCAL_NEG          0 //非
 #define NEWONEYX_CAL        12 //运算
 
+struct HardwareInterfaceSetDatabase
+{
+//AI设置
+    uint8_t AIArray[32];//排序
+    uint8_t AIProperty[32];//属性
+//DI设置
+    uint8_t DIArray[32];//排序
+    uint8_t DIProperty[32];//属性
+};
+
 /* PUBLIC VALUE ----------------------------------------------------------------------*/
 /* 缓存后的数据，防止计算被打断 */
 extern double g_IaSampleBuf[ADC_SAMPLE_NUM * 2]; 
@@ -1084,6 +1094,7 @@ extern uint16_t g_StartWave;
 
 /* 系统配置 */
 extern struct ConfigurationSetDatabase *g_ConfigurationSetDB;
+extern struct HardwareInterfaceSetDatabase *g_HardwareInterfaceSetDB;
 
 /* 系统时间 */
 extern struct SD2405Time g_SystemTime;

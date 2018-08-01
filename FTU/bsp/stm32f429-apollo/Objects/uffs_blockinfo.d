@@ -11,17 +11,17 @@
 .\objects\uffs_blockinfo.o: .\rtconfig.h
 .\objects\uffs_blockinfo.o: ..\..\include\rtdebug.h
 .\objects\uffs_blockinfo.o: ..\..\include\rtdef.h
-.\objects\uffs_blockinfo.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\uffs_blockinfo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\uffs_blockinfo.o: ..\..\include\rtlibc.h
 .\objects\uffs_blockinfo.o: ..\..\include\libc/libc_stat.h
-.\objects\uffs_blockinfo.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\objects\uffs_blockinfo.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
+.\objects\uffs_blockinfo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\uffs_blockinfo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\uffs_blockinfo.o: ..\..\include\libc/libc_errno.h
 .\objects\uffs_blockinfo.o: ..\..\include\libc/libc_fcntl.h
 .\objects\uffs_blockinfo.o: ..\..\include\libc/libc_ioctl.h
 .\objects\uffs_blockinfo.o: ..\..\include\libc/libc_dirent.h
 .\objects\uffs_blockinfo.o: ..\..\include\libc/libc_signal.h
-.\objects\uffs_blockinfo.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
+.\objects\uffs_blockinfo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
 .\objects\uffs_blockinfo.o: ..\..\include\libc/libc_fdset.h
 .\objects\uffs_blockinfo.o: ..\..\include\rtservice.h
 .\objects\uffs_blockinfo.o: ..\..\include\rtm.h
@@ -35,4 +35,4 @@
 .\objects\uffs_blockinfo.o: ..\..\components\dfs\filesystems\uffs\src\inc\uffs/uffs_flash.h
 .\objects\uffs_blockinfo.o: ..\..\components\dfs\filesystems\uffs\src\inc\uffs/uffs_fs.h
 .\objects\uffs_blockinfo.o: ..\..\components\dfs\filesystems\uffs\src\inc\uffs/uffs_public.h
-.\objects\uffs_blockinfo.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\uffs_blockinfo.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

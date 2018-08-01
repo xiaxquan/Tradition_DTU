@@ -70,7 +70,7 @@ struct taghmiDigitalInputCfg
 };
 
 /**
- * @brief 主控开入结构体
+ * @brief 主控模入结构体
  */
 struct tagzkDigitalInputCfg
 {
@@ -80,6 +80,16 @@ struct tagzkDigitalInputCfg
     unsigned char lastVal;  // 上次值
     unsigned char negate;   // 取反	
     unsigned long count;    // 计数器
+};
+
+/**
+ * @brief 主控开入结构体
+ */
+struct tagzkAnalogInputCfg
+{
+	unsigned char enable;   // 使能
+    unsigned char pin;      // 引脚
+    unsigned short *pAddr;  // 点号
 };
 
 /**
@@ -171,6 +181,7 @@ struct tagInherentParaCfg
 };
     
 extern struct taghmiDigitalInputCfg hmiDigitalInputCfg[];
+extern struct tagzkAnalogInputCfg zkAnalogInputCfg[];
 extern struct tagzkDigitalInputCfg zkDigitalInputCfg[];
 extern struct tagTelesignalCfg TelesignalCfg[];
 extern struct tagTelemetryCfg TelemetryCfgBase[];
@@ -190,6 +201,7 @@ extern unsigned int g_ParameterCfg_Len;
 extern unsigned int g_CalibrateFactorCfg_Len;
 extern unsigned int g_TelemetryCfgBase_Len;
 extern unsigned int g_taghmiDigitalInputCfg_Len;
+extern unsigned int g_tagzkAnalogInputCfg_Len;
 extern unsigned int g_tagzkDigitalInputCfg_Len;
 extern unsigned int g_TelesignalCfg_Len;
 extern unsigned int g_TelecontrolCfg_Len;

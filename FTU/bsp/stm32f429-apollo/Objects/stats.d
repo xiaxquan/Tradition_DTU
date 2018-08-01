@@ -2,7 +2,7 @@
 .\objects\stats.o: ..\..\components\net\lwip-1.4.1\src\include\lwip/opt.h
 .\objects\stats.o: ..\..\components\net\lwip-1.4.1\src\lwipopts.h
 .\objects\stats.o: .\rtconfig.h
-.\objects\stats.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\stats.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\stats.o: ..\..\components\net\lwip-1.4.1\src\include\lwip/debug.h
 .\objects\stats.o: ..\..\components\net\lwip-1.4.1\src\include\lwip/arch.h
 .\objects\stats.o: ..\..\components\net\lwip-1.4.1\src\arch\include\arch/cc.h
@@ -10,17 +10,17 @@
 .\objects\stats.o: ..\..\include\rtthread.h
 .\objects\stats.o: ..\..\include\rtdebug.h
 .\objects\stats.o: ..\..\include\rtdef.h
-.\objects\stats.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\stats.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\stats.o: ..\..\include\rtlibc.h
 .\objects\stats.o: ..\..\include\libc/libc_stat.h
-.\objects\stats.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\objects\stats.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
+.\objects\stats.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\stats.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\stats.o: ..\..\include\libc/libc_errno.h
 .\objects\stats.o: ..\..\include\libc/libc_fcntl.h
 .\objects\stats.o: ..\..\include\libc/libc_ioctl.h
 .\objects\stats.o: ..\..\include\libc/libc_dirent.h
 .\objects\stats.o: ..\..\include\libc/libc_signal.h
-.\objects\stats.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
+.\objects\stats.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
 .\objects\stats.o: ..\..\include\libc/libc_fdset.h
 .\objects\stats.o: ..\..\include\rtservice.h
 .\objects\stats.o: ..\..\include\rtm.h
@@ -28,5 +28,5 @@
 .\objects\stats.o: ..\..\components\libc\compilers\armlibc\sys/errno.h
 .\objects\stats.o: ..\..\components\libc\compilers\armlibc\sys/time.h
 .\objects\stats.o: ..\..\components\libc\compilers\armlibc\sys/types.h
-.\objects\stats.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\stats.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\stats.o: ..\..\components\net\lwip-1.4.1\src\include\lwip/opt.h

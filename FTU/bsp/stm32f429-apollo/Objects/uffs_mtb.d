@@ -10,17 +10,17 @@
 .\objects\uffs_mtb.o: .\rtconfig.h
 .\objects\uffs_mtb.o: ..\..\include\rtdebug.h
 .\objects\uffs_mtb.o: ..\..\include\rtdef.h
-.\objects\uffs_mtb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\uffs_mtb.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\uffs_mtb.o: ..\..\include\rtlibc.h
 .\objects\uffs_mtb.o: ..\..\include\libc/libc_stat.h
-.\objects\uffs_mtb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\objects\uffs_mtb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
+.\objects\uffs_mtb.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\uffs_mtb.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\uffs_mtb.o: ..\..\include\libc/libc_errno.h
 .\objects\uffs_mtb.o: ..\..\include\libc/libc_fcntl.h
 .\objects\uffs_mtb.o: ..\..\include\libc/libc_ioctl.h
 .\objects\uffs_mtb.o: ..\..\include\libc/libc_dirent.h
 .\objects\uffs_mtb.o: ..\..\include\libc/libc_signal.h
-.\objects\uffs_mtb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
+.\objects\uffs_mtb.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
 .\objects\uffs_mtb.o: ..\..\include\libc/libc_fdset.h
 .\objects\uffs_mtb.o: ..\..\include\rtservice.h
 .\objects\uffs_mtb.o: ..\..\include\rtm.h
@@ -37,4 +37,4 @@
 .\objects\uffs_mtb.o: ..\..\components\dfs\filesystems\uffs\src\inc\uffs/uffs_mtb.h
 .\objects\uffs_mtb.o: ..\..\components\dfs\filesystems\uffs\src\inc\uffs/uffs_fd.h
 .\objects\uffs_mtb.o: ..\..\components\dfs\filesystems\uffs\src\inc\uffs/uffs_utils.h
-.\objects\uffs_mtb.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\uffs_mtb.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

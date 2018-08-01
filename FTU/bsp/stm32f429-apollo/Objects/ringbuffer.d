@@ -3,17 +3,17 @@
 .\objects\ringbuffer.o: .\rtconfig.h
 .\objects\ringbuffer.o: ..\..\include\rtdebug.h
 .\objects\ringbuffer.o: ..\..\include\rtdef.h
-.\objects\ringbuffer.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\ringbuffer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\ringbuffer.o: ..\..\include\rtlibc.h
 .\objects\ringbuffer.o: ..\..\include\libc/libc_stat.h
-.\objects\ringbuffer.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\objects\ringbuffer.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
+.\objects\ringbuffer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\ringbuffer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\ringbuffer.o: ..\..\include\libc/libc_errno.h
 .\objects\ringbuffer.o: ..\..\include\libc/libc_fcntl.h
 .\objects\ringbuffer.o: ..\..\include\libc/libc_ioctl.h
 .\objects\ringbuffer.o: ..\..\include\libc/libc_dirent.h
 .\objects\ringbuffer.o: ..\..\include\libc/libc_signal.h
-.\objects\ringbuffer.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
+.\objects\ringbuffer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
 .\objects\ringbuffer.o: ..\..\include\libc/libc_fdset.h
 .\objects\ringbuffer.o: ..\..\include\rtservice.h
 .\objects\ringbuffer.o: ..\..\include\rtm.h
@@ -29,7 +29,7 @@
 .\objects\ringbuffer.o: ..\..\components\drivers\include\ipc/poll.h
 .\objects\ringbuffer.o: ..\..\components\drivers\include\drivers/rtc.h
 .\objects\ringbuffer.o: ..\..\components\drivers\include\drivers/spi.h
-.\objects\ringbuffer.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\ringbuffer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\ringbuffer.o: ..\..\components\drivers\include\drivers/mtd_nand.h
 .\objects\ringbuffer.o: ..\..\components\drivers\include\drivers/serial.h
 .\objects\ringbuffer.o: ..\..\components\drivers\include\drivers/i2c.h
@@ -37,4 +37,4 @@
 .\objects\ringbuffer.o: ..\..\components\drivers\include\drivers/i2c-bit-ops.h
 .\objects\ringbuffer.o: ..\..\components\drivers\include\drivers/pin.h
 .\objects\ringbuffer.o: ..\..\components\drivers\include\drivers/hwtimer.h
-.\objects\ringbuffer.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\ringbuffer.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h

@@ -3,7 +3,7 @@
 .\objects\err.o: ..\..\components\net\lwip-1.4.1\src\include\lwip/opt.h
 .\objects\err.o: ..\..\components\net\lwip-1.4.1\src\lwipopts.h
 .\objects\err.o: .\rtconfig.h
-.\objects\err.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\err.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
 .\objects\err.o: ..\..\components\net\lwip-1.4.1\src\include\lwip/debug.h
 .\objects\err.o: ..\..\components\net\lwip-1.4.1\src\include\lwip/arch.h
 .\objects\err.o: ..\..\components\net\lwip-1.4.1\src\arch\include\arch/cc.h
@@ -11,17 +11,17 @@
 .\objects\err.o: ..\..\include\rtthread.h
 .\objects\err.o: ..\..\include\rtdebug.h
 .\objects\err.o: ..\..\include\rtdef.h
-.\objects\err.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\err.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\err.o: ..\..\include\rtlibc.h
 .\objects\err.o: ..\..\include\libc/libc_stat.h
-.\objects\err.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\objects\err.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
+.\objects\err.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\err.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\err.o: ..\..\include\libc/libc_errno.h
 .\objects\err.o: ..\..\include\libc/libc_fcntl.h
 .\objects\err.o: ..\..\include\libc/libc_ioctl.h
 .\objects\err.o: ..\..\include\libc/libc_dirent.h
 .\objects\err.o: ..\..\include\libc/libc_signal.h
-.\objects\err.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
+.\objects\err.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
 .\objects\err.o: ..\..\include\libc/libc_fdset.h
 .\objects\err.o: ..\..\include\rtservice.h
 .\objects\err.o: ..\..\include\rtm.h
@@ -29,5 +29,5 @@
 .\objects\err.o: ..\..\components\libc\compilers\armlibc\sys/errno.h
 .\objects\err.o: ..\..\components\libc\compilers\armlibc\sys/time.h
 .\objects\err.o: ..\..\components\libc\compilers\armlibc\sys/types.h
-.\objects\err.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\err.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
 .\objects\err.o: ..\..\components\net\lwip-1.4.1\src\include\lwip/opt.h

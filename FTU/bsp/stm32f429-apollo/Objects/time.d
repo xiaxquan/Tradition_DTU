@@ -1,13 +1,13 @@
 .\objects\time.o: ..\..\components\libc\compilers\armlibc\time.c
 .\objects\time.o: ..\..\components\libc\compilers\armlibc\sys/time.h
-.\objects\time.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
+.\objects\time.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\time.o: ..\..\components\libc\compilers\armlibc\sys/types.h
-.\objects\time.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\time.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\time.o: ..\..\include\rtthread.h
 .\objects\time.o: .\rtconfig.h
 .\objects\time.o: ..\..\include\rtdebug.h
 .\objects\time.o: ..\..\include\rtdef.h
-.\objects\time.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\time.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\time.o: ..\..\include\rtlibc.h
 .\objects\time.o: ..\..\include\libc/libc_stat.h
 .\objects\time.o: ..\..\include\libc/libc_errno.h
@@ -15,7 +15,7 @@
 .\objects\time.o: ..\..\include\libc/libc_ioctl.h
 .\objects\time.o: ..\..\include\libc/libc_dirent.h
 .\objects\time.o: ..\..\include\libc/libc_signal.h
-.\objects\time.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
+.\objects\time.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
 .\objects\time.o: ..\..\include\libc/libc_fdset.h
 .\objects\time.o: ..\..\include\rtservice.h
 .\objects\time.o: ..\..\include\rtm.h

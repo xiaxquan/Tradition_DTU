@@ -36,6 +36,68 @@ cJSON *ProductID_StructToJson(void)
 }
 
 /**
+ * @fn AnalogInputCfg_StructToJson
+ * @brief 实现模拟量开入结构体的struct转json
+ * @param struct_obj 指向结构体的指针
+ * @return 返回指向转换后的json指针
+ *
+ */
+cJSON *DigitalInputCfg_StructToJson(void* struct_obj)
+{
+    int i;
+	struct tagzkDigitalInputCfg *DigitalInputCfg = struct_obj;
+
+	/* create Student JSON object */
+	s2j_create_json_obj(json_obj);
+
+	/* serialize data to Student JSON object. */
+	s2j_json_set_basic_element(json_obj, DigitalInputCfg, int, enable);		//使能
+	s2j_json_set_basic_element(json_obj, DigitalInputCfg, int, pin);	        //号
+    
+    for(i=0;i<g_TelesignalCfg_Len;i++)
+    {
+        if(DigitalInputCfg->pAddr == TelesignalCfg[i].pAddr)
+        {
+            s2j_json_set_basic_element(json_obj, &TelesignalCfg[i], string, pName);	//名称
+        }
+    }
+
+	/* return Student JSON object pointer */
+	return json_obj;
+}
+
+/**
+ * @fn AnalogInputCfg_StructToJson
+ * @brief 实现模拟量开入结构体的struct转json
+ * @param struct_obj 指向结构体的指针
+ * @return 返回指向转换后的json指针
+ *
+ */
+cJSON *AnalogInputCfg_StructToJson(void* struct_obj)
+{
+    int i;
+	struct tagzkAnalogInputCfg *AnalogInputCfg = struct_obj;
+
+	/* create Student JSON object */
+	s2j_create_json_obj(json_obj);
+
+	/* serialize data to Student JSON object. */
+	s2j_json_set_basic_element(json_obj, AnalogInputCfg, int, enable);		//使能
+	s2j_json_set_basic_element(json_obj, AnalogInputCfg, int, pin);	        //号
+    
+    for(i=0;i<g_TelemetryCfgBase_Len;i++)
+    {
+        if(AnalogInputCfg->pAddr == TelemetryCfgBase[i].pAddr)
+        {
+            s2j_json_set_basic_element(json_obj, &TelemetryCfgBase[i], string, pName);	//名称
+        }
+    }
+
+	/* return Student JSON object pointer */
+	return json_obj;
+}
+
+/**
  * @fn InherentParaCfg_StructToJson
  * @brief 实现遥控结构体的struct转json
  * @param struct_obj 指向结构体的指针

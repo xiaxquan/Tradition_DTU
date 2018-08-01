@@ -18,30 +18,59 @@
 struct taghmiDigitalInputCfg hmiDigitalInputCfg[] = 
 {
 //   使能   面板开入号	        点号                                  取反 
-    //{ 1,       15,       &g_TelesignalAddr.recloseHardStrap,           0},
+    { 0,       15,       &g_TelesignalAddr.recloseHardStrap,           0},
     //{ 1,       16,       &g_TelesignalAddr.recloseHardStrap,         0},//同期压板
     //{ 1,       17,       &g_TelesignalAddr.recloseHardStrap,         0},//智能FA
-    { 1,       18,       &g_TelesignalAddr.earth,                      0},
-    { 1,       19,       &g_TelesignalAddr.remote,                     0},
+    //{ 1,       18,       &g_TelesignalAddr.earth,                      0},
+    //{ 1,       19,       &g_TelesignalAddr.remote,                     0},
     //{ 1,       20,       &g_TelesignalAddr.modContactHardStrap,        0},
     //{ 1,       21,       &g_TelesignalAddr.modBreakHardStrap,          0},
-    { 1,       22,       &g_TelesignalAddr.functionHardStrap,          1},
-    { 1,       23,       &g_TelesignalAddr.workmodeCommon,             0},
-    { 1,       24,       &g_TelesignalAddr.workmodeVolcur,             0},
+    //{ 1,       22,       &g_TelesignalAddr.functionHardStrap,          1},
+    //{ 1,       23,       &g_TelesignalAddr.workmodeCommon,             0},
+    //{ 1,       24,       &g_TelesignalAddr.workmodeVolcur,             0},
+};
+
+/* 主板硬遥测*/
+struct tagzkAnalogInputCfg zkAnalogInputCfg[] = 
+{
+//   使能    模入号	                点号            
+    { 1,       1,           &g_TelemetryBaseAddr.Uab},
+    { 1,       2,           &g_TelemetryBaseAddr.Uac},
+    { 1,       3,           &g_TelemetryBaseAddr.Ucb},
+    { 1,       4,           &g_TelemetryBaseAddr.U0},
+    { 1,       5,           &g_TelemetryBaseAddr.Ia},
+    { 1,       6,           &g_TelemetryBaseAddr.Ib},
+    { 1,       7,           &g_TelemetryBaseAddr.Ic},
+    { 1,       8,           &g_TelemetryBaseAddr.I0},
+    { 1,       9,           &g_TelemetryBaseAddr.UAB},
+    { 1,       10,          &g_TelemetryBaseAddr.UCB},
+    { 1,       11,          &g_TelemetryBaseAddr.DC1},
+    { 1,       12,          &g_TelemetryBaseAddr.DC2},
+    { 0,       13,          NULL},    
+    { 0,       14,          NULL},
+    { 0,       15,          NULL},
 };
 
 /* 主板硬遥信 */
 struct tagzkDigitalInputCfg zkDigitalInputCfg[] = 
 {
-//   使能          面板开入号	                点号                                      上次PIN   取反   计时器
-    { 1,       INDEX_DI1,          &g_TelesignalAddr.switchOpen,                   0,      0,      0},
-    { 1,       INDEX_DI2,          &g_TelesignalAddr.switchClose,                  0,      0,      0},
-    { 1,       INDEX_DI3,          &g_TelesignalAddr.operatingMechanism,           0,      1,      0},
-    { 1,       INDEX_DI4,          &g_TelesignalAddr.lowPressure,                  0,      0,      0},
-//    { 1,       INDEX_DI5,          &g_TelesignalAddr.powerFaultAlarm,              0,      0,      0},
-//    { 1,       INDEX_DI6,          &g_TelesignalAddr.batteryUnderVoltageAlarm,     0,      0,      0},
-//    { 1,       INDEX_DI7,          &g_TelesignalAddr.batteryActivationStatus,      0,      0,      0},
-//    { 1,       INDEX_DI8,          &g_TelesignalAddr.batteryLossAlarm,             0,      1,      0},
+//   使能    开入号	                点号                              上次PIN   取反   计时器
+    { 1,       1,           &g_TelesignalAddr.switchOpen,                   0,      0,      0},
+    { 1,       2,           &g_TelesignalAddr.switchClose,                  0,      0,      0},
+    { 1,       3,           &g_TelesignalAddr.operatingMechanism,           0,      1,      0},
+    { 1,       4,           &g_TelesignalAddr.lowPressure,                  0,      0,      0},
+    { 1,       5,           &g_TelesignalAddr.di00,                         0,      0,      0},
+    { 1,       6,           &g_TelesignalAddr.di01,                         0,      0,      0},
+    { 1,       7,           &g_TelesignalAddr.di02,                         0,      0,      0},
+    { 1,       8,           &g_TelesignalAddr.di03,                         0,      0,      0},
+    { 1,       9,           &g_TelesignalAddr.di04,                         0,      0,      0},
+    { 1,       10,          &g_TelesignalAddr.di05,                         0,      0,      0},
+    { 1,       11,          &g_TelesignalAddr.di06,                         0,      0,      0},
+    { 1,       12,          &g_TelesignalAddr.di07,                         0,      0,      0},    
+    { 1,       13,          &g_TelesignalAddr.di08,                         0,      0,      0},
+    { 1,       14,          &g_TelesignalAddr.di09,                         0,      0,      0},
+    { 1,       15,          &g_TelesignalAddr.di10,                         0,      0,      0},
+    { 1,       16,          &g_TelesignalAddr.di11,                         0,      0,      0},
 };
 
 /* 遥信 */
@@ -52,18 +81,18 @@ struct tagTelesignalCfg TelesignalCfg[] =
     { 1,  "开关合位",     &g_TelesignalAddr.switchClose,                 NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
     { 1,  "储能",         &g_TelesignalAddr.operatingMechanism,          NULL,     0xff,    	1,		{"无", "有"},      		{"有->无","无->有"}},
     { 1,  "低气压",       &g_TelesignalAddr.lowPressure,                 NULL,     0xff,    	1,		{"无", "告警"},    		{"告警->复位","无->告警"}},
-    { 0,  "备用1",        &g_TelesignalAddr.spareDi1,                    NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},
-    { 0,  "备用2",        &g_TelesignalAddr.spareDi2,                    NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},
-    { 0,  "备用3",        &g_TelesignalAddr.spareDi3,                    NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},
-    { 0,  "备用4",        &g_TelesignalAddr.spareDi4,                    NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},
-    { 0,  "备用5",        &g_TelesignalAddr.spareDi5,                    NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},
-    { 0,  "备用6",        &g_TelesignalAddr.spareDi6,                    NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},
-    { 0,  "备用7",        &g_TelesignalAddr.spareDi7,                    NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},
-    { 0,  "备用8",        &g_TelesignalAddr.spareDi8,                    NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},
-    { 0,  "备用9",        &g_TelesignalAddr.spareDi9,                    NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},
-    { 0,  "备用10",       &g_TelesignalAddr.spareDi10,                   NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},
-    { 0,  "备用11",       &g_TelesignalAddr.spareDi11,                   NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},
-    { 0,  "备用12",       &g_TelesignalAddr.spareDi12,                   NULL,     0xff,        1,      {"分", "合"},           {"合->分","分->合"}},	
+    { 0,  "DI0000",       &g_TelesignalAddr.di00,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "DI0000",       &g_TelesignalAddr.di01,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "DI0000",       &g_TelesignalAddr.di02,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "DI0000",       &g_TelesignalAddr.di03,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "DI0000",       &g_TelesignalAddr.di04,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "DI0000",       &g_TelesignalAddr.di05,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "DI0000",       &g_TelesignalAddr.di06,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "DI0000",       &g_TelesignalAddr.di07,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "DI0000",       &g_TelesignalAddr.di08,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "DI0000",       &g_TelesignalAddr.di09,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "DI0000",       &g_TelesignalAddr.di10,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "DI0000",       &g_TelesignalAddr.di11,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
     { 1,  "开关类型",     &g_TelesignalAddr.swtichClass,                 NULL,     0xff,    	1,		{"断路器","负荷开关"},	{"断路器","负荷开关"}},
     { 1,  "常规保护型",   &g_TelesignalAddr.workmodeCommon,              NULL,     0xff,    	1,		{"退出", "投入"},  		{"投->退","退->投"}},
     { 1,  "电压电流型",   &g_TelesignalAddr.workmodeVolcur,              NULL,     0xff,    	1,		{"退出", "投入"},  		{"投->退","退->投"}},
@@ -540,6 +569,7 @@ unsigned int g_CalibrateFactorCfg_Len = sizeof(CalibrateFactorCfg) / sizeof(Cali
 unsigned int g_TelemetryCfgBase_Len = sizeof(TelemetryCfgBase) / sizeof(TelemetryCfgBase[0]);
 unsigned int g_taghmiDigitalInputCfg_Len = sizeof(hmiDigitalInputCfg) / sizeof(hmiDigitalInputCfg[0]);
 unsigned int g_tagzkDigitalInputCfg_Len = sizeof(zkDigitalInputCfg) / sizeof(zkDigitalInputCfg[0]);
+unsigned int g_tagzkAnalogInputCfg_Len = sizeof(zkAnalogInputCfg) / sizeof(zkAnalogInputCfg[0]);
 unsigned int g_TelesignalCfg_Len = sizeof(TelesignalCfg) / sizeof(TelesignalCfg[0]);
 unsigned int g_TelecontrolCfg_Len = sizeof(TelecontrolCfg) / sizeof(TelecontrolCfg[0]);
 unsigned int g_UlogCfg_Len = sizeof(UlogCfg) / sizeof(UlogCfg[0]);

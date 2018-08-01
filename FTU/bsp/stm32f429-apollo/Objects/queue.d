@@ -2,13 +2,13 @@
 .\objects\queue.o: applications\queue\queue.h
 .\objects\queue.o: Libraries\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h
 .\objects\queue.o: .\drivers\stm32f4xx_hal_conf.h
-.\objects\queue.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
+.\objects\queue.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stddef.h
 .\objects\queue.o: Libraries\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc.h
 .\objects\queue.o: Libraries\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_def.h
 .\objects\queue.o: Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f4xx.h
 .\objects\queue.o: Libraries\CMSIS\Device\ST\STM32F4xx\Include\stm32f429xx.h
 .\objects\queue.o: Libraries\CMSIS\Include\core_cm4.h
-.\objects\queue.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\queue.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
 .\objects\queue.o: Libraries\CMSIS\Include\core_cmInstr.h
 .\objects\queue.o: Libraries\CMSIS\Include\cmsis_armcc.h
 .\objects\queue.o: Libraries\CMSIS\Include\core_cmFunc.h
@@ -16,7 +16,7 @@
 .\objects\queue.o: Libraries\CMSIS\Device\ST\STM32F4xx\Include\system_stm32f4xx.h
 .\objects\queue.o: Libraries\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal.h
 .\objects\queue.o: Libraries\STM32F4xx_HAL_Driver\Inc\Legacy/stm32_hal_legacy.h
-.\objects\queue.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\queue.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
 .\objects\queue.o: Libraries\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_rcc_ex.h
 .\objects\queue.o: Libraries\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_gpio.h
 .\objects\queue.o: Libraries\STM32F4xx_HAL_Driver\Inc\stm32f4xx_hal_gpio_ex.h

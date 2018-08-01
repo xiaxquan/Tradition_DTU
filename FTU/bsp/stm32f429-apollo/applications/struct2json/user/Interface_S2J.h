@@ -23,6 +23,8 @@ typedef struct tagProductID
 
 }ProductID;
 
+extern cJSON *DigitalInputCfg_StructToJson(void* struct_obj);         //实现开入量输入结构体的struct转json
+extern cJSON *AnalogInputCfg_StructToJson(void* struct_obj);         //实现模拟量输入结构体的struct转json
 extern cJSON *InherentParaCfg_StructToJson(void* struct_obj);         //实现固有参数结构体的struct转json
 extern cJSON *TelecontrolCfg_StructToJson(void* struct_obj);         //实现遥控结构体的struct转json
 extern cJSON *TelesignalCfg_StructToJson(void* struct_obj);         //实现遥信结构体的struct转json

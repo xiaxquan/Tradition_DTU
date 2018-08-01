@@ -27,6 +27,8 @@ enum
     _CFG_TELE_SIGNAL,       //遥信
     _CFG_TELE_CONTROL,      //遥控
     _CFG_TELE_INHERENT,     //固有参数
+    _CFG_HARD_ANALOGINPUT,  //硬件模拟输入配置
+    _CFG_HARD_DIGITALINPUT, //硬件开关量输入配置
     _CFG_ALL_NUM,           //总数
 };
 

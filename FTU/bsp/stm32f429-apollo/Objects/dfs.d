@@ -1,15 +1,15 @@
 .\objects\dfs.o: ..\..\components\dfs\src\dfs.c
 .\objects\dfs.o: ..\..\components\dfs\include\dfs.h
-.\objects\dfs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
-.\objects\dfs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
-.\objects\dfs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
-.\objects\dfs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
-.\objects\dfs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
+.\objects\dfs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdio.h
+.\objects\dfs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h
+.\objects\dfs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdlib.h
+.\objects\dfs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\string.h
+.\objects\dfs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\time.h
 .\objects\dfs.o: ..\..\include\rtthread.h
 .\objects\dfs.o: .\rtconfig.h
 .\objects\dfs.o: ..\..\include\rtdebug.h
 .\objects\dfs.o: ..\..\include\rtdef.h
-.\objects\dfs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
+.\objects\dfs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdarg.h
 .\objects\dfs.o: ..\..\include\rtlibc.h
 .\objects\dfs.o: ..\..\include\libc/libc_stat.h
 .\objects\dfs.o: ..\..\include\libc/libc_errno.h
@@ -17,7 +17,7 @@
 .\objects\dfs.o: ..\..\include\libc/libc_ioctl.h
 .\objects\dfs.o: ..\..\include\libc/libc_dirent.h
 .\objects\dfs.o: ..\..\include\libc/libc_signal.h
-.\objects\dfs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
+.\objects\dfs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\signal.h
 .\objects\dfs.o: ..\..\include\libc/libc_fdset.h
 .\objects\dfs.o: ..\..\include\rtservice.h
 .\objects\dfs.o: ..\..\include\rtm.h
@@ -45,4 +45,4 @@
 .\objects\dfs.o: ..\..\components\dfs\include\dfs_private.h
 .\objects\dfs.o: ..\..\include\rtdbg.h
 .\objects\dfs.o: ..\..\components\finsh\finsh.h
-.\objects\dfs.o: D:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h
+.\objects\dfs.o: C:\Keil_v5\ARM\ARMCC\Bin\..\include\ctype.h

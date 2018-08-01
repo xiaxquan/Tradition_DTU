@@ -31,6 +31,7 @@ uint16_t                            g_ThreadRunSta;
 uint16_t                            g_AddrCount;
 uint16_t                            g_StartWave;
 struct ConfigurationSetDatabase     *g_ConfigurationSetDB; // 系统配置结构
+struct HardwareInterfaceSetDatabase *g_HardwareInterfaceSetDB; // 硬接入配置结构
 struct SD2405Time                   g_SystemTime; // 系统时间
 
 // 遥信缓存
@@ -1583,6 +1584,11 @@ rt_uint16_t rt_multi_common_data_fram_record_write(uint8_t type, uint8_t *pBuf, 
         case CFG_RECODE:
             rt_device_write(device_fram, ADDR_FRAM_CONFIG, pBuf, len);	
             break;
+        
+        case HARDMAP_RECODE:
+            rt_device_write(device_fram, ADDR_FRAM_HARDMAP, pBuf, len);	
+            break;
+        
         case CURRENT_SN: // 当前定值区号	
             rt_device_write(device_fram, ADDR_FRAM_CURRENT_SN, pBuf, len);            						
             break;		
@@ -1673,12 +1679,16 @@ void rt_multi_common_data_fram_record_read(uint8_t type, uint8_t *pBuf)
             rt_device_read(device_fram, ADDR_FRAM_CONFIG, pBuf, sizeof(struct ConfigurationSetDatabase));									
             break;
 				
-				case CURRENT_SN:
-					  rt_device_read(device_fram, ADDR_FRAM_CURRENT_SN, pBuf, 1);									
+        case HARDMAP_RECODE:
+            rt_device_read(device_fram, ADDR_FRAM_HARDMAP, pBuf, sizeof(struct HardwareInterfaceSetDatabase));									
+            break;
+                
+		case CURRENT_SN:
+			rt_device_read(device_fram, ADDR_FRAM_CURRENT_SN, pBuf, 1);									
             break;
  
-				case PASSPHRASE:
-					  rt_device_read(device_fram, ADDR_FRAM_PASSPHRASE, pBuf, 16);									
+		case PASSPHRASE:
+			rt_device_read(device_fram, ADDR_FRAM_PASSPHRASE, pBuf, 16);									
             break;
 				
 //        case JSON_MD5: // JSON_MD5
@@ -1744,6 +1754,31 @@ void rt_multi_common_data_configure_default(void)
     memcpy(&g_ConfigurationSetDB->ID_Value, (char *)&("F31xxxxxxxxx20171211xxxx"), sizeof("F31xxxxxxxxx20171211xxxx"));   
         
     rt_multi_common_data_fram_record_write(CFG_RECODE, (uint8_t *)g_ConfigurationSetDB, sizeof(struct ConfigurationSetDatabase));    
+}
+
+/**
+  * @brief : configure default.
+  * @param : none
+  * @return: none
+  * @updata: [2017-12-07][J.Lee][Make the code cleanup]
+  */
+void rt_multi_common_data_HardwareInter_default(void)
+{
+    uint16_t i;
+    
+	memset(g_HardwareInterfaceSetDB,0,sizeof(struct HardwareInterfaceSetDatabase));
+	
+    for(i = 0; (i < g_tagzkDigitalInputCfg_Len); i++)
+    {
+        g_HardwareInterfaceSetDB->DIArray[i] = i+1;
+    }
+    
+    for(i = 0; (i < g_tagzkAnalogInputCfg_Len); i++)
+    {
+        g_HardwareInterfaceSetDB->AIArray[i] = i+1;
+    }
+        
+    rt_multi_common_data_fram_record_write(HARDMAP_RECODE, (uint8_t *)g_HardwareInterfaceSetDB, sizeof(struct HardwareInterfaceSetDatabase));    
 }
 
 /**
@@ -1845,8 +1880,12 @@ static void rt_common_data_save_value_default_to_fram(void)
   */
 void rt_multi_common_data_read_config_from_fram(void)
 {
-    uint32_t i,j,temp1;
+    uint32_t i,j,k,temp1;
     uint8_t sn =0,configureFault=0;
+    struct tagzkDigitalInputCfg tagzkDigitalInputTemp;
+    char sStr[20] = "硬开入0";
+    char tStr[8];
+    struct tagzkAnalogInputCfg tagzkAnalogInputTemp;
 
     /* FRAM上电判断 */
     rt_common_data_save_value_default_to_fram();
@@ -1965,18 +2004,6 @@ void rt_multi_common_data_read_config_from_fram(void)
     }
    
     ParameterCheck();
-    
-    for (i = 0; i < g_tagzkDigitalInputCfg_Len; i++)//赋值DI初始值
-    {
-		if(g_TelesignalDB[*(zkDigitalInputCfg[i].pAddr)] == ON)
-		{
-			zkDigitalInputCfg[i].lastVal = 0;
-		}
-		else
-		{
-		   zkDigitalInputCfg[i].lastVal = 1;
-		}
-    }
 
     /* 读取SOE */
     //FM25VxxReadData(ADDR_FRAM_SOE, NULL, (uint8_t *)g_SOEDB, sizeof(g_SOEDB));
@@ -2020,6 +2047,8 @@ void rt_multi_common_data_read_config_from_fram(void)
     /* 读取配置文件 */
     //FM25VxxReadData(ADDR_FRAM_CONFIG, NULL, (uint8_t *)&, sizeof(struct ConfigurationSetDatabase));
     rt_multi_common_data_fram_record_read(CFG_RECODE, (uint8_t *)g_ConfigurationSetDB);
+    
+    configureFault = 0;
     
     for(i=0,temp1=0;((i<g_ConfigurationSetDB->YXSetNum)&&(configureFault == 0));i++)//检查遥信
     {
@@ -2065,6 +2094,102 @@ void rt_multi_common_data_read_config_from_fram(void)
     if(configureFault == 1)
     {
         rt_multi_common_data_configure_default();
+    }
+
+    /* 读取配置文件 */
+    //FM25VxxReadData(ADDR_FRAM_CONFIG, NULL, (uint8_t *)&, sizeof(struct ConfigurationSetDatabase));
+    rt_multi_common_data_fram_record_read(HARDMAP_RECODE, (uint8_t *)g_HardwareInterfaceSetDB);
+    
+    configureFault = 0;
+    
+    for(i = 0; (i < g_tagzkDigitalInputCfg_Len) && (configureFault == 0); i++)
+    {
+        for(j = 0; j < g_tagzkDigitalInputCfg_Len; j++)
+        {
+            if(g_HardwareInterfaceSetDB->DIArray[j] == i+1)
+            {
+                break;            
+            }
+            else
+            {
+                configureFault = 1;
+            }
+        }
+    }
+    
+    for(i = 0; (i < g_tagzkDigitalInputCfg_Len) && (configureFault == 0); i++)
+    {
+        for(j = 0; j < g_tagzkDigitalInputCfg_Len; j++)
+        {
+            if(g_HardwareInterfaceSetDB->AIArray[j] == i+1)
+            {
+                break;            
+            }
+            else
+            {
+                configureFault = 1;
+            }
+        }
+    }
+    
+    if(configureFault == 1)
+    {
+        rt_multi_common_data_HardwareInter_default();
+    }
+        
+    for(i = 0; i < g_tagzkDigitalInputCfg_Len; i++)//配置硬开入顺序
+    {
+        for(j = 0; j < g_tagzkDigitalInputCfg_Len; j++)
+        {
+            if(g_HardwareInterfaceSetDB->DIArray[i] == zkDigitalInputCfg[j].pin)
+            {
+                memcpy(&tagzkDigitalInputTemp,&zkDigitalInputCfg[j],sizeof(struct tagzkDigitalInputCfg));
+                memcpy(&zkDigitalInputCfg[j],&zkDigitalInputCfg[i],sizeof(struct tagzkDigitalInputCfg));
+                memcpy(&zkDigitalInputCfg[i],&tagzkDigitalInputTemp,sizeof(struct tagzkDigitalInputCfg));
+                for(k = 0; k < g_TelesignalCfg_Len; k++)
+                {
+                    if(zkDigitalInputCfg[i].pAddr == TelesignalCfg[k].pAddr)
+                    {
+                        if(strcmp("DI0000",TelesignalCfg[k].pName) == 0)
+                        { 
+                            TelesignalCfg[k].enable = 1;
+                            sprintf(tStr,"%d",i+1);
+                            strcat(sStr,tStr);
+                            TelesignalCfg[k].pName = rt_malloc(sizeof(sStr));
+                            strcpy(TelesignalCfg[k].pName,sStr);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    for (i = 0; i < g_tagzkDigitalInputCfg_Len; i++)//赋值DI初始值
+    {
+        if(zkDigitalInputCfg[i].pAddr != NULL)
+        {
+            if(g_TelesignalDB[*(zkDigitalInputCfg[i].pAddr)] == ON)
+            {
+                zkDigitalInputCfg[i].lastVal = 0;
+            }
+            else
+            {
+               zkDigitalInputCfg[i].lastVal = 1;
+            }
+        }
+    }
+        
+    for(i = 0; i < g_tagzkAnalogInputCfg_Len; i++)//配置硬模入顺序
+    {
+        for(j = 0; j < g_tagzkAnalogInputCfg_Len; j++)
+        {
+            if(g_HardwareInterfaceSetDB->AIArray[i] == zkAnalogInputCfg[j].pin)
+            {
+                memcpy(&tagzkAnalogInputTemp,&zkAnalogInputCfg[j],sizeof(struct tagzkAnalogInputCfg));
+                memcpy(&zkAnalogInputCfg[j],&zkAnalogInputCfg[i],sizeof(struct tagzkAnalogInputCfg));
+                memcpy(&zkAnalogInputCfg[i],&tagzkAnalogInputTemp,sizeof(struct tagzkAnalogInputCfg));
+            }
+        }
     }
 }
 
@@ -2311,6 +2436,7 @@ void rt_multi_common_data_config(void)
 int rt_multi_common_data_init(void)
 {
     g_ConfigurationSetDB = rt_malloc(sizeof(struct ConfigurationSetDatabase));
+    g_HardwareInterfaceSetDB = rt_malloc(sizeof(struct HardwareInterfaceSetDatabase));
     
     device_fram = rt_device_find(RT_SPI_FRAM_NAME);
 	

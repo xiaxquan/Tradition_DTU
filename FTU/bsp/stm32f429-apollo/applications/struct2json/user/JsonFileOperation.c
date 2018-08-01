@@ -169,6 +169,18 @@ static void Struct_To_Json(int file)
                 length = g_InherentParaCfg_Len;
                 break;
             }
+            case _CFG_HARD_ANALOGINPUT:
+            {
+                write(Json_MyFile, " \"HardAnalogInput\":[  \n", sizeof(" \"HardAnalogInput\":[ \n") );  //依照标准格式进行写入
+                length = g_tagzkAnalogInputCfg_Len;
+                break;
+            }
+            case _CFG_HARD_DIGITALINPUT:
+            {
+                write(Json_MyFile, " \"HardDigitalInput\":[  \n", sizeof(" \"HardDigitalInput\":[ \n") );  //依照标准格式进行写入
+                length = g_tagzkDigitalInputCfg_Len;
+                break;
+            }
             default :
             {
                 break;
@@ -212,6 +224,16 @@ static void Struct_To_Json(int file)
                 case _CFG_TELE_INHERENT:
                 {
                     struct_json = InherentParaCfg_StructToJson(&InherentParaCfg[j]);
+                    break;
+                }
+                case _CFG_HARD_ANALOGINPUT:
+                {
+                    struct_json = AnalogInputCfg_StructToJson(&zkAnalogInputCfg[j]);
+                    break;
+                }
+                case _CFG_HARD_DIGITALINPUT:
+                {
+                    struct_json = DigitalInputCfg_StructToJson(&zkDigitalInputCfg[j]);
                     break;
                 }
                 default :
