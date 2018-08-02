@@ -2152,11 +2152,11 @@ void rt_multi_common_data_read_config_from_fram(void)
                         if(strcmp("DI0000",TelesignalCfg[k].pName) == 0)
                         { 
                             TelesignalCfg[k].enable = 1;
-                            TelesignalCfg[k].pName = rt_malloc(20);
-                            memcpy(TelesignalCfg[k].pName,YingKaiRu,20);
-                            sprintf(tStr,"%d",i+1);
-                            memcpy(&TelesignalCfg[k].pName[6],tStr,4);
-                            TelesignalCfg[k].pName[19] = '\0';
+                            //TelesignalCfg[k].pName = rt_malloc(20);
+//                            memcpy(TelesignalCfg[k].pName,YingKaiRu,20);
+//                            sprintf(tStr,"%d",i+1);
+//                            memcpy(&TelesignalCfg[k].pName[6],tStr,4);
+//                            TelesignalCfg[k].pName[19] = '\0';
                         }
                         break;
                     }

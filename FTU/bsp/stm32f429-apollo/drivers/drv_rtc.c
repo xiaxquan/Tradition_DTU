@@ -377,7 +377,7 @@ int rt_hw_rtc_init(void)
 	
     return(RT_EOK);
 }
-INIT_APP_EXPORT(rt_hw_rtc_init);
+//INIT_APP_EXPORT(rt_hw_rtc_init);
 
 #endif /* RT_USING_RTC */
 
