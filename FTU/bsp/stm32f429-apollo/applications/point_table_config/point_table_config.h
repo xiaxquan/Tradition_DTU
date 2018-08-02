@@ -11,6 +11,9 @@
 #ifndef __POINT_TABLE_CONFIG_H__
 #define __POINT_TABLE_CONFIG_H__
 
+extern char *BeiJingSuangJie;
+extern char *YingKaiRu;
+
 enum TELEMETRY_MENU
 {
     SECONDRY,    // 二次遥测

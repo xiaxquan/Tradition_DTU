@@ -126,7 +126,8 @@ void rt_hw_di_check_task(rt_uint8_t clock)
 {
     rt_uint8_t i;
     static float s_shaking_time = 0;
-		
+	
+	s_shaking_time = (uint32_t)g_Parameter[DI_SHAKING_TIME] / clock;		
 	pin_status[INDEX_KI_CS1].status = GPIO_PIN_RESET;			
 	rt_device_write(rt_di_dev, 0, &pin_status[INDEX_KI_CS1], sizeof(struct rt_device_pin_status));	
 
@@ -141,8 +142,6 @@ void rt_hw_di_check_task(rt_uint8_t clock)
 
 	pin_status[INDEX_KI_CS1].status = GPIO_PIN_SET;			
 	rt_device_write(rt_di_dev, 0, &pin_status[INDEX_KI_CS1], sizeof(struct rt_device_pin_status));		
-	
-    s_shaking_time = (uint32_t)g_Parameter[DI_SHAKING_TIME] / clock;
 
     for (i = 0; i < DI_NUM; i++)
     {
@@ -181,8 +180,6 @@ void rt_hw_di_check_task(rt_uint8_t clock)
 
 	pin_status[INDEX_KI_CS2].status = GPIO_PIN_SET;			
 	rt_device_write(rt_di_dev, 0, &pin_status[INDEX_KI_CS2], sizeof(struct rt_device_pin_status));	
-    
-    s_shaking_time = (uint32_t)g_Parameter[DI_SHAKING_TIME] / clock;
 
     for (i = 0; i < DI_NUM; i++)
     {

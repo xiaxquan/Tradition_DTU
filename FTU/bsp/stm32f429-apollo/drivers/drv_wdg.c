@@ -54,7 +54,7 @@ int rt_hw_wdg_deal_init(void)
 	return 0;
 }
 
-INIT_PREV_EXPORT(rt_hw_wdg_deal_init);
+//INIT_PREV_EXPORT(rt_hw_wdg_deal_init);
 
 
 #else /* USING_SOFTWARE_IWDG */

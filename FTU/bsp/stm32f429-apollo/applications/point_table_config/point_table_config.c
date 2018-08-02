@@ -14,6 +14,9 @@
 #include "point_table_config.h"
 #include "drv_gpio.h"
 
+char *BeiJingSuangJie = "北京双杰";
+char *YingKaiRu = "硬开入";
+
 /* 面板硬遥信 */
 struct taghmiDigitalInputCfg hmiDigitalInputCfg[] = 
 {
@@ -37,18 +40,18 @@ struct tagzkAnalogInputCfg zkAnalogInputCfg[] =
     { 1,       1,           &g_TelemetryBaseAddr.Uab},
     { 1,       2,           &g_TelemetryBaseAddr.Uac},
     { 1,       3,           &g_TelemetryBaseAddr.Ucb},
-    { 1,       4,           &g_TelemetryBaseAddr.U0},
-    { 1,       5,           &g_TelemetryBaseAddr.Ia},
-    { 1,       6,           &g_TelemetryBaseAddr.Ib},
-    { 1,       7,           &g_TelemetryBaseAddr.Ic},
-    { 1,       8,           &g_TelemetryBaseAddr.I0},
-    { 1,       9,           &g_TelemetryBaseAddr.UAB},
-    { 1,       10,          &g_TelemetryBaseAddr.UCB},
-    { 1,       11,          &g_TelemetryBaseAddr.DC1},
-    { 1,       12,          &g_TelemetryBaseAddr.DC2},
-    { 0,       13,          NULL},    
-    { 0,       14,          NULL},
-    { 0,       15,          NULL},
+    { 1,       4,           &g_TelemetryBaseAddr.U0},    
+    { 1,       5,           &g_TelemetryBaseAddr.UAB},
+    { 1,       6,           &g_TelemetryBaseAddr.UCB},
+    { 1,       7,           &g_TelemetryBaseAddr.DC1},
+    { 1,       8,           &g_TelemetryBaseAddr.DC2},
+	{ 0,       9,           NULL},
+	{ 1,       10,          &g_TelemetryBaseAddr.Ia},
+    { 1,       11,          &g_TelemetryBaseAddr.Ib},
+	{ 0,       12,          NULL}, 
+    { 1,       13,          &g_TelemetryBaseAddr.Ic},
+    { 1,       14,          &g_TelemetryBaseAddr.I0},  
+	{ 0,       15,          NULL},
 };
 
 /* 主板硬遥信 */

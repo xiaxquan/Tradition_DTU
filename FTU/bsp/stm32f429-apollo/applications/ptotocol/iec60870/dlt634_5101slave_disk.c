@@ -1372,7 +1372,7 @@ int DLT634_5101_SLAVE_INIT(void)
                 DLT634_5101_SLAVE_AppInit(pdrv);
                 memset(file_array[pdrv],0,sizeof(file_array[pdrv]));
                 DLT634_5101Slave_Pad[pdrv].Port = SLAVE101_ID0;            
-                dev[pdrv] = rt_device_find(RT_UART5_NAME);
+                dev[pdrv] = rt_device_find(RT_UART4_NAME);
                 serial = (struct rt_serial_device *)(dev[pdrv]);
 								serial->config.baud_rate = BAUD_RATE_115200;
                 rt_device_open(dev[pdrv], RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX);            
@@ -1404,7 +1404,7 @@ int DLT634_5101_SLAVE_INIT(void)
                 if((uint16_t)g_Parameter[UART_PORT]==0)
                 {dev[pdrv] = rt_device_find(RT_USART6_NAME);}
                 else
-                {dev[pdrv] = rt_device_find(RT_USART1_NAME);}
+                {dev[pdrv] = rt_device_find(RT_USART6_NAME);}
                 serial = (struct rt_serial_device *)(dev[pdrv]);
                 serial->config.baud_rate = UartBaudRate;
                 serial->config.parity = UartParity;

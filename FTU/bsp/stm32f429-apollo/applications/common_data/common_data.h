@@ -177,7 +177,7 @@ __packed struct CP56Time2a_t
 #define ADC_SAMPLE_NUM                       48     // 采样半波点数
 #define ADC_WAVE_SEMP_NUM                    25     // 采样全波总个数
 
-typedef struct//顺序不允许修改，会影响模拟量输入配置
+typedef struct
 {
     rt_int16_t ua[ADC_WAVE_SEMP_NUM * 2][ADC_SAMPLE_NUM];
 	rt_int16_t ub[ADC_WAVE_SEMP_NUM * 2][ADC_SAMPLE_NUM];

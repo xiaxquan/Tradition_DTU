@@ -1883,8 +1883,7 @@ void rt_multi_common_data_read_config_from_fram(void)
     uint32_t i,j,k,temp1;
     uint8_t sn =0,configureFault=0;
     struct tagzkDigitalInputCfg tagzkDigitalInputTemp;
-    char sStr[20] = "硬开入0";
-    char tStr[8];
+    char tStr[4];
     struct tagzkAnalogInputCfg tagzkAnalogInputTemp;
 
     /* FRAM上电判断 */
@@ -2153,11 +2152,13 @@ void rt_multi_common_data_read_config_from_fram(void)
                         if(strcmp("DI0000",TelesignalCfg[k].pName) == 0)
                         { 
                             TelesignalCfg[k].enable = 1;
+                            TelesignalCfg[k].pName = rt_malloc(20);
+                            memcpy(TelesignalCfg[k].pName,YingKaiRu,20);
                             sprintf(tStr,"%d",i+1);
-                            strcat(sStr,tStr);
-                            TelesignalCfg[k].pName = rt_malloc(sizeof(sStr));
-                            strcpy(TelesignalCfg[k].pName,sStr);
+                            memcpy(&TelesignalCfg[k].pName[6],tStr,4);
+                            TelesignalCfg[k].pName[19] = '\0';
                         }
+                        break;
                     }
                 }
             }
@@ -2293,7 +2294,6 @@ void rt_multi_common_data_config(void)
     rt_uint8_t addr,value;
     char buf[24];
     /* 北京双杰汉字编码 */
-    char buf1[8] = {0xB1, 0xB1, 0xBE, 0xA9, 0xCB, 0xAB, 0xBD, 0xDC};
     char tempstr[24];
 	
 //    g_InherentPara = RT_SYS_CONFIG_DEFAULT;	  
@@ -2318,7 +2318,7 @@ void rt_multi_common_data_config(void)
 
     memcpy(&g_InherentPara.terminalID, &g_ConfigurationSetDB->ID_Value, sizeof(g_ConfigurationSetDB->ID_Value));   
     memcpy(&g_InherentPara.terminalMAC, &buf, 17);
-    memcpy(&g_InherentPara.terminalManufacturer, &buf1, 8);  
+    memcpy(&g_InherentPara.terminalManufacturer, BeiJingSuangJie, 8);  
     
     memset(g_CommunicatFlag,0,sizeof(g_CommunicatFlag));//清除通讯互锁标志
     

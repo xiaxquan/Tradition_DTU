@@ -112,69 +112,101 @@ static void read_ad7616_data(void)
 
 //0 
     temp[0] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
     temp[8] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
 //1 
     temp[1] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
     temp[9] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
 //2 
     temp[2] = (*((volatile  short *)AD7616_DATA_ADDR));
-    temp[10] = (*((volatile  short *)AD7616_DATA_ADDR));   
+    AD7616_delay_ns(1);
+    temp[10] = (*((volatile  short *)AD7616_DATA_ADDR)); 
+    AD7616_delay_ns(1);  
 //3 
     temp[3] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
     temp[11] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
 //4 
     temp[4] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
     temp[12] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
 //5 
     temp[5] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
     temp[13] = (*((volatile  short *)AD7616_DATA_ADDR)); 
+    AD7616_delay_ns(1);
 //6 
     temp[6] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
     temp[14] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
 //7 
     temp[5] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
     temp[15] = (*((volatile  short *)AD7616_DATA_ADDR));
+    AD7616_delay_ns(1);
 //6 
-    temp[6] = (*((volatile  short *)AD7616_DATA_ADDR));
-    temp[14] = (*((volatile  short *)AD7616_DATA_ADDR));      
+    temp[6] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[6])/2;
+    AD7616_delay_ns(1);
+    temp[14] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[14])/2; 
+    AD7616_delay_ns(1);     
     
 //5 
-    temp[5] = (*((volatile  short *)AD7616_DATA_ADDR));
-    temp[13] = (*((volatile  short *)AD7616_DATA_ADDR)); 
+    temp[5] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[5])/2;
+    AD7616_delay_ns(1);
+    temp[13] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[13])/2;
+    AD7616_delay_ns(1); 
     
 //4 
-    temp[4] = (*((volatile  short *)AD7616_DATA_ADDR));
-    temp[12] = (*((volatile  short *)AD7616_DATA_ADDR));
+    temp[4] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[4])/2;
+    AD7616_delay_ns(1);
+    temp[12] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[12])/2;
+    AD7616_delay_ns(1);
     
 //3 
-    temp[3] = (*((volatile  short *)AD7616_DATA_ADDR));
-    temp[11] = (*((volatile  short *)AD7616_DATA_ADDR));
+    temp[3] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[3])/2;
+    AD7616_delay_ns(1);
+    temp[11] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[11])/2;
+    AD7616_delay_ns(1);
     
 //2 
-    temp[2] = (*((volatile  short *)AD7616_DATA_ADDR));
-    temp[10] = (*((volatile  short *)AD7616_DATA_ADDR));
+    temp[2] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[2])/2;
+    AD7616_delay_ns(1);
+    temp[10] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[10])/2;
+    AD7616_delay_ns(1);
     
 //1 
-    temp[1] = (*((volatile  short *)AD7616_DATA_ADDR));
-    temp[9] = (*((volatile  short *)AD7616_DATA_ADDR));
+    temp[1] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[1])/2;
+    AD7616_delay_ns(1);
+    temp[9] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[9])/2;
+    AD7616_delay_ns(1);
     
 //0 
-    temp[0] = (*((volatile  short *)AD7616_DATA_ADDR));
-    temp[8] = (*((volatile  short *)AD7616_DATA_ADDR));
+    temp[0] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[0])/2;
+    AD7616_delay_ns(1);
+    temp[8] = ((*((volatile  short *)AD7616_DATA_ADDR)) + temp[8])/2;
+    AD7616_delay_ns(1);
     
     
     g_SampleQueueBuf->ua[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[0]];
     g_SampleQueueBuf->ub[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[1]];
     g_SampleQueueBuf->uc[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[2]];
     g_SampleQueueBuf->u0[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[3]];
-    g_SampleQueueBuf->ia[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[4]];
-    g_SampleQueueBuf->ib[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[5]];
-    g_SampleQueueBuf->ic[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[6]];
-    g_SampleQueueBuf->i0[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[7]];
-    g_SampleQueueBuf->uA[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[8]];
-    g_SampleQueueBuf->uC[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[9]];
-    g_SampleQueueBuf->udc1[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[10]];
-    g_SampleQueueBuf->udc2[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[10]];
+    g_SampleQueueBuf->uA[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[4]];
+    g_SampleQueueBuf->uC[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[5]];
+    g_SampleQueueBuf->udc1[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[6]];
+    g_SampleQueueBuf->udc2[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[7]];
+    
+    g_SampleQueueBuf->ia[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[9]];
+    g_SampleQueueBuf->ib[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[10]];
+    
+    g_SampleQueueBuf->ic[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[12]];
+    g_SampleQueueBuf->i0[g_SampleQueueIn][s_ADC_Count] = temp[s_Mapping[13]];
     
     s_ADC_Count++;
 
