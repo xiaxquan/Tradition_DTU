@@ -318,7 +318,7 @@ void HAL_RTCEx_WakeUpTimerEventCallback(RTC_HandleTypeDef *hrtc)
 //		if (++g_SystemTime.minute > 59)
 //		{	
 //			RTC_SetTimeToSys();
-			rt_device_read(pcf8563, 0, RT_NULL, 0);            
+			//rt_device_read(pcf8563, 0, RT_NULL, 0);            
 //		}  									
 	}	
 }
@@ -377,7 +377,7 @@ int rt_hw_rtc_init(void)
 	
     return(RT_EOK);
 }
-//INIT_APP_EXPORT(rt_hw_rtc_init);
+INIT_APP_EXPORT(rt_hw_rtc_init);
 
 #endif /* RT_USING_RTC */
 
