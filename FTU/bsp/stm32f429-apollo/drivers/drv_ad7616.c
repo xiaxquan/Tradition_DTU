@@ -109,6 +109,7 @@ static void read_ad7616_data(void)
 {
     static uint16_t s_ADC_Count;
     static short temp[16];
+    //static uint8_t sta;
 
 //0 
     temp[0] = (*((volatile  short *)AD7616_DATA_ADDR));
@@ -214,7 +215,8 @@ static void read_ad7616_data(void)
     {  
         s_ADC_Count = 0;
         
-        rt_event_send(&calculate_event, EVENT_RUN);// ²ÉÑùÍê³É
+        if(temp[15] == 0x5555)
+        {rt_event_send(&calculate_event, EVENT_RUN);}// ²ÉÑùÍê³É
                     
         if (++g_SampleQueueIn >= (ADC_WAVE_SEMP_NUM * 2))
         {
@@ -310,7 +312,7 @@ int rt_hw_adc_init(void)
     *((volatile  short *)AD7616_DATA_ADDR) = 0x8000 | ((0x0024&0x003f)<<9) | (0x0034&0x01ff);//ÅäÖÃÐòÁÐÆ÷¶ÑÕ»¼Ä´æÆ÷
     *((volatile  short *)AD7616_DATA_ADDR) = 0x8000 | ((0x0025&0x003f)<<9) | (0x0025&0x01ff);//ÅäÖÃÐòÁÐÆ÷¶ÑÕ»¼Ä´æÆ÷
     *((volatile  short *)AD7616_DATA_ADDR) = 0x8000 | ((0x0026&0x003f)<<9) | (0x0016&0x01ff);//ÅäÖÃÐòÁÐÆ÷¶ÑÕ»¼Ä´æÆ÷
-    *((volatile  short *)AD7616_DATA_ADDR) = 0x8000 | ((0x0027&0x003f)<<9) | (0x0007&0x01ff);//ÅäÖÃÐòÁÐÆ÷¶ÑÕ»¼Ä´æÆ÷
+    *((volatile  short *)AD7616_DATA_ADDR) = 0x8000 | ((0x0027&0x003f)<<9) | (0x00B7&0x01ff);//ÅäÖÃÐòÁÐÆ÷¶ÑÕ»¼Ä´æÆ÷
     *((volatile  short *)AD7616_DATA_ADDR) = 0x8000 | ((0x0028&0x003f)<<9) | (0x0016&0x01ff);//ÅäÖÃÐòÁÐÆ÷¶ÑÕ»¼Ä´æÆ÷
     *((volatile  short *)AD7616_DATA_ADDR) = 0x8000 | ((0x0029&0x003f)<<9) | (0x0025&0x01ff);//ÅäÖÃÐòÁÐÆ÷¶ÑÕ»¼Ä´æÆ÷
     *((volatile  short *)AD7616_DATA_ADDR) = 0x8000 | ((0x002A&0x003f)<<9) | (0x0034&0x01ff);//ÅäÖÃÐòÁÐÆ÷¶ÑÕ»¼Ä´æÆ÷
