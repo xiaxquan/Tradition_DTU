@@ -498,6 +498,7 @@ static void RecoedMemory(void)
         {
             state = 0;
             rt_multi_common_data_powerdown_storage();
+            (*CommunicatLock.flag[COM_FILE]) |= COMMUNICATLOCKLOSEPOWER;//掉电保护
         }
     }
     else

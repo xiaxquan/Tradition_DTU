@@ -1015,7 +1015,7 @@ uint8_t DB_NVA_Check(void)
         
         for(i = 0;i < g_NewMaxNumTelemetry; i++)
         {
-            if(((g_NewDeadZoneTelemetry[i] > 0)&&(g_NewDeadZoneTelemetry[i] < 100))&&(g_NewToOldTelemetry[i] != 0))
+            if(((g_NewDeadZoneTelemetry[i] > 0)&&(g_NewDeadZoneTelemetry[i] < 100))&&(g_NewRatingValueTelemetry[i] != 0)&&(g_NewToOldTelemetry[i] != 0))
             {
                 if (fabsf(*TelemetryExCfg[g_NewToOldTelemetry[i] - TELEMETRY_START_ADDR]->pVal - g_NewTelemetryLastDB[i]) > g_NewDeadZoneTelemetry[i]*g_NewRatingValueTelemetry[i])
                 {
@@ -1651,6 +1651,8 @@ void rt_multi_common_data_configure_default(void)
         g_ConfigurationSetDB->YCAddr[i] = TELEMETRY_START_ADDR + i;
         g_ConfigurationSetDB->YCProperty[i] = 2<<NEWPROPERTY_TI;
         g_ConfigurationSetDB->YCMultipleRate[i] = 1;
+        g_ConfigurationSetDB->YCRatingValue[i] = 1;
+        g_ConfigurationSetDB->YCDeadZone[i] = 100;
     }
     
     for(i=0;i<REMOTE_TOTAL_NUM;i++)
@@ -2114,6 +2116,7 @@ void rt_multi_common_data_read_config_from_fram(void)
                 memcpy(&tagzkDigitalInputTemp,&zkDigitalInputCfg[j],sizeof(struct tagzkDigitalInputCfg));
                 memcpy(&zkDigitalInputCfg[j],&zkDigitalInputCfg[i],sizeof(struct tagzkDigitalInputCfg));
                 memcpy(&zkDigitalInputCfg[i],&tagzkDigitalInputTemp,sizeof(struct tagzkDigitalInputCfg));
+                zkDigitalInputCfg[i].negate = g_HardwareInterfaceSetDB->DIProperty[i];
                 for(k = 0; k < g_TelesignalCfg_Len; k++)
                 {
                     if(zkDigitalInputCfg[i].pAddr == TelesignalCfg[k].pAddr)
@@ -2121,11 +2124,11 @@ void rt_multi_common_data_read_config_from_fram(void)
                         if(strcmp("DI0000",TelesignalCfg[k].pName) == 0)
                         { 
                             TelesignalCfg[k].enable = 1;
-                            //TelesignalCfg[k].pName = rt_malloc(20);
-//                            memcpy(TelesignalCfg[k].pName,YingKaiRu,20);
-//                            sprintf(tStr,"%d",i+1);
-//                            memcpy(&TelesignalCfg[k].pName[6],tStr,4);
-//                            TelesignalCfg[k].pName[19] = '\0';
+                            TelesignalCfg[k].pName = rt_malloc(20);
+                            memcpy(TelesignalCfg[k].pName,YingKaiRu,20);
+                            sprintf(tStr,"%d",i+1);
+                            memcpy(&TelesignalCfg[k].pName[6],tStr,4);
+                            TelesignalCfg[k].pName[19] = '\0';
                         }
                         break;
                     }

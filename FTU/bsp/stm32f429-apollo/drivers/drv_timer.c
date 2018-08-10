@@ -349,12 +349,38 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     static rt_uint32_t cnt;
 	static rt_uint32_t s_run_cnt = 0;
+    static rt_uint8_t sta_manOpen = 0,sta_manClose = 0;
     
     if (htim == &TIM6_Handler)
     {   
         g_SystemTime.msecond++;
 
 		rt_hw_di_check_task(1);
+        
+        /* 手动合分闸 */
+        if(g_TelesignalDB[g_TelesignalAddr.earth] == ON)
+        {
+            if((g_TelesignalDB[g_TelesignalAddr.manOpen] == ON)||(sta_manOpen == 0))
+            {
+                sta_manOpen = 1;
+                rt_hw_do_operate(ADDR_LOCAL_OPERATE, DO_OPEN);
+            }
+            else if((g_TelesignalDB[g_TelesignalAddr.manOpen] == OFF)||(sta_manOpen == 1))
+            {
+                sta_manOpen = 0;
+            }
+            
+            if((g_TelesignalDB[g_TelesignalAddr.manClose] == ON)||(sta_manClose == 0))
+            {
+                sta_manClose = 1;
+                rt_hw_do_operate(ADDR_LOCAL_OPERATE, DO_OPEN);
+            }
+            else if((g_TelesignalDB[g_TelesignalAddr.manOpen] == OFF)||(sta_manClose == 1))
+            {
+                sta_manClose = 0;
+            }
+            
+        }
         
 		/* 分闸收回 */
 		rt_hw_do_operate(ADDR_LOGIC_ACT, DO_OPEN_RECOVERY); 

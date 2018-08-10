@@ -72,8 +72,8 @@ struct tagzkDigitalInputCfg zkDigitalInputCfg[] =
     { 1,       12,          &g_TelesignalAddr.di07,                         0,      0,      0},    
     { 1,       13,          &g_TelesignalAddr.di08,                         0,      0,      0},
     { 1,       14,          &g_TelesignalAddr.di09,                         0,      0,      0},
-    { 1,       15,          &g_TelesignalAddr.di10,                         0,      0,      0},
-    { 1,       16,          &g_TelesignalAddr.di11,                         0,      0,      0},
+    { 1,       15,          &g_TelesignalAddr.manOpen,                      0,      0,      0},
+    { 1,       16,          &g_TelesignalAddr.manClose,                     0,      0,      0},
 };
 
 /* 遥信 */
@@ -94,8 +94,8 @@ struct tagTelesignalCfg TelesignalCfg[] =
     { 0,  "DI0000",       &g_TelesignalAddr.di07,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
     { 0,  "DI0000",       &g_TelesignalAddr.di08,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
     { 0,  "DI0000",       &g_TelesignalAddr.di09,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di10,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di11,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 0,  "手动分闸按键", &g_TelesignalAddr.manOpen,                     NULL,     0xff,    	1,		{"按下", "松开"},       {"按下->松开","松开->按下"}},
+    { 0,  "手动合闸按键", &g_TelesignalAddr.manClose,                    NULL,     0xff,    	1,		{"按下", "松开"},      	{"按下->松开","松开->按下"}},
     { 1,  "开关类型",     &g_TelesignalAddr.swtichClass,                 NULL,     0xff,    	1,		{"断路器","负荷开关"},	{"断路器","负荷开关"}},
     { 1,  "常规保护型",   &g_TelesignalAddr.workmodeCommon,              NULL,     0xff,    	1,		{"退出", "投入"},  		{"投->退","退->投"}},
     { 1,  "电压电流型",   &g_TelesignalAddr.workmodeVolcur,              NULL,     0xff,    	1,		{"退出", "投入"},  		{"投->退","退->投"}},

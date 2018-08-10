@@ -53,6 +53,7 @@ cJSON *DigitalInputCfg_StructToJson(void* struct_obj)
 	/* serialize data to Student JSON object. */
 	s2j_json_set_basic_element(json_obj, DigitalInputCfg, int, enable);		//使能
 	s2j_json_set_basic_element(json_obj, DigitalInputCfg, int, pin);	        //号
+    s2j_json_set_basic_element(json_obj, DigitalInputCfg, int, negate);	        //取反
     
     for(i=0;i<g_TelesignalCfg_Len;i++)
     {

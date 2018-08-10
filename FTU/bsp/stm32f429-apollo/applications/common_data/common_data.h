@@ -352,8 +352,8 @@ typedef struct TagTelesignalAddr
     di07,                                            // 硬开入
     di08,                                            // 硬开入
     di09,                                            // 硬开入
-    di10,                                            // 硬开入
-    di11,                                            // 硬开入
+    manOpen,                                         // 手动分闸
+    manClose,                                        // 手动合闸
     swtichClass,                                    // 开关类型
     modBreakHardStrap,                              // 分断硬压板
     modContactHardStrap,                            // 联络硬压板
