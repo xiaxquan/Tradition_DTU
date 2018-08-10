@@ -390,7 +390,8 @@ static void rt_ftuidle_thread_entry(void *param)
 
         if (s_run_state == 0)
         {   
-            s_run_state = 1;			
+            s_run_state = 1;	
+            list_mem();
             rt_multi_common_data_fram_update_state_write(RUN_NOMAL); // 运行正常，写FRAM
 			DBWriteUlog(ADDR_ULOG_STARTUP,ON);
         }        

@@ -193,66 +193,66 @@ struct tagTelesignalCfg TelesignalCfg[] =
 /* 基本遥测 */
 struct tagTelemetryCfg TelemetryCfgBase[] = 
 {
-//   使能 菜单编号   名称           上位机名称          点号                                	值         单位      额定值             	零漂                             死区	
-    { 1,  SECONDRY,  "f",           "频率(f)",          &g_TelemetryBaseAddr.F,                 NULL,      "Hz",    50.00f,      		&g_Parameter[ZERODRIFT_F],      &g_Parameter[DEADZONE_F]},
-    { 1,  SECONDRY,  "Ia",          "相电流(Ia)",       &g_TelemetryBaseAddr.Ia,                NULL,      "A",     5.00f,      		&g_Parameter[ZERODRIFT_Ia],     &g_Parameter[DEADZONE_Ia]},
-    { 1,  SECONDRY,  "Ib",          "相电流(Ib)",       &g_TelemetryBaseAddr.Ib,                NULL,      "A",     5.00f,      		&g_Parameter[ZERODRIFT_Ib],     &g_Parameter[DEADZONE_Ib]},
-    { 1,  SECONDRY,  "Ic",          "相电流(Ic)",       &g_TelemetryBaseAddr.Ic,                NULL,      "A",     5.00f,      		&g_Parameter[ZERODRIFT_Ic],     &g_Parameter[DEADZONE_Ic]},	
-    { 1,  SECONDRY,  "I0",          "相电流(I0)",       &g_TelemetryBaseAddr.I0,                NULL,      "A",    	1.00f,     			&g_Parameter[ZERODRIFT_I0],     &g_Parameter[DEADZONE_I0]},
-    { 1,  SECONDRY,  "Uab",         "线电压(Uab)",      &g_TelemetryBaseAddr.Uab,               NULL,      "V",     220.00f,      		&g_Parameter[ZERODRIFT_Uab],    &g_Parameter[DEADZONE_Uab]},
-    { 1,  SECONDRY,  "Ubc",         "线电压(Ubc)",      &g_TelemetryBaseAddr.Ucb,               NULL,      "V",     220.00f,      		&g_Parameter[ZERODRIFT_Ucb],    &g_Parameter[DEADZONE_Ucb]},
-    { 1,  SECONDRY,  "Uac",         "线电压(Uac)",      &g_TelemetryBaseAddr.Uac,               NULL,      "V",     220.00f,      		&g_Parameter[ZERODRIFT_Uac],    &g_Parameter[DEADZONE_Uac]},
-    { 1,  SECONDRY,  "U0",          "电压(U0)",         &g_TelemetryBaseAddr.U0,                NULL,      "V",    	100.00f,     		&g_Parameter[ZERODRIFT_U0],     &g_Parameter[DEADZONE_U0]},
-    { 1,  SECONDRY,  "UAB",         "线电压(UAB)",      &g_TelemetryBaseAddr.UAB,               NULL,      "V",     220.00f,      		&g_Parameter[ZERODRIFT_UAB],    &g_Parameter[DEADZONE_UAB]},
-    { 1,  SECONDRY,  "UBC",         "线电压(UBC)",      &g_TelemetryBaseAddr.UCB,               NULL,      "V",     220.00f,      		&g_Parameter[ZERODRIFT_UCB],    &g_Parameter[DEADZONE_UCB]},
-    { 1,  SECONDRY,  "P",           "有功功率(P)",      &g_TelemetryBaseAddr.P,                 NULL,      "kW",    1.905f,      		&g_Parameter[ZERODRIFT_P],      &g_Parameter[DEADZONE_P]},
-    { 1,  SECONDRY,  "Q",           "无功功率(Q)",      &g_TelemetryBaseAddr.Q,                 NULL,      "kVar",  1.905f,      		&g_Parameter[ZERODRIFT_Q],      &g_Parameter[DEADZONE_Q]},
-    { 1,  SECONDRY,  "S",           "视在功率(S)",      &g_TelemetryBaseAddr.S,                 NULL,      "kVA",   1.905f,      		&g_Parameter[ZERODRIFT_S],      &g_Parameter[DEADZONE_S]},
-    { 1,  SECONDRY,  "pf",          "功率因数(pf)",     &g_TelemetryBaseAddr.PF,                NULL,      "-",    	1.00f,     			&g_Parameter[ZERODRIFT_PF],     &g_Parameter[DEADZONE_PF]},
-    { 1,  SECONDRY,  "DC1",         "直流(DC1)",        &g_TelemetryBaseAddr.DC1,               NULL,      "V",     24.00f,      		&g_Parameter[ZERODRIFT_DC1],    &g_Parameter[DEADZONE_DC1]},
-    { 0,  SECONDRY,  "DC2",         "直流(DC2)",        &g_TelemetryBaseAddr.DC2,               NULL,      "V",     24.00f,      		&g_Parameter[ZERODRIFT_DC2],    &g_Parameter[DEADZONE_DC2]},
-    { 1,  SECONDRY,  "T",           "温度(T)",          &g_TelemetryBaseAddr.T,                 NULL,      "°C",   40.00f,      		&g_Parameter[ZERODRIFT_T],      &g_Parameter[DEADZONE_T]},
+//   使能 菜单编号   名称           上位机名称          点号                                	值         单位      额定值             	零漂                     
+    { 1,  SECONDRY,  "f",           "频率(f)",          &g_TelemetryBaseAddr.F,                 NULL,      "Hz",    50.00f,      		&g_Parameter[ZERODRIFT_F]},
+    { 1,  SECONDRY,  "Ia",          "相电流(Ia)",       &g_TelemetryBaseAddr.Ia,                NULL,      "A",     5.00f,      		&g_Parameter[ZERODRIFT_Ia]},
+    { 1,  SECONDRY,  "Ib",          "相电流(Ib)",       &g_TelemetryBaseAddr.Ib,                NULL,      "A",     5.00f,      		&g_Parameter[ZERODRIFT_Ib]},
+    { 1,  SECONDRY,  "Ic",          "相电流(Ic)",       &g_TelemetryBaseAddr.Ic,                NULL,      "A",     5.00f,      		&g_Parameter[ZERODRIFT_Ic]},	
+    { 1,  SECONDRY,  "I0",          "相电流(I0)",       &g_TelemetryBaseAddr.I0,                NULL,      "A",    	1.00f,     			&g_Parameter[ZERODRIFT_I0]},
+    { 1,  SECONDRY,  "Uab",         "线电压(Uab)",      &g_TelemetryBaseAddr.Uab,               NULL,      "V",     220.00f,      		&g_Parameter[ZERODRIFT_Uab]},
+    { 1,  SECONDRY,  "Ubc",         "线电压(Ubc)",      &g_TelemetryBaseAddr.Ucb,               NULL,      "V",     220.00f,      		&g_Parameter[ZERODRIFT_Ucb]},
+    { 1,  SECONDRY,  "Uac",         "线电压(Uac)",      &g_TelemetryBaseAddr.Uac,               NULL,      "V",     220.00f,      		&g_Parameter[ZERODRIFT_Uac]},
+    { 1,  SECONDRY,  "U0",          "电压(U0)",         &g_TelemetryBaseAddr.U0,                NULL,      "V",    	100.00f,     		&g_Parameter[ZERODRIFT_U0]},
+    { 1,  SECONDRY,  "UAB",         "线电压(UAB)",      &g_TelemetryBaseAddr.UAB,               NULL,      "V",     220.00f,      		&g_Parameter[ZERODRIFT_UAB]},
+    { 1,  SECONDRY,  "UBC",         "线电压(UBC)",      &g_TelemetryBaseAddr.UCB,               NULL,      "V",     220.00f,      		&g_Parameter[ZERODRIFT_UCB]},
+    { 1,  SECONDRY,  "P",           "有功功率(P)",      &g_TelemetryBaseAddr.P,                 NULL,      "kW",    1.905f,      		&g_Parameter[ZERODRIFT_P]},
+    { 1,  SECONDRY,  "Q",           "无功功率(Q)",      &g_TelemetryBaseAddr.Q,                 NULL,      "kVar",  1.905f,      		&g_Parameter[ZERODRIFT_Q]},
+    { 1,  SECONDRY,  "S",           "视在功率(S)",      &g_TelemetryBaseAddr.S,                 NULL,      "kVA",   1.905f,      		&g_Parameter[ZERODRIFT_S]},
+    { 1,  SECONDRY,  "pf",          "功率因数(pf)",     &g_TelemetryBaseAddr.PF,                NULL,      "-",    	1.00f,     			&g_Parameter[ZERODRIFT_PF]},
+    { 1,  SECONDRY,  "DC1",         "直流(DC1)",        &g_TelemetryBaseAddr.DC1,               NULL,      "V",     24.00f,      		&g_Parameter[ZERODRIFT_DC1]},
+    { 0,  SECONDRY,  "DC2",         "直流(DC2)",        &g_TelemetryBaseAddr.DC2,               NULL,      "V",     24.00f,      		&g_Parameter[ZERODRIFT_DC2]},
+    { 1,  SECONDRY,  "T",           "温度(T)",          &g_TelemetryBaseAddr.T,                 NULL,      "°C",   40.00f,      		&g_Parameter[ZERODRIFT_T]},
 
-	{ 1,  SECONDRY,  "∠Uab_Ia",    "∠Uab_Ia",         &g_TelemetryBaseAddr.alphy_Uab_Ia,      NULL,      "°",    360.00f,      		NULL,                            NULL},
-    { 1,  SECONDRY,  "∠Ucb_Ic",    "∠Ucb_Ic",         &g_TelemetryBaseAddr.alphy_Ucb_Ic,      NULL,      "°",    360.00f,      		NULL,                            NULL},	
-    { 1,  SECONDRY,  "∠U0_I0",     "∠U0_I0",          &g_TelemetryBaseAddr.alphy_U0_I0,       NULL,      "°",    360.00f,      		NULL,                            NULL},
-    { 1,  SECONDRY,  "∠Ux_Ux",     "∠Ux_Ux",          &g_TelemetryBaseAddr.alphy_Ux_Ux,       NULL,      "°",    360.00f,      		NULL,                            NULL},	
-    { 1,  SECONDRY,  "f2",          "频率(f2)",         &g_TelemetryBaseAddr.F2,                NULL,      "Hz",    50.00f,      		&g_Parameter[ZERODRIFT_F],      &g_Parameter[DEADZONE_F]},
-    { 1,  SECONDRY,  "F/S",         "滑差(F/S)",        &g_TelemetryBaseAddr.F_S,               NULL,      "H/s",   50.00f,      		NULL,                            NULL},	
+	{ 1,  SECONDRY,  "∠Uab_Ia",    "∠Uab_Ia",         &g_TelemetryBaseAddr.alphy_Uab_Ia,      NULL,      "°",    360.00f,      		NULL},
+    { 1,  SECONDRY,  "∠Ucb_Ic",    "∠Ucb_Ic",         &g_TelemetryBaseAddr.alphy_Ucb_Ic,      NULL,      "°",    360.00f,      		NULL},	
+    { 1,  SECONDRY,  "∠U0_I0",     "∠U0_I0",          &g_TelemetryBaseAddr.alphy_U0_I0,       NULL,      "°",    360.00f,      		NULL},
+    { 1,  SECONDRY,  "∠Ux_Ux",     "∠Ux_Ux",          &g_TelemetryBaseAddr.alphy_Ux_Ux,       NULL,      "°",    360.00f,      		NULL},	
+    { 1,  SECONDRY,  "f2",          "频率(f2)",         &g_TelemetryBaseAddr.F2,                NULL,      "Hz",    50.00f,      		&g_Parameter[ZERODRIFT_F]},
+    { 1,  SECONDRY,  "F/S",         "滑差(F/S)",        &g_TelemetryBaseAddr.F_S,               NULL,      "H/s",   50.00f,      		NULL},	
 	
-    { 1,  ONCE,      "Ia",          "一次Ia",           &g_TelemetryBaseAddr.IaOnce,            NULL,      "A",     600.0f,      		NULL,                           &g_Parameter[DEADZONE_Ia]},
-    { 1,  ONCE,      "Ib",          "一次Ib",           &g_TelemetryBaseAddr.IbOnce,            NULL,      "A",     600.0f,      		NULL,                           &g_Parameter[DEADZONE_Ib]},
-    { 1,  ONCE,      "Ic",          "一次Ic",           &g_TelemetryBaseAddr.IcOnce,            NULL,      "A",     600.0f,      		NULL,                           &g_Parameter[DEADZONE_Ic]},
-    { 1,  ONCE,      "I0",          "一次I0",           &g_TelemetryBaseAddr.I0Once,            NULL,      "A",     20.0f,      		NULL,                           &g_Parameter[DEADZONE_I0]},
-    { 1,  ONCE,      "Uab",         "一次Uab",          &g_TelemetryBaseAddr.UabOnce,           NULL,      "kV",    4.54545f,      		NULL,                           &g_Parameter[DEADZONE_Uab]},
-    { 1,  ONCE,      "Ubc",         "一次Ubc",          &g_TelemetryBaseAddr.UbcOnce,           NULL,      "kV",    4.54545f,      		NULL,                           &g_Parameter[DEADZONE_Ucb]},
-    { 1,  ONCE,      "Uca",         "一次Uca",          &g_TelemetryBaseAddr.UcaOnce,           NULL,      "kV",    4.54545f,      		NULL,                           &g_Parameter[DEADZONE_Uac]},
-    { 1,  ONCE,      "U0",          "一次U0",           &g_TelemetryBaseAddr.U0Once,            NULL,      "kV",    4.54545f,      		NULL,                           &g_Parameter[DEADZONE_U0]},
-    { 1,  ONCE,      "UAB",         "一次UAB",          &g_TelemetryBaseAddr.UABOnce,           NULL,      "kV",    4.54545f,      		NULL,                           &g_Parameter[DEADZONE_UAB]},
-    { 1,  ONCE,      "UBC",         "一次UBC",          &g_TelemetryBaseAddr.UBCOnce,           NULL,      "kV",    4.54545f,      		NULL,                           &g_Parameter[DEADZONE_UCB]},
-    { 1,  ONCE,      "P",           "一次P",            &g_TelemetryBaseAddr.POnce,             NULL,      "kW",    8181.81f,      		NULL,                           &g_Parameter[DEADZONE_P]},
-    { 1,  ONCE,      "Q",           "一次Q",            &g_TelemetryBaseAddr.QOnce,             NULL,      "kVar",  8181.81,      		NULL,                           &g_Parameter[DEADZONE_Q]},
-    { 1,  ONCE,      "S",           "一次S",            &g_TelemetryBaseAddr.SOnce,             NULL,      "kVA",   8181.81,      		NULL,                           &g_Parameter[DEADZONE_S]},		
+    { 1,  ONCE,      "Ia",          "一次Ia",           &g_TelemetryBaseAddr.IaOnce,            NULL,      "A",     600.0f,      		NULL},
+    { 1,  ONCE,      "Ib",          "一次Ib",           &g_TelemetryBaseAddr.IbOnce,            NULL,      "A",     600.0f,      		NULL},
+    { 1,  ONCE,      "Ic",          "一次Ic",           &g_TelemetryBaseAddr.IcOnce,            NULL,      "A",     600.0f,      		NULL},
+    { 1,  ONCE,      "I0",          "一次I0",           &g_TelemetryBaseAddr.I0Once,            NULL,      "A",     20.0f,      		NULL},
+    { 1,  ONCE,      "Uab",         "一次Uab",          &g_TelemetryBaseAddr.UabOnce,           NULL,      "kV",    4.54545f,      		NULL},
+    { 1,  ONCE,      "Ubc",         "一次Ubc",          &g_TelemetryBaseAddr.UbcOnce,           NULL,      "kV",    4.54545f,      		NULL},
+    { 1,  ONCE,      "Uca",         "一次Uca",          &g_TelemetryBaseAddr.UcaOnce,           NULL,      "kV",    4.54545f,      		NULL},
+    { 1,  ONCE,      "U0",          "一次U0",           &g_TelemetryBaseAddr.U0Once,            NULL,      "kV",    4.54545f,      		NULL},
+    { 1,  ONCE,      "UAB",         "一次UAB",          &g_TelemetryBaseAddr.UABOnce,           NULL,      "kV",    4.54545f,      		NULL},
+    { 1,  ONCE,      "UBC",         "一次UBC",          &g_TelemetryBaseAddr.UBCOnce,           NULL,      "kV",    4.54545f,      		NULL},
+    { 1,  ONCE,      "P",           "一次P",            &g_TelemetryBaseAddr.POnce,             NULL,      "kW",    8181.81f,      		NULL},
+    { 1,  ONCE,      "Q",           "一次Q",            &g_TelemetryBaseAddr.QOnce,             NULL,      "kVar",  8181.81,      		NULL},
+    { 1,  ONCE,      "S",           "一次S",            &g_TelemetryBaseAddr.SOnce,             NULL,      "kVA",   8181.81,      		NULL},		
 
-    { 1,  HARMONIC,  "三次Uab",     "三次谐波Uab",      &g_TelemetryBaseAddr.thirdharmonicUab,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Uab],    &g_Parameter[DEADZONE_Uab]},	
-    { 1,  HARMONIC,  "三次Ubc",     "三次谐波Ubc",      &g_TelemetryBaseAddr.thirdharmonicUbc,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Ucb],    &g_Parameter[DEADZONE_Ucb]},
-    { 1,  HARMONIC,  "三次Uca",     "三次谐波Uca",      &g_TelemetryBaseAddr.thirdharmonicUca,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Uac],    &g_Parameter[DEADZONE_Uac]},
-    { 1,  HARMONIC,  "三次U0",      "三次谐波U0",       &g_TelemetryBaseAddr.thirdharmonicU0,   NULL,      "V",    	100.0f,     	&g_Parameter[ZERODRIFT_U0],     &g_Parameter[DEADZONE_U0]},
-    { 1,  HARMONIC,  "三次Ia",      "三次谐波Ia",       &g_TelemetryBaseAddr.thirdharmonicIa,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ia],     &g_Parameter[DEADZONE_Ia]},
-    { 1,  HARMONIC,  "三次Ib",      "三次谐波Ib",       &g_TelemetryBaseAddr.thirdharmonicIb,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ib],     &g_Parameter[DEADZONE_Ib]},
-    { 1,  HARMONIC,  "三次Ic",      "三次谐波Ic",       &g_TelemetryBaseAddr.thirdharmonicIc,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ic],     &g_Parameter[DEADZONE_Ic]},
-    { 1,  HARMONIC,  "三次I0",      "三次谐波I0",       &g_TelemetryBaseAddr.thirdharmonicI0,   NULL,      "A",    	100.0f,     	&g_Parameter[ZERODRIFT_I0],     &g_Parameter[DEADZONE_I0]},	
-    { 1,  HARMONIC,  "五次Uab",     "五次谐波Uab",      &g_TelemetryBaseAddr.fifthharmonicUab,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Uab],    &g_Parameter[DEADZONE_Uab]},	
-    { 1,  HARMONIC,  "五次Ubc",     "五次谐波Ubc",      &g_TelemetryBaseAddr.fifthharmonicUbc,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Ucb],    &g_Parameter[DEADZONE_Ucb]},
-    { 1,  HARMONIC,  "五次Uca",     "五次谐波Uca",      &g_TelemetryBaseAddr.fifthharmonicUca,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Uac],    &g_Parameter[DEADZONE_Uac]},
-    { 1,  HARMONIC,  "五次U0",      "五次谐波U0",       &g_TelemetryBaseAddr.fifthharmonicU0,   NULL,      "V",    	100.0f,     	&g_Parameter[ZERODRIFT_U0],     &g_Parameter[DEADZONE_U0]},
-    { 1,  HARMONIC,  "五次Ia",      "五次谐波Ia",       &g_TelemetryBaseAddr.fifthharmonicIa,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ia],     &g_Parameter[DEADZONE_Ia]},
-    { 1,  HARMONIC,  "五次Ib",      "五次谐波Ib",       &g_TelemetryBaseAddr.fifthharmonicIb,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ib],     &g_Parameter[DEADZONE_Ib]},
-    { 1,  HARMONIC,  "五次Ic",      "五次谐波Ic",       &g_TelemetryBaseAddr.fifthharmonicIc,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ic],     &g_Parameter[DEADZONE_Ic]},
-    { 1,  HARMONIC,  "五次I0",      "五次谐波I0",       &g_TelemetryBaseAddr.fifthharmonicI0,   NULL,      "A",    	1.00f,     		&g_Parameter[ZERODRIFT_I0],     &g_Parameter[DEADZONE_I0]},		
+    { 1,  HARMONIC,  "三次Uab",     "三次谐波Uab",      &g_TelemetryBaseAddr.thirdharmonicUab,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Uab]},	
+    { 1,  HARMONIC,  "三次Ubc",     "三次谐波Ubc",      &g_TelemetryBaseAddr.thirdharmonicUbc,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Ucb]},
+    { 1,  HARMONIC,  "三次Uca",     "三次谐波Uca",      &g_TelemetryBaseAddr.thirdharmonicUca,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Uac]},
+    { 1,  HARMONIC,  "三次U0",      "三次谐波U0",       &g_TelemetryBaseAddr.thirdharmonicU0,   NULL,      "V",    	100.0f,     	&g_Parameter[ZERODRIFT_U0]},
+    { 1,  HARMONIC,  "三次Ia",      "三次谐波Ia",       &g_TelemetryBaseAddr.thirdharmonicIa,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ia]},
+    { 1,  HARMONIC,  "三次Ib",      "三次谐波Ib",       &g_TelemetryBaseAddr.thirdharmonicIb,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ib]},
+    { 1,  HARMONIC,  "三次Ic",      "三次谐波Ic",       &g_TelemetryBaseAddr.thirdharmonicIc,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ic]},
+    { 1,  HARMONIC,  "三次I0",      "三次谐波I0",       &g_TelemetryBaseAddr.thirdharmonicI0,   NULL,      "A",    	100.0f,     	&g_Parameter[ZERODRIFT_I0]},	
+    { 1,  HARMONIC,  "五次Uab",     "五次谐波Uab",      &g_TelemetryBaseAddr.fifthharmonicUab,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Uab]},	
+    { 1,  HARMONIC,  "五次Ubc",     "五次谐波Ubc",      &g_TelemetryBaseAddr.fifthharmonicUbc,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Ucb]},
+    { 1,  HARMONIC,  "五次Uca",     "五次谐波Uca",      &g_TelemetryBaseAddr.fifthharmonicUca,  NULL,      "V",     220.0f,     	&g_Parameter[ZERODRIFT_Uac]},
+    { 1,  HARMONIC,  "五次U0",      "五次谐波U0",       &g_TelemetryBaseAddr.fifthharmonicU0,   NULL,      "V",    	100.0f,     	&g_Parameter[ZERODRIFT_U0]},
+    { 1,  HARMONIC,  "五次Ia",      "五次谐波Ia",       &g_TelemetryBaseAddr.fifthharmonicIa,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ia]},
+    { 1,  HARMONIC,  "五次Ib",      "五次谐波Ib",       &g_TelemetryBaseAddr.fifthharmonicIb,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ib]},
+    { 1,  HARMONIC,  "五次Ic",      "五次谐波Ic",       &g_TelemetryBaseAddr.fifthharmonicIc,   NULL,      "A",     5.00f,     		&g_Parameter[ZERODRIFT_Ic]},
+    { 1,  HARMONIC,  "五次I0",      "五次谐波I0",       &g_TelemetryBaseAddr.fifthharmonicI0,   NULL,      "A",    	1.00f,     		&g_Parameter[ZERODRIFT_I0]},		
 
-    { 0,  0xff,      "软件版本",    "软件版本",         &g_TelemetryBaseAddr.softwareVersion,   NULL,      "--",    	0,     NULL,     NULL},	
-    { 0,  0xff,      "工作模式",    "工作模式",         &g_TelemetryBaseAddr.workMode,          NULL,      "--",    	0,     NULL,     NULL},	
+    { 0,  0xff,      "软件版本",    "软件版本",         &g_TelemetryBaseAddr.softwareVersion,   NULL,      "--",    	0,     NULL},	
+    { 0,  0xff,      "工作模式",    "工作模式",         &g_TelemetryBaseAddr.workMode,          NULL,      "--",    	0,     NULL},	
 };	
 
 /* 遥控 */
@@ -373,29 +373,6 @@ struct tagValueParaCfg ParameterCfg[] =
     { &g_MenuEnable, 1,  ME_ZERODRIFT,   "直流1零漂",       &g_Parameter[ZERODRIFT_DC1],               	"V",      60.0f,      0.00001f,   0.1f,        0,         3,         {"-",  "-"         },   " "    },	
     { &g_MenuEnable, 1,  ME_ZERODRIFT,   "直流2零漂",       &g_Parameter[ZERODRIFT_DC2],               	"V",      60.0f,      0.00001f,   9.9f,        0,         3,         {"-",  "-"         },   " "    },	
     { &g_MenuEnable, 1,  ME_ZERODRIFT,   "温度零漂",        &g_Parameter[ZERODRIFT_T],                 	"°C",    100.0f,     0.00001f,   0.1f,        0,         3,         {"-",  "-"         },   " "    },	
-	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "频率死区",        &g_Parameter[DEADZONE_F],                   "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "A相电流死区",     &g_Parameter[DEADZONE_Ia],                  "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "B相电流死区",     &g_Parameter[DEADZONE_Ib],                  "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "C相电流死区",     &g_Parameter[DEADZONE_Ic],                  "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "零序电流死区",    &g_Parameter[DEADZONE_I0],                  "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "Uab死区",         &g_Parameter[DEADZONE_Uab],                 "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "Ucb死区",         &g_Parameter[DEADZONE_Ucb],                 "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },		
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "Uac死区",         &g_Parameter[DEADZONE_Uac],                 "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "U0死区",          &g_Parameter[DEADZONE_U0],                  "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "UAB死区",         &g_Parameter[DEADZONE_UAB],                 "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "UCB死区",         &g_Parameter[DEADZONE_UCB],                 "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "有功功率死区",    &g_Parameter[DEADZONE_P],                   "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "无功功率死区",    &g_Parameter[DEADZONE_Q],                   "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "视在功率死区",    &g_Parameter[DEADZONE_S],                   "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },		
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "功率因数死区",    &g_Parameter[DEADZONE_PF],                  "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "直流1死区",       &g_Parameter[DEADZONE_DC1],                 "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "直流2死区",       &g_Parameter[DEADZONE_DC2],                 "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "温度死区",        &g_Parameter[DEADZONE_T],                   "%",      99999.0f,     0.01f,   99999.0f,    0,         3,         {"-",  "-"         },   " "    },
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "U额定值",         &g_Parameter[DEADZONE_U_VALUE],             "V",      300.0f,     	0.01f,   220.0f,      0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "I额定值",         &g_Parameter[DEADZONE_I_VALUE],             "A",      999.0f,     	0.01f,   5.0f,        0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "U0额定值",        &g_Parameter[DEADZONE_U0_VALUE],            "V",      300.0f,     	0.01f,   100.0f,      0,         3,         {"-",  "-"         },   " "    },	
-    { &g_MenuEnable, 1,  ME_DEADEZONE,   "I0额定值",        &g_Parameter[DEADZONE_I0_VALUE],            "A",      999.0f,     	0.01f,   1.0f,        0,         3,         {"-",  "-"         },   " "    },	
 	
     { &g_MenuEnable, 1,  ME_UART_COM,    "串口号",          &g_Parameter[UART_PORT],                    "-",       1,           0,     0,          2,         0,         {"串口中", "串口右"},   " "   }, 
     { &g_MenuEnable, 1,  ME_UART_COM,    "波特率",          &g_Parameter[UART_BAUDRATE],                "-",       4,           0,     2,          5,         0,         {"2400", "4800", "9600", "38400", "115200"},   " "   }, 
@@ -562,9 +539,15 @@ struct tagValueParaCfg FixedValueCfg1[] =
 /* 定值二区 */
 struct tagValueParaCfg FixedValueCfg2[sizeof(FixedValueCfg1) / sizeof(FixedValueCfg1[0])];
 
-/* 扩展遥测 */
-struct tagTelemetryCfg TelemetryCfg[sizeof(TelemetryCfgBase) / sizeof(TelemetryCfgBase[0]) + sizeof(FixedValueCfg1) / sizeof(FixedValueCfg1[0])];
+/* 扩展遥测(定值) */
+struct tagTelemetryCfg **TelemetryCfg;
 
+/* 扩展遥信 */
+struct tagTelesignalCfg **TelesignalExCfg;
+
+/* 扩展遥测 */
+struct tagTelemetryCfg **TelemetryExCfg;
+    
 unsigned int g_FixedValueCfg1_Len = sizeof(FixedValueCfg1) / sizeof(FixedValueCfg1[0]);
 unsigned int g_FixedValueCfg2_Len = sizeof(FixedValueCfg2) / sizeof(FixedValueCfg2[0]);
 unsigned int g_ParameterCfg_Len = sizeof(ParameterCfg) / sizeof(ParameterCfg[0]);
@@ -577,7 +560,7 @@ unsigned int g_TelesignalCfg_Len = sizeof(TelesignalCfg) / sizeof(TelesignalCfg[
 unsigned int g_TelecontrolCfg_Len = sizeof(TelecontrolCfg) / sizeof(TelecontrolCfg[0]);
 unsigned int g_UlogCfg_Len = sizeof(UlogCfg) / sizeof(UlogCfg[0]);
 unsigned int g_InherentParaCfg_Len = sizeof(InherentParaCfg) / sizeof(InherentParaCfg[0]);
-unsigned int g_TelemetryCfg_Len = sizeof(TelemetryCfg) / sizeof(TelemetryCfg[0]);
+unsigned int g_TelemetryCfg_Len = sizeof(TelemetryCfgBase) / sizeof(TelemetryCfgBase[0]) + sizeof(FixedValueCfg1) / sizeof(FixedValueCfg1[0]);
 
 /* END OF FILE ---------------------------------------------------------------*/
 

@@ -50,11 +50,11 @@ WINDOW COWin   	 = {0,0,160,160,"操作记录窗口",SoeCoWinFun,&coInfo};
 WINDOW FaultEventWin = {0,0,160,160,"故障事件窗口",FaultEventFun,NULL};
 WINDOW CheckRecordWin = {0,0,160,160,"诊断信息窗口",SoeCoWinFun,&ulogInfo};
 
-WINDOW BasicSetWin   = {0,0,160,160,"基本设置窗口",DingzhiWinFun,&dzhi0Info[DZ0_CONFIG]};
-WINDOW ZeroDriftWin  = {0,0,160,160,"零漂设置窗口",DingzhiWinFun,&dzhi0Info[DZ0_ZERODRIFT]};
-WINDOW DeadZoneWin 	 = {0,0,160,160,"死区设置窗口",DingzhiWinFun,&dzhi0Info[DZ0_DEADEZONE]};
-WINDOW SerialWin     = {0,0,160,160,"串口设置窗口",DingzhiWinFun,&dzhi0Info[DZ0_SERIAL]};
-WINDOW InternetWin 	 = {0,0,160,160,"网口设置窗口",DingzhiWinFun,&dzhi0Info[DZ0_INTERNET]};
+WINDOW BasicSetWin   = {0,0,160,160,"基本设置窗口",DingzhiWinFun,&dzhi0Info[ME_BASIC_SET]};
+WINDOW ZeroDriftWin  = {0,0,160,160,"零漂设置窗口",DingzhiWinFun,&dzhi0Info[ME_ZERODRIFT]};
+//WINDOW DeadZoneWin 	 = {0,0,160,160,"死区设置窗口",DingzhiWinFun,&dzhi0Info[ME_UART_COM]};
+WINDOW SerialWin     = {0,0,160,160,"串口设置窗口",DingzhiWinFun,&dzhi0Info[ME_UART_COM]};
+WINDOW InternetWin 	 = {0,0,160,160,"网口设置窗口",DingzhiWinFun,&dzhi0Info[ME_NET_COM]};
 
 WINDOW YaoCe1Win   = {0,0,160,160,"一次遥测窗口",YaoceWinFun,&yceInfo[0]};
 WINDOW YaoCe2Win   = {0,0,160,160,"二次遥测窗口",YaoceWinFun,&yceInfo[1]};
@@ -78,8 +78,8 @@ lkdMenuNode Node18 = {MID_BASICSET,"基本设置",NULL,NULL,&BasicSetWin};
 lkdMenuNode Node23 = {MID_PASSWORDMODFIY,"密码修改",NULL,NULL,&PasswordModfiyWin};
 lkdMenuNode Node17 = {MID_TIMEMODFIY,"时间修改",&Node23,NULL,&TimeModfiyWin};
 lkdMenuNode Node16 = {MID_ZERODRIFT,"零漂设置",&Node17,NULL,&ZeroDriftWin};
-lkdMenuNode Node15 = {MID_DEADEZONE,"死区设置",&Node16,NULL,&DeadZoneWin};
-lkdMenuNode Node14 = {MID_INTERNET,"网口设置",&Node15,NULL,&InternetWin};
+//lkdMenuNode Node15 = {MID_DEADEZONE,"死区设置",&Node16,NULL,&DeadZoneWin};
+lkdMenuNode Node14 = {MID_INTERNET,"网口设置",&Node16,NULL,&InternetWin};
 lkdMenuNode Node13 = {MID_SERIAL,"串口配置",&Node14,NULL,&SerialWin};
 
 lkdMenuNode Node12 = {MID_CHECKRECORD,"自检记录",NULL,NULL,&CheckRecordWin};

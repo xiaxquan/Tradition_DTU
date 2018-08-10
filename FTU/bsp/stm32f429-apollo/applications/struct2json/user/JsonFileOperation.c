@@ -208,7 +208,7 @@ static void Struct_To_Json(int file)
                 }
                 case _CFG_TELE_METRY:
                 {
-                    struct_json = TelemetryCfg_StructToJson(&TelemetryCfg[j]);
+                    struct_json = TelemetryCfg_StructToJson(TelemetryCfg[j]);
                     break;
                 }
                 case _CFG_TELE_SIGNAL:

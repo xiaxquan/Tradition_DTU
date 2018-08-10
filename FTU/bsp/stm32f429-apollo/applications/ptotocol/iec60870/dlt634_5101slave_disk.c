@@ -755,14 +755,6 @@ uint8_t DLT634_5101_SLAVE_H_NVA(uint8_t pdrv)//判断是否有NVA
     {
         if(g_NVADBIn != g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port])
         {
-            if(g_NewAddTelemetry[g_NVADB[g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port]].addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr] == 0)
-            {
-                if (++(g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port]) >= NVA_MAX_NUM)
-                {
-                    g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port] = 0;
-                }
-                continue;
-            }
             return(1);
         }
         break;
@@ -788,26 +780,11 @@ void DLT634_5101_SLAVE_R_NVA(uint8_t pdrv, uint8_t *pbuf)//读NVA
     for(i=0;g_NVADBIn != g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port];i++)
     {
         if(Property == 0xffff)
-        {
-            if(g_NewAddTelemetry[g_NVADB[g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port]].addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr] == 0)
-            {
-                if (++(g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port]) >= NVA_MAX_NUM)
-                {
-                    g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port] = 0;
-                }
-                continue;//找到非0地址
-            }
-            else    
-            {
-                Property = ((g_NewPropertyTelemetry[g_NVADB[g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port]].addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr]>>NEWPROPERTY_TI)&NEWPROPERTY_JUDG)*2 + _DLT634_5101SLAVE_M_ME_NA_1;
-            }        
+        {   
+            Property = ((g_NewPropertyTelemetry[g_NVADB[g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port]].addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr]>>NEWPROPERTY_TI)&NEWPROPERTY_JUDG)*2 + _DLT634_5101SLAVE_M_ME_NA_1;       
         }
         else
         {
-			if(g_NewAddTelemetry[g_NVADB[g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port]].addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr] == 0)
-			{
-				break;//地址=0
-			}
             if((((g_NewPropertyTelemetry[g_NVADB[g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port]].addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr]>>NEWPROPERTY_TI)&NEWPROPERTY_JUDG)*2 + _DLT634_5101SLAVE_M_ME_NA_1) != (Property))
             {
                 break;//与上一个属性不同
@@ -815,8 +792,6 @@ void DLT634_5101_SLAVE_R_NVA(uint8_t pdrv, uint8_t *pbuf)//读NVA
         }
         
         memcpy(&nva_temp,&(g_NVADB[g_NVADBOut[DLT634_5101Slave_Pad[pdrv].Port]]),sizeof(struct NVA_Str));
-        
-        nva_temp.addr = g_NewAddTelemetry[(nva_temp.addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr)];
         
         switch(Property)
         {
@@ -1019,45 +994,50 @@ uint16_t DLT634_5101_SLAVE_R_YXDATA(uint8_t pdrv,uint16_t addr,uint16_t num, uin
   */
 uint16_t DLT634_5101_SLAVE_R_YCDATA(uint8_t pdrv,uint16_t addr,uint16_t num, uint8_t *pbuf)//读YCDATA
 {//LENTH/Lock_ID/TypeID/VSQ/COT_L/COT_H/PubAddr_L/PubAddr_H/InfoAddr_L/InfoAddr_H/Array(Value) 
-    uint16_t i = 0;  
-    uint8_t sendnum = 0;  
+    uint16_t i = 0;   
+    uint8_t sendnum = 0;
     uint16_t Property = 0xffff;
-    uint16_t start_add = 0;
     uint32_t tempf;
     int16_t tempu;
     
+    float tempv;
+    float tempMultipleRate;
+    
     for(i=0;;i++)
     {
-        if(Property == 0xffff)
+        if(g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] != 0)
         {
-            if(g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] == 0)
-            {
-                continue;//找到非0地址
-            }
-            else    
-            {
-                Property = ((g_NewPropertyTelemetry[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr]>>NEWPROPERTY_TI)&NEWPROPERTY_JUDG)*2 + _DLT634_5101SLAVE_M_ME_NA_1;
-                start_add = g_NewAddTelemetry[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr];
-            }        
-        } 
-
+            Property = ((g_NewPropertyTelemetry[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr]>>NEWPROPERTY_TI)&NEWPROPERTY_JUDG)*2 + _DLT634_5101SLAVE_M_ME_NA_1;
+            break;
+        }        
+    } 
+    
+    for(i=0;;i++)
+    {
+        if(g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] != 0)
+        {
+            tempv = *TelemetryExCfg[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr]->pVal;
+            tempMultipleRate = g_NewMultipleRateTelemetry[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr];
+        }
+        else
+        {
+            tempv = 0;
+        }
+            
         switch(Property)
         {
             case _DLT634_5101SLAVE_M_ME_NA_1:
-                tempu = (int16_t)(*TelemetryCfg[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr].pVal/\
-                        (g_NewMultipleRateTelemetry[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr])*32768);
+                tempu = (int16_t)(tempv/tempMultipleRate*32768);
                 temp_array[pdrv][sendnum*(1+sizeof(uint16_t)) + sizeof(uint16_t) + 10] = 0x00;//QDS
                 memcpy(&temp_array[pdrv][sendnum*(1+sizeof(uint16_t)) + 10],&tempu,sizeof(uint16_t)); 
                 break;
             case _DLT634_5101SLAVE_M_ME_NB_1:
-                tempu = (int16_t)(*TelemetryCfg[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr].pVal*\
-                        (g_NewMultipleRateTelemetry[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr]));
+                tempu = (int16_t)(tempv*tempMultipleRate);
                 temp_array[pdrv][sendnum*(1+sizeof(uint16_t)) + sizeof(uint16_t) + 10] = 0x00;//QDS
                 memcpy(&temp_array[pdrv][sendnum*(1+sizeof(uint16_t)) + 10],&tempu,sizeof(uint16_t)); 
                 break;
             case _DLT634_5101SLAVE_M_ME_NC_1:
-                tempf = FloatToBin(*TelemetryCfg[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr].pVal*\
-                        (g_NewMultipleRateTelemetry[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr]));
+                tempf = FloatToBin(tempv*tempMultipleRate);
                 temp_array[pdrv][sendnum*(1+sizeof(uint32_t)) + sizeof(uint32_t) + 10] = 0x00;//QDS
                 memcpy(&temp_array[pdrv][sendnum*(1+sizeof(uint32_t)) + 10],&tempf,sizeof(uint32_t));   
                 break;                    
@@ -1073,11 +1053,8 @@ uint16_t DLT634_5101_SLAVE_R_YCDATA(uint8_t pdrv,uint16_t addr,uint16_t num, uin
         {
             break;//大于最大个数
         }
-        if(g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i + 1] == 0)
-        {
-            break;//下一个点号等于0
-        }
-        if((((g_NewPropertyTelemetry[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i + 1] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr]>>NEWPROPERTY_TI)&NEWPROPERTY_JUDG)*2 + _DLT634_5101SLAVE_M_ME_NA_1) != (Property))
+        if((g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i + 1] != 0)&&\
+            ((((g_NewPropertyTelemetry[g_NewToOldTelemetry[addr - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr + i + 1] - DLT634_5101Slave_Pad[pdrv].YC_FirstAddr]>>NEWPROPERTY_TI)&NEWPROPERTY_JUDG)*2 + _DLT634_5101SLAVE_M_ME_NA_1) != (Property)))
         {
             break;//下一个属性不同
         }
@@ -1100,11 +1077,11 @@ uint16_t DLT634_5101_SLAVE_R_YCDATA(uint8_t pdrv,uint16_t addr,uint16_t num, uin
     temp_array[pdrv][5] = 0;
     temp_array[pdrv][6] = LOBYTE(DLT634_5101Slave_Pad[pdrv].ASDUAddr);
     temp_array[pdrv][7] = HIBYTE(DLT634_5101Slave_Pad[pdrv].ASDUAddr);
-    temp_array[pdrv][8] = LOBYTE(start_add);
-    temp_array[pdrv][9] = HIBYTE(start_add);
+    temp_array[pdrv][8] = LOBYTE(addr);
+    temp_array[pdrv][9] = HIBYTE(addr);
     memcpy(pbuf,temp_array[pdrv],temp_array[pdrv][0]);
     
-    return(start_add + sendnum);
+    return(addr + sendnum);
 }
 
 
@@ -1374,7 +1351,7 @@ int DLT634_5101_SLAVE_INIT(void)
                 DLT634_5101Slave_Pad[pdrv].Port = SLAVE101_ID0;            
                 dev[pdrv] = rt_device_find(RT_UART4_NAME);
                 serial = (struct rt_serial_device *)(dev[pdrv]);
-								serial->config.baud_rate = BAUD_RATE_115200;
+				serial->config.baud_rate = BAUD_RATE_115200;
                 rt_device_open(dev[pdrv], RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX);            
                 DLT634_5101Slave_Pad[pdrv].BalanMode = 1;
                 DLT634_5101Slave_Pad[pdrv].Encrypt = 0;

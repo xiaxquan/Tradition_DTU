@@ -10,7 +10,7 @@ YaoxinDisplayInfo yxInfo;
 /* 遥测显示信息 0一次 1二次 2 谐波 */
 YaoceDisplayInfo yceInfo[3];
 /* 配置定值显示信息 */
-DzhiDisplayInfo dzhi0Info[DZ0_ALLNUM];
+DzhiDisplayInfo dzhi0Info[PARAMETER_MENU_ALLNUM];
 /* 运行定值显示信息 */
 DzhiDisplayInfo dzhi1Info[FIXED_VALUE_MENU_ALLNUM];
 /* Soe显示信息 */
@@ -180,40 +180,22 @@ static void Dzhi1ModfiySave(uint16_t addr)
 }
 
 /**
-  *@brief  运行定值类型重映射
-  *@param  i 当前序列号 type 原始类型
-  *@retval None
-  */
-static void Dzhi0TypeRemap(uint16_t i,uint16_t *type)
-{
-	switch(i)
-	{
-		case DZ0_CONFIG:*type = ME_BASIC_SET;break;
-		case DZ0_ZERODRIFT:*type = ME_ZERODRIFT;break;
-		case DZ0_DEADEZONE:*type = ME_DEADEZONE;break;
-		case DZ0_SERIAL:*type = ME_UART_COM;break;
-		case DZ0_INTERNET:*type = ME_NET_COM;break;
-		default:*type = ME_BASIC_SET;break;
-	}
-}
-/**
   *@brief  配置显示初始化
   *@param  None
   *@retval None
   */
 static void Dzhi0DisplayInit(void)
 {
-	uint16_t dzhiItemsAll,typeIs;
+	uint16_t dzhiItemsAll;
 	uint8_t dzhiItem = 0;
 	uint16_t i,j;
 	dzhiItemsAll = g_ParameterCfg_Len;
-	for(i = 0 ; i < DZ0_ALLNUM; i++){
-		Dzhi0TypeRemap(i,&typeIs);
+	for(i = 0 ; i < PARAMETER_MENU_ALLNUM; i++){
 		dzhiItem = 0;
 		dzhi0Info[i].SaveModify = Dzhi0ModfiySave;
 		dzhi0Info[i].pRoot = ParameterCfg;
 		for(j = 0; j < dzhiItemsAll; j++){//查找可用定值
-			if(*(dzhi0Info[i].pRoot[j].pEnable) == 0 || dzhi0Info[i].pRoot[j].menuNum != typeIs){
+			if(*(dzhi0Info[i].pRoot[j].pEnable) == 0 || dzhi0Info[i].pRoot[j].menuNum != i){
 				continue;
 			}
 			dzhiItem ++;
@@ -229,7 +211,7 @@ static void Dzhi0DisplayInit(void)
 		}
 		dzhiItem = 0;
 		for(j = 0; j < dzhiItemsAll; j++){//定值显示缓冲
-			if(*(dzhi0Info[i].pRoot[j].pEnable) == 0 || dzhi0Info[i].pRoot[j].menuNum != typeIs){
+			if(*(dzhi0Info[i].pRoot[j].pEnable) == 0 || dzhi0Info[i].pRoot[j].menuNum != i){
 				continue;
 			}
 			dzhi0Info[i].pBuff[dzhiItem ++] = j;

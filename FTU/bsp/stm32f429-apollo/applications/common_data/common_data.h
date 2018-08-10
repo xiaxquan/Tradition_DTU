@@ -644,28 +644,6 @@ enum AddrRunParameter
     ZERODRIFT_DC1,                        // 直流电压零漂	
     ZERODRIFT_DC2,                        // 直流电压2零漂
     ZERODRIFT_T,                          // 温度零漂	
-    DEADZONE_F,                           // 频率死区
-    DEADZONE_Ia,                          // A相电流死区
-    DEADZONE_Ib,                          // B相电流死区
-    DEADZONE_Ic,                          // C相电流死区
-    DEADZONE_I0,                          // 零序电流死区
-    DEADZONE_Uab,                         // 线电压Uab死区
-    DEADZONE_Ucb,                         // 线电压Ucb死区
-    DEADZONE_Uac,                         // 线电压Uac死区
-    DEADZONE_U0,                          // 零序电压死区
-    DEADZONE_UAB,                         // 线电压UAB死区
-    DEADZONE_UCB,                         // 线电压UCB死区
-    DEADZONE_P,                           // 有功功率死区
-    DEADZONE_Q,                           // 无功功率死区
-    DEADZONE_S,                           // 视在功率死区
-    DEADZONE_PF,                          // 功率因数死区
-    DEADZONE_DC1,                         // 直流电压死区
-    DEADZONE_DC2,                         // 直流量2死区
-    DEADZONE_T,				              // 温度死区	
-	DEADZONE_U_VALUE,                     // 电压额定
-    DEADZONE_U0_VALUE,                    // 零序电压额定
-    DEADZONE_I_VALUE,                     // 电流额定
-    DEADZONE_I0_VALUE,				      // 零序电流额定
     UART_PORT,                            // 串口号
     UART_BAUDRATE,                        // 波特率
     UART_WORDLENGTH,                      // 数据位
@@ -1025,11 +1003,34 @@ struct ConfigurationSetDatabase
     uint16_t YCAddr[300];//值
     uint16_t YCProperty[300];//属性
     float YCMultipleRate[300];//倍率
+    float YCRatingValue[300];//额定值
+    float YCDeadZone[300];//死区
 //YK设置
     uint16_t YKAddr[16];//值
     uint16_t YKProperty[16];//属性
+//模块设置
+    uint16_t ModAddr[16];//值
+    uint16_t ModYxNum[16];//yx个数
+    uint16_t ModYcNum[16];//yc个数
+    uint16_t ModYkNum[16];//yk个数
 //ID设置
     uint16_t ID_Value[12];//值
+};
+
+struct ConfigurationSetModbase
+{
+    //模块设置
+    uint16_t ModMaxNum;//值
+    uint16_t ModYxMaxNum;//值
+    uint16_t ModYcMaxNum;//值
+    uint16_t ModYkMaxNum;//值
+    uint16_t ModAddr[16];//值
+    uint16_t ModYxAddr[16];//yx起始地址
+    uint16_t ModYxNum[16];//yx个数
+    uint16_t ModYcAddr[16];//yc起始地址
+    uint16_t ModYcNum[16];//yc个数
+    uint16_t ModYkAddr[16];//yk起始地址
+    uint16_t ModYkNum[16];//yk个数
 };
 
 
@@ -1095,6 +1096,7 @@ extern uint16_t g_StartWave;
 /* 系统配置 */
 extern struct ConfigurationSetDatabase *g_ConfigurationSetDB;
 extern struct HardwareInterfaceSetDatabase *g_HardwareInterfaceSetDB;
+extern struct ConfigurationSetModbase      g_ConfigurationSetModDB; //模块结构
 
 /* 系统时间 */
 extern struct SD2405Time g_SystemTime;
@@ -1103,14 +1105,12 @@ extern struct SD2405Time g_SystemTime;
 extern TelesignalAddr       g_TelesignalAddr;
 extern uint8_t				g_TelesignalDB[TELESIGNAL_TOTAL_NUM];	
 /* 新遥信点表映射 */
-//extern List NewList_Telesignal[TELESIGNAL_TOTAL_NUM];
 extern rt_uint16_t g_NewMaxNumTelesignal;
-extern rt_uint16_t g_NewToOldTelesignal[];//新点表映射
+extern rt_uint16_t *g_NewToOldTelesignal;//新点表映射
 
 /* 遥测缓存 */
 extern TelemetryAddr   g_TelemetryBaseAddr;
 extern float g_TelemetryBaseDB[TELEMETRY_BASE_TOTAL_NUM];
-extern float g_TelemetryBaseLastDB[TELEMETRY_BASE_TOTAL_NUM];
 extern float g_secondHarmonicIa, g_secondHarmonicIb, g_secondHarmonicIc;
 #if RT_USING_TELEMETRY_SET
 extern float    g_TelemetrySetEnable[TELEMETRY_BASE_TOTAL_NUM];
@@ -1118,12 +1118,13 @@ extern float    g_TelemetrySetValue[TELEMETRY_BASE_TOTAL_NUM];
 #endif
 
 /* 新遥测点表映射 */
-extern rt_uint16_t g_NewPropertyTelemetry[TELEMETRY_TOTAL_NUM];//新点表属性
-extern float       g_NewMultipleRateTelemetry[TELEMETRY_TOTAL_NUM];//倍率
-extern rt_uint16_t g_NewAddTelemetry[TELEMETRY_TOTAL_NUM];//写入对应新地址
+extern rt_uint16_t *g_NewPropertyTelemetry;//新点表属性
+extern float       *g_NewMultipleRateTelemetry;//倍率
+extern float       *g_NewRatingValueTelemetry;//额定值
+extern float       *g_NewDeadZoneTelemetry;//死区
 
 extern rt_uint16_t g_NewMaxNumTelemetry;//新点表个数
-extern rt_uint16_t g_NewToOldTelemetry[TELEMETRY_TOTAL_NUM];//新点表映射，填原点表数组下标
+extern rt_uint16_t *g_NewToOldTelemetry;//新点表映射，填原点表数组下标
 
 /* 新遥控点表映射 */
 extern rt_uint16_t g_NewToOldRemote[REMOTE_TOTAL_NUM];//新点表映射，填原点表数组下标

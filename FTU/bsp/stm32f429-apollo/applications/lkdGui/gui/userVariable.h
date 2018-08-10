@@ -71,15 +71,6 @@ typedef struct{
 	uint16_t in;
 }FeventDisplayInfo;
 
-enum Dzhi0OffsetNumber{
-	DZ0_CONFIG,/* 配置 */
-	DZ0_ZERODRIFT,/* 零漂 */
-	DZ0_DEADEZONE,/* 死区 */
-	DZ0_SERIAL,		/* 串口 */
-	DZ0_INTERNET,	/* 网口 */
-	DZ0_ALLNUM,/* 定值总数 */
-};
-
 /* 命令下发内容 */
 struct HmiCmdSend{
 	uint8_t *name;
@@ -109,7 +100,7 @@ extern YaoxinDisplayInfo yxInfo;
 /* 遥测信息结构 */
 extern YaoceDisplayInfo yceInfo[3];
 /* 定值信息结构 */
-extern DzhiDisplayInfo dzhi0Info[DZ0_ALLNUM];
+extern DzhiDisplayInfo dzhi0Info[PARAMETER_MENU_ALLNUM];
 extern DzhiDisplayInfo dzhi1Info[FIXED_VALUE_MENU_ALLNUM];
 /* Soe显示信息 */
 extern SoeDisplayInfo soeInfo;

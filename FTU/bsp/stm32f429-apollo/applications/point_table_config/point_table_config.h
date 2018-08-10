@@ -26,7 +26,6 @@ enum PARAMETER_MENU
 {
     ME_BASIC_SET,   // 基本设置
     ME_ZERODRIFT,       // 零漂
-    ME_DEADEZONE,       // 死区
     ME_UART_COM,        // UART通讯参数
     ME_NET_COM,         // NET通讯参数
 	PARAMETER_MENU_ALLNUM
@@ -122,7 +121,6 @@ struct tagTelemetryCfg
     char *pUnit;           // 单位
     float RatedValue;    // 额定值		
 	float *pZerodrift;     // 零漂    
-	float *pDeadzone;      // 死区	
 };
 	
 /* 遥控配置结构 */
@@ -196,7 +194,10 @@ extern struct tagTelecontrolCfg TelecontrolCfg[];
 extern struct tagUlogCfg UlogCfg[];
 extern struct tagInherentParaCfg InherentParaCfg[];
 extern ConfigurationSetDatabaseToJson SetDatabaseCfg[];
-extern struct tagTelemetryCfg TelemetryCfg[];
+extern struct tagTelemetryCfg **TelemetryCfg;
+extern struct tagTelesignalCfg **TelesignalExCfg;
+extern struct tagTelemetryCfg **TelemetryExCfg;
+extern struct tagTelecontrolCfg **TelecontrolExCfg;
 
 extern unsigned int g_FixedValueCfg1_Len;
 extern unsigned int g_FixedValueCfg2_Len;
