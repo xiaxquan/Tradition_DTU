@@ -703,7 +703,7 @@ rt_uint8_t DBWriteSOE(uint16_t addr, rt_uint8_t state)
 
     //*MemoryCounter.soe = DB_COUNTER_EN;	
     
-    if (addr < g_TelesignalCfg_Len + g_ConfigurationSetModDB.ModYxMaxNum)
+    if ((addr < g_TelesignalCfg_Len + g_ConfigurationSetModDB.ModYxMaxNum)&&(g_NewListTelesignal != NULL))
     {
         *TelemetryExCfg[addr]->pVal = state;
         if(g_NewListTelesignal[addr].size != 0)//链表不为空
@@ -1773,7 +1773,9 @@ static void rt_common_data_save_value_default_to_fram(void)
                 rt_multi_common_data_save_value_to_fram(i,0);
             }
 
-            rt_multi_common_data_configure_default(); //配置参数写入默认值     
+            rt_multi_common_data_configure_default(); //配置参数写入默认值  
+
+            rt_multi_common_data_HardwareInter_default();    //配置参数写入默认值           
 			
 			FRAM_PRINTF("fram is powered on firstly! \r\n");
 
@@ -2012,20 +2014,10 @@ void rt_multi_common_data_read_config_from_fram(void)
         TelemetryExCfg[i + g_TelemetryCfg_Len]->pUnit = NULL;
         TelemetryExCfg[i + g_TelemetryCfg_Len]->RatedValue = NULL;
         TelemetryExCfg[i + g_TelemetryCfg_Len]->pZerodrift = NULL;
-    }     
-    
+    }    
+
     /* 读取遥信 */    
-	rt_multi_common_data_fram_record_read(TELESIGNAL, (uint8_t *)&g_TelesignalDB);
-    
-    for(i = 0; i < g_TelesignalCfg_Len; i++)//上电赋值默认
-    {
-        if(TelesignalCfg[i].defaultval != 0xff)
-        {
-            DBWriteSOE(*(TelesignalCfg[i].pAddr),TelesignalCfg[i].defaultval);
-        }
-    }
-   
-    ParameterCheck();
+	rt_multi_common_data_fram_record_read(TELESIGNAL, (uint8_t *)&g_TelesignalDB);    
 
     /* 读取SOE */
     //FM25VxxReadData(ADDR_FRAM_SOE, NULL, (uint8_t *)g_SOEDB, sizeof(g_SOEDB));
@@ -2392,6 +2384,16 @@ void rt_multi_common_data_config(void)
         g_NewToOldRemote[i] = g_ConfigurationSetDB->YKAddr[i];
         g_NewToOldPropertyRemote[i] = g_ConfigurationSetDB->YKProperty[i];
     }
+    
+    for(i = 0; i < g_TelesignalCfg_Len; i++)//上电赋值默认
+    {
+        if(TelesignalCfg[i].defaultval != 0xff)
+        {
+            DBWriteSOE(*(TelesignalCfg[i].pAddr),TelesignalCfg[i].defaultval);
+        }
+    }
+   
+    ParameterCheck();
     
     //清除存储标志
     g_COSDBIn = 0;

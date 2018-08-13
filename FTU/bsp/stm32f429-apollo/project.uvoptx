@@ -151,56 +151,7 @@
           <Name>UL2CM3(-S0 -C0 -P0 )  -FN1 -FC1000 -FD20000000 -FF0STM32F4xx_1024 -FL0100000 -FS08000000 -FP0($$Device:STM32F429IGTx$CMSIS\Flash\STM32F4xx_1024.FLM)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>1151</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134722482</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\applications\protect\main_protect_ctrl.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\template\applications/protect/main_protect_ctrl.c\1151</Expression>
-        </Bp>
-        <Bp>
-          <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>230</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134481016</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>..\..\libcpu\arm\cortex-m4\context_rvds.S</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\template\../../libcpu/arm/cortex-m4/context_rvds.S\230</Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>1084</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>134543824</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\applications\ptotocol\iec60870\dlt634_5101slave_disk.c</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\template\applications/ptotocol/iec60870/dlt634_5101slave_disk.c\1084</Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <WatchWindow1>
         <Ww>
           <count>0</count>
@@ -256,6 +207,11 @@
           <count>10</count>
           <WinNumber>1</WinNumber>
           <ItemText>g_NewToOldTelemetry</ItemText>
+        </Ww>
+        <Ww>
+          <count>11</count>
+          <WinNumber>1</WinNumber>
+          <ItemText>g_NewListTelesignal[0x13]</ItemText>
         </Ww>
       </WatchWindow1>
       <WatchWindow2>
@@ -3395,7 +3351,7 @@
 
   <Group>
     <GroupName>IEC60870</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>

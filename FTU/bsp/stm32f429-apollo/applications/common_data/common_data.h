@@ -528,10 +528,6 @@ enum TelecontrlAddr
 	ADDR_LOCAL_RESET,             // 本地复位
 	ADDR_LOCAL_CLEAR,             // 本地清除记录
 	ADDR_HANDHELD_OPER,           // 手持操作
-    ADDR_BY_0,                  // 备用
-    ADDR_BY_1,                  // 备用
-    ADDR_BY_2,                  // 备用
-    ADDR_BY_3,                  // 备用
  
     REMOTE_TOTAL_NUM,    
     
