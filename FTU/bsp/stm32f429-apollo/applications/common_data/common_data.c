@@ -34,6 +34,7 @@ struct ConfigurationSetDatabase     *g_ConfigurationSetDB; // 系统配置结构
 struct HardwareInterfaceSetDatabase *g_HardwareInterfaceSetDB; // 硬接入配置结构
 struct SD2405Time                   g_SystemTime; // 系统时间
 struct ConfigurationSetModbase      g_ConfigurationSetModDB; //模块结构
+uint8_t (*DBSend[DEV_MAX_NUM])(uint8_t drvid,uint8_t *pbuf);
 
 // 遥信缓存
 TelesignalAddr                      g_TelesignalAddr;
@@ -64,8 +65,9 @@ rt_uint16_t                         g_NewMaxNumTelemetry; // 新点表个数
 rt_uint16_t                         *g_NewToOldTelemetry; // 新点表映射，填原点表数组下标
 
 /* 新遥控点表映射 */
-rt_uint16_t                         g_NewToOldRemote[REMOTE_TOTAL_NUM]; // 新点表映射，填原点表数组下标
-rt_uint16_t                         g_NewToOldPropertyRemote[REMOTE_TOTAL_NUM];//新点表属性//低6位类型，变化，取反
+rt_uint16_t                         g_NewMaxNumRemote; // 新点表个数
+rt_uint16_t                         *g_NewToOldRemote; // 新点表映射，填原点表数组下标
+rt_uint16_t                         *g_NewToOldPropertyRemote;//新点表属性//低6位类型，变化，取反
 
 rt_uint32_t                         g_CommunicatFlag[COM_MAX]; // 通讯互锁标志
 
@@ -2366,9 +2368,9 @@ void rt_multi_common_data_config(void)
     
     for(i=0;i<g_NewMaxNumTelemetry;i++)
     {
+        g_NewToOldTelemetry[i] = g_ConfigurationSetDB->YCAddr[i];
         if(g_ConfigurationSetDB->YCAddr[i] != 0)
         {
-            g_NewToOldTelemetry[i] = g_ConfigurationSetDB->YCAddr[i];
             g_NewPropertyTelemetry[i] = g_ConfigurationSetDB->YCProperty[i];
             g_NewMultipleRateTelemetry[i] = g_ConfigurationSetDB->YCMultipleRate[i];
             g_NewRatingValueTelemetry[i] = g_ConfigurationSetDB->YCRatingValue[i];
@@ -2381,8 +2383,23 @@ void rt_multi_common_data_config(void)
     //遥控配置
     for(i=0;i<sizeof(g_ConfigurationSetDB->YKAddr)/sizeof(uint16_t);i++)
     {
+        if(g_ConfigurationSetDB->YKAddr[i] != 0)
+        {
+            g_NewMaxNumRemote = i+1;
+        }
+    }
+    
+    g_NewToOldRemote = rt_malloc(sizeof(rt_uint16_t) * g_NewMaxNumRemote);
+    g_NewToOldPropertyRemote = rt_malloc(sizeof(rt_uint16_t) * g_NewMaxNumRemote); 
+    
+    for(i=0;i<g_NewMaxNumRemote;i++)
+    {
         g_NewToOldRemote[i] = g_ConfigurationSetDB->YKAddr[i];
-        g_NewToOldPropertyRemote[i] = g_ConfigurationSetDB->YKProperty[i];
+        if(g_ConfigurationSetDB->YKAddr[i] != 0)
+        {
+            g_NewToOldPropertyRemote[i] = g_ConfigurationSetDB->YKProperty[i];
+            THREAD_PRINTF("%d -> %d\n",g_ConfigurationSetDB->YKAddr[i],REMOTE_START_ADDR + i);
+        }
     }
     
     for(i = 0; i < g_TelesignalCfg_Len; i++)//上电赋值默认
@@ -2434,6 +2451,12 @@ int rt_multi_common_data_init(void)
     {
         rt_multi_common_data_read_config();         		
         rt_multi_common_data_config();
+        DBSend[FRAM_ID] = NULL;
+        DBSend[FLASH_ID] = NULL;
+        DBSend[SLAVE101_ID0] = NULL;
+        DBSend[SLAVE101_ID1] = NULL;
+        DBSend[SLAVE104_ID0] = NULL;
+        DBSend[SLAVE104_ID1] = NULL;
     }	
 	
     device_pcf8563 = rt_device_find(RT_I2C_PCF8563_NAME);

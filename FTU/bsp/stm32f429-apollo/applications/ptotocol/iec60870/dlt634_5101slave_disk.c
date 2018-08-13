@@ -145,7 +145,7 @@ void DLT634_5101_SLAVE_C_SC(uint8_t pdrv, uint8_t *pbuf)//遥控
     
     if(pbuf[2] == _DLT634_5101SLAVE_C_SC_NA_1)
     {
-        value = (pbuf[10]&0x03)+1;
+        value = (pbuf[10]&0x01)+1;
     }
     else
     {
@@ -154,7 +154,7 @@ void DLT634_5101_SLAVE_C_SC(uint8_t pdrv, uint8_t *pbuf)//遥控
     
     memcpy(temp_array[pdrv],pbuf,pbuf[0]);
     
-    if(((addr >= REMOTE_START_ADDR)&&(addr < REMOTE_START_ADDR + REMOTE_TOTAL_NUM))&&(g_NewToOldRemote[addr - REMOTE_START_ADDR] != 0)&&\
+    if(((addr >= REMOTE_START_ADDR)&&(addr < REMOTE_START_ADDR + g_NewMaxNumRemote))&&(g_NewToOldRemote[addr - REMOTE_START_ADDR] != 0)&&\
         ((g_CommunicatFlag[COM_YK]&(1<<DLT634_5101Slave_Pad[pdrv].Port))||(!(g_CommunicatFlag[COM_YK]&COMMUNICATLOCKUSERSTA))))
     {
         if((g_NewToOldPropertyRemote[addr - REMOTE_START_ADDR]>>NEWPROPERTY_NEG) & NEWPROPERTY_JUDG)
@@ -162,6 +162,21 @@ void DLT634_5101_SLAVE_C_SC(uint8_t pdrv, uint8_t *pbuf)//遥控
             value = (~value)&0x03;        
         }
         addr = g_NewToOldRemote[addr - REMOTE_START_ADDR] - REMOTE_START_ADDR;
+        if(addr >= REMOTE_TOTAL_NUM)
+        {
+            pbuf[8] = (addr + REMOTE_START_ADDR)&0xff;
+            pbuf[9] = ((addr + REMOTE_START_ADDR)>>8)&0xff;
+            pbuf[10] = pbuf[10]&(~0x03);
+            if(pbuf[2] == _DLT634_5101SLAVE_C_SC_NA_1)
+            {pbuf[10] |= (value-1)&0xff;}
+            else
+            {pbuf[10] |= value&0xff;}
+            if(DBSend[SLAVE101_ID0] != NULL)//发送到主站接口
+            {
+                 DBSend[SLAVE101_ID0](DLT634_5101Slave_Pad[pdrv].Port,pbuf);       
+            }            
+            return;
+        }
     }
     else
     {                            
@@ -1279,6 +1294,7 @@ uint8_t DLT634_5101_SLAVE_H_Encrypt(uint8_t pdrv)//判断是否有加密数据�
 	return(0);
 }
 
+
 /**
   * @brief : other reply.
   * @param : [pdrv]
@@ -1286,9 +1302,53 @@ uint8_t DLT634_5101_SLAVE_H_Encrypt(uint8_t pdrv)//判断是否有加密数据�
   * @return: none
   * @updata: [YYYY-MM-DD][NAME][BRIEF]
   */
-uint8_t DLT634_5101_SLAVE_C_REPLY(uint8_t drvid,uint8_t *pbuf)//其他设备回复
+uint8_t DLT634_5101_SLAVE_C_REPLY(uint8_t pdrv,uint8_t *pbuf)//其他设备回复
 { 
-    return(0);
+    uint16_t addr;
+
+    if(pbuf[2] == _DLT634_5101SLAVE_C_SC_NA_1 ||pbuf[2] == _DLT634_5101SLAVE_C_SC_NB_1)
+    {
+        for(addr=0; addr < g_NewMaxNumRemote; addr++)
+        {
+            if(g_NewToOldRemote[addr] == (pbuf[8]|(pbuf[9]<<8)))
+            {break;}
+        }
+        pbuf[8] = (addr + REMOTE_START_ADDR)&0xff;
+        pbuf[9] = ((addr + REMOTE_START_ADDR)>>8)&0xff;
+        if((g_NewToOldPropertyRemote[addr - REMOTE_START_ADDR]>>NEWPROPERTY_NEG) & NEWPROPERTY_JUDG)
+        {
+            if(pbuf[2] == _DLT634_5101SLAVE_C_SC_NA_1)
+            {pbuf[10] = (pbuf[10]&(~0x01))|(~(pbuf[10]&0x01));}
+            else
+            {pbuf[10] = (pbuf[10]&(~0x03))|(~(pbuf[10]&0x03));}                   
+        }
+    }
+    DLT634_5101_SLAVE_REPLY(pdrv,pbuf);
+    return(1);      
+}
+
+/**
+  * @brief : other reply.
+  * @param : [pdrv]
+  * @param : [pbuf]
+  * @return: none
+  * @updata: [YYYY-MM-DD][NAME][BRIEF]
+  */
+uint8_t DLT634_5101_SLAVE_C_REPLY_DISK0(uint8_t drvid,uint8_t *pbuf)//其他设备回复
+{ 
+    return(DLT634_5101_SLAVE_C_REPLY(DLT634_5101SLAVE_DISK0,pbuf));     
+}
+
+/**
+  * @brief : other reply.
+  * @param : [pdrv]
+  * @param : [pbuf]
+  * @return: none
+  * @updata: [YYYY-MM-DD][NAME][BRIEF]
+  */
+uint8_t DLT634_5101_SLAVE_C_REPLY_DISK1(uint8_t drvid,uint8_t *pbuf)//其他设备回复
+{ 
+    return(DLT634_5101_SLAVE_C_REPLY(DLT634_5101SLAVE_DISK1,pbuf));      
 }
 
 /**
@@ -1346,9 +1406,10 @@ int DLT634_5101_SLAVE_INIT(void)
         switch(pdrv)
         {
             case DLT634_5101SLAVE_DISK0:
-                DLT634_5101_SLAVE_AppInit(pdrv);
+                DLT634_5101_SLAVE_AppInit(pdrv);                
                 memset(file_array[pdrv],0,sizeof(file_array[pdrv]));
-                DLT634_5101Slave_Pad[pdrv].Port = SLAVE101_ID0;            
+                DLT634_5101Slave_Pad[pdrv].Port = SLAVE101_ID0;  
+                DBSend[SLAVE101_ID0] = DLT634_5101_SLAVE_C_REPLY_DISK0;            
                 dev[pdrv] = rt_device_find(RT_UART4_NAME);
                 serial = (struct rt_serial_device *)(dev[pdrv]);
 				serial->config.baud_rate = BAUD_RATE_115200;
@@ -1377,7 +1438,8 @@ int DLT634_5101_SLAVE_INIT(void)
             case DLT634_5101SLAVE_DISK1:
                 DLT634_5101_SLAVE_AppInit(pdrv);
                 memset(file_array[pdrv],0,sizeof(file_array[pdrv]));
-                DLT634_5101Slave_Pad[pdrv].Port = SLAVE101_ID1;   
+                DLT634_5101Slave_Pad[pdrv].Port = SLAVE101_ID1;  
+                DBSend[SLAVE101_ID1] = DLT634_5101_SLAVE_C_REPLY_DISK1;             
                 if((uint16_t)g_Parameter[UART_PORT]==0)
                 {dev[pdrv] = rt_device_find(RT_USART6_NAME);}
                 else

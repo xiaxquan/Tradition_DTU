@@ -36,7 +36,8 @@ extern uint8_t DLT634_5101_SLAVE_H_FEvent(uint8_t pdrv);
 extern void DLT634_5101_SLAVE_R_FEvent(uint8_t pdrv, uint8_t *pbuf);
 extern uint16_t DLT634_5101_SLAVE_R_YXDATA(uint8_t pdrv,uint16_t addr,uint16_t num, uint8_t *pbuf);
 extern uint16_t DLT634_5101_SLAVE_R_YCDATA(uint8_t pdrv,uint16_t addr,uint16_t num, uint8_t *pbuf);
-extern uint8_t DLT634_5101_SLAVE_C_REPLY(uint8_t drvid,uint8_t *pbuf);
+extern uint8_t DLT634_5101_SLAVE_C_REPLY_DISK0(uint8_t drvid,uint8_t *pbuf);
+extern uint8_t DLT634_5101_SLAVE_C_REPLY_DISK1(uint8_t drvid,uint8_t *pbuf);
 extern void DLT634_5101_SLAVE_R_IDLE(uint8_t pdrv, uint8_t *pbuf);
 extern uint8_t DLT634_5101_SLAVE_H_Encrypt(uint8_t pdrv);
 

@@ -100,6 +100,8 @@ typedef enum
     DEV_MAX_NUM
 } DEV_ID;
 
+extern uint8_t (*DBSend[DEV_MAX_NUM])(uint8_t drvid,uint8_t *pbuf);
+
 
 /* common数据操作类型 */
 enum CommonOperateInfo
@@ -1123,8 +1125,9 @@ extern rt_uint16_t g_NewMaxNumTelemetry;//新点表个数
 extern rt_uint16_t *g_NewToOldTelemetry;//新点表映射，填原点表数组下标
 
 /* 新遥控点表映射 */
-extern rt_uint16_t g_NewToOldRemote[REMOTE_TOTAL_NUM];//新点表映射，填原点表数组下标
-extern rt_uint16_t g_NewToOldPropertyRemote[REMOTE_TOTAL_NUM];//新点表属性
+extern rt_uint16_t g_NewMaxNumRemote;
+extern rt_uint16_t *g_NewToOldRemote;//新点表映射，填原点表数组下标
+extern rt_uint16_t *g_NewToOldPropertyRemote;//新点表属性
 
 /* 通讯互锁标志 */
 extern rt_uint32_t g_CommunicatFlag[COM_MAX];
