@@ -2074,25 +2074,25 @@ void rt_multi_common_data_read_config_from_fram(void)
             {
                 break;            
             }
-            else
-            {
-                configureFault = 1;
-            }
+        }
+        if(j == g_tagzkDigitalInputCfg_Len)
+        {
+            configureFault = 1;
         }
     }
     
-    for(i = 0; (i < g_tagzkDigitalInputCfg_Len) && (configureFault == 0); i++)
+    for(i = 0; (i < g_tagzkAnalogInputCfg_Len) && (configureFault == 0); i++)
     {
-        for(j = 0; j < g_tagzkDigitalInputCfg_Len; j++)
+        for(j = 0; j < g_tagzkAnalogInputCfg_Len; j++)
         {
             if(g_HardwareInterfaceSetDB->AIArray[j] == i+1)
             {
                 break;            
             }
-            else
-            {
-                configureFault = 1;
-            }
+        }
+        if(j == g_tagzkAnalogInputCfg_Len)
+        {
+            configureFault = 1;
         }
     }
     
@@ -2110,7 +2110,7 @@ void rt_multi_common_data_read_config_from_fram(void)
                 memcpy(&tagzkDigitalInputTemp,&zkDigitalInputCfg[j],sizeof(struct tagzkDigitalInputCfg));
                 memcpy(&zkDigitalInputCfg[j],&zkDigitalInputCfg[i],sizeof(struct tagzkDigitalInputCfg));
                 memcpy(&zkDigitalInputCfg[i],&tagzkDigitalInputTemp,sizeof(struct tagzkDigitalInputCfg));
-                zkDigitalInputCfg[i].negate = g_HardwareInterfaceSetDB->DIProperty[i];
+                zkDigitalInputCfg[i].isNegated = g_HardwareInterfaceSetDB->DIProperty[i];
                 for(k = 0; k < g_TelesignalCfg_Len; k++)
                 {
                     if(zkDigitalInputCfg[i].pAddr == TelesignalCfg[k].pAddr)

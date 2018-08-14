@@ -80,7 +80,7 @@ struct tagzkDigitalInputCfg
     unsigned char pin;      // 引脚
     unsigned short *pAddr;  // 点号
     unsigned char lastVal;  // 上次值
-    unsigned char negate;   // 取反	
+    unsigned char isNegated;   // 取反	
     unsigned long count;    // 计数器
 };
 

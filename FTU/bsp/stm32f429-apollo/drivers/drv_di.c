@@ -134,7 +134,7 @@ void rt_hw_di_check_task(rt_uint8_t clock)
     for (i = 0; i < DI_NUM; i++)
     {
         rt_device_read(rt_di_dev, 0, &pin_status[INDEX_DI1 + i], sizeof(struct rt_device_pin_status));	
-		if(zkDigitalInputCfg[i].negate)
+		if(zkDigitalInputCfg[i].isNegated)
 		{
 			pin_status[INDEX_DI1 + i].status = (~pin_status[INDEX_DI1 + i].status)&0x00000001;
 		}
@@ -172,7 +172,7 @@ void rt_hw_di_check_task(rt_uint8_t clock)
     for (i = 0; i < DI_NUM; i++)
     {
         rt_device_read(rt_di_dev, 0, &pin_status[INDEX_DI1 + i], sizeof(struct rt_device_pin_status));	
-		if(zkDigitalInputCfg[i + DI_NUM].negate)
+		if(zkDigitalInputCfg[i + DI_NUM].isNegated)
 		{
 			pin_status[INDEX_DI1 + i].status = (~pin_status[INDEX_DI1 + i].status)&0x00000001;
 		}

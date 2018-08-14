@@ -37,7 +37,7 @@ cJSON *ProductID_StructToJson(void)
 
 /**
  * @fn AnalogInputCfg_StructToJson
- * @brief 实现模拟量开入结构体的struct转json
+ * @brief 实现开入结构体的struct转json
  * @param struct_obj 指向结构体的指针
  * @return 返回指向转换后的json指针
  *
@@ -53,7 +53,7 @@ cJSON *DigitalInputCfg_StructToJson(void* struct_obj)
 	/* serialize data to Student JSON object. */
 	s2j_json_set_basic_element(json_obj, DigitalInputCfg, int, enable);		//使能
 	s2j_json_set_basic_element(json_obj, DigitalInputCfg, int, pin);	        //号
-    s2j_json_set_basic_element(json_obj, DigitalInputCfg, int, negate);	        //取反
+    s2j_json_set_basic_element(json_obj, DigitalInputCfg, int, isNegated);	        //取反
     
     for(i=0;i<g_TelesignalCfg_Len;i++)
     {
@@ -69,7 +69,7 @@ cJSON *DigitalInputCfg_StructToJson(void* struct_obj)
 
 /**
  * @fn AnalogInputCfg_StructToJson
- * @brief 实现模拟量开入结构体的struct转json
+ * @brief 实现模拟量结构体的struct转json
  * @param struct_obj 指向结构体的指针
  * @return 返回指向转换后的json指针
  *
