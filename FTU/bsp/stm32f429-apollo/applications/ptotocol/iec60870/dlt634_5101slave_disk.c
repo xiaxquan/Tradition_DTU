@@ -1441,9 +1441,9 @@ int DLT634_5101_SLAVE_INIT(void)
                 DLT634_5101Slave_Pad[pdrv].Port = SLAVE101_ID1;  
                 DBSend[SLAVE101_ID1] = DLT634_5101_SLAVE_C_REPLY_DISK1;             
                 if((uint16_t)g_Parameter[UART_PORT]==0)
-                {dev[pdrv] = rt_device_find(RT_USART6_NAME);}
+                {dev[pdrv] = rt_device_find(RT_USART1_NAME);}
                 else
-                {dev[pdrv] = rt_device_find(RT_USART6_NAME);}
+                {dev[pdrv] = rt_device_find(RT_USART1_NAME);}
                 serial = (struct rt_serial_device *)(dev[pdrv]);
                 serial->config.baud_rate = UartBaudRate;
                 serial->config.parity = UartParity;

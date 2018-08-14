@@ -360,6 +360,7 @@
 #define RT_USING_DP83848                                               (1) // LWIP通讯任务DP83848_2404
 #define RT_USING_W5500                                                 (1) // LWIP通讯任务W5500_2404
 #define RT_USING_FTUIDLE                                               (1) // 空闲任务
+#define RT_USING_DPU                                                   (1) // dpu
 
 /* thread parameter Configuration */
 #define RT_USING_STATIC_THREAD
@@ -391,6 +392,11 @@
 #define WATCH_THREAD_PRIORITY                                          (18)
 #define WATCH_THREAD_STACK_SIZE                                        (8000)
 #define WATCH_THREAD_TIMESLICE                                         (20)
+
+#define DPU_THREAD_NAME                                                "dpu"
+#define DPU_THREAD_PRIORITY                                            (26)
+#define DPU_THREAD_STACK_SIZE                                          (4096)
+#define DPU_THREAD_TIMESLICE                                           (20)
 
 #define SLAVE101_THREAD_NAME                                           "iec101"
 #define SLAVE101_THREAD_PRIORITY                                       (24)

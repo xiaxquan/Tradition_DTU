@@ -34,6 +34,9 @@
 #include "gui_101_cmd.h"
 #include "hmi_101_disk.h"
 #include "GUIdisplay.h"
+#include "dlt634_5101master_disk.h"
+#include "sMasterDpuControl.h"
+
 /* PRIVATE VARIABLES ---------------------------------------------------------*/
 //static struct rt_thread rt_thread_system;
 //static rt_uint8_t rt_thread_system_stack[INIT_THREAD_STACK_SIZE]; 
@@ -57,6 +60,11 @@ struct rt_semaphore watch_sem; // watch semaphore
 static struct rt_thread *rt_thread_watch;
 static rt_uint8_t *rt_thread_watch_stack;
 #endif /* END RT_USING_WATCH */
+
+#if RT_USING_DPU
+static struct rt_thread *rt_thread_dpu;
+static rt_uint8_t *rt_thread_dpu_stack;
+#endif /* END RT_USING_DPU */
 
 #if RT_USING_FTUIDLE 
 static struct rt_thread *rt_thread_ftuidle;
@@ -281,7 +289,7 @@ static void rt_slave101_thread_entry(void *param)
     
 	DLT634_HMI_SLAVE_INIT();
     DLT634_5101_SLAVE_INIT();
-       
+    DLT634_5101_MASTER_INIT();   
     for (;;)
     {
         /* 永久等待事件 */
@@ -293,6 +301,8 @@ static void rt_slave101_thread_entry(void *param)
             DLT634_5101_SlaveTask();
 			
 			DLT634_HMI_SlaveTask();
+            
+            DLT634_5101_MasterTask();
         } 		
     }    
 }
@@ -325,6 +335,24 @@ static void rt_slave104_thread_entry(void *param)
 }
 #endif /* RT_USING_SLAVE104 */
 
+
+/**
+  * @brief : dpu thread entry
+  * @param : [param] the parameter.
+  * @return: none
+  * @updata: [2018-08-14][Sxr][newly]
+  */
+#if RT_USING_DPU
+static void rt_dpu_thread_entry(void *param)
+{    
+//    SMasterDpuControlInit();
+    for (;;)
+    {    
+//       SMasterDpuControlMain();
+       rt_thread_delay(20);
+    }  
+}
+#endif /* RT_USING_DPU */
 
 /**
   * @brief : Watch thread entry
@@ -816,6 +844,56 @@ static void ftuidle_thread_start(void *param)
 }
 #endif /* RT_USING_FTUIDLE */
 
+/**
+  * @brief : Start watch thread
+  * @param : none
+  * @return: none
+  * @updata: [2017-12-07][Lexun][make the code cleanup]
+  */
+#if RT_USING_DPU 
+static void dpu_thread_start(void *param)
+{
+#ifdef RT_USING_STATIC_THREAD
+    rt_err_t result = RT_EOK;
+	
+    /* initialize thread */
+    result = rt_thread_init(rt_thread_dpu,
+                            DPU_THREAD_NAME, 
+                            rt_dpu_thread_entry,
+                            RT_NULL,
+                            rt_thread_dpu_stack,
+                            DPU_THREAD_STACK_SIZE,
+                            DPU_THREAD_PRIORITY,
+                            DPU_THREAD_TIMESLICE);
+
+    /* startup */
+    RT_ASSERT(result == RT_EOK);
+
+    result = rt_thread_startup(rt_thread_watch);
+														
+    RT_ASSERT(result == RT_EOK);
+		THREAD_PRINTF("dpu thread start \r\n"); 
+
+#else
+    rt_thread_t tid; 
+
+    tid = rt_thread_create(DPU_THREAD_NAME, 
+                           rt_dpu_thread_entry, 
+                           param, 
+                           DPU_THREAD_STACK_SIZE, 
+                           DPU_THREAD_PRIORITY, 
+                           DPU_THREAD_TIMESLICE);
+
+    if (tid != RT_NULL)
+    {
+        rt_thread_startup(tid);
+        
+        THREAD_PRINTF("dpu thread start \r\n"); 
+    }  
+#endif /* END RT_USING_STATIC_THREAD */									 
+}
+#endif /* RT_USING_DPU */
+
 
 /* PUBLIC FUNCTION PROTOTYPES ------------------------------------------------*/
 ///**
@@ -993,7 +1071,24 @@ int rt_multi_thread_start(void)
 	}	
     slave104_thread_start(RT_NULL); 
   #endif /* RT_USING_SLAVE104 */ 
+
+  #if RT_USING_DPU  
+    rt_thread_dpu = rt_malloc(RT_THREAD_PER_STRUCT_SIZE);
 	
+	if (rt_thread_dpu == NULL)
+	{
+	    THREAD_PRINTF("rt_thread_dpu malloc failed"); 
+	}
+	
+	rt_thread_dpu_stack = rt_malloc(DPU_THREAD_STACK_SIZE);
+	
+	if (rt_thread_dpu_stack == NULL)
+	{
+	    THREAD_PRINTF("rt_thread_dpu malloc failed");
+	}	
+    dpu_thread_start(RT_NULL); 
+  #endif /* RT_USING_DPU */ 
+    
   #if RT_USING_FTUIDLE 
     rt_thread_ftuidle = rt_malloc(RT_THREAD_PER_STRUCT_SIZE);
 	

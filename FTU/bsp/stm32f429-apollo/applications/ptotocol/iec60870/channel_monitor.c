@@ -475,11 +475,11 @@ int rt_channel_monitor_init(void)
 	
 	if ((uint16_t)g_Parameter[UART_PORT] == 0)
 	{    
-	    dev[DLT634_5101SLAVE_DISK1] = rt_device_find(RT_USART6_NAME);
+	    dev[DLT634_5101SLAVE_DISK1] = rt_device_find(RT_USART1_NAME);
 	}
 	else
 	{
-	    dev[DLT634_5101SLAVE_DISK1] = rt_device_find(RT_USART6_NAME);
+	    dev[DLT634_5101SLAVE_DISK1] = rt_device_find(RT_USART1_NAME);
 	}
 	
     rt_device_open(dev[DLT634_5101SLAVE_DISK0], RT_DEVICE_OFLAG_RDWR | RT_DEVICE_FLAG_INT_RX);

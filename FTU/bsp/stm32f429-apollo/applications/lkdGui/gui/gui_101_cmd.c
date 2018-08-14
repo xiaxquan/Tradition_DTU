@@ -662,7 +662,7 @@ uint8_t hmi101Scan(uint8_t *pBuff)
 static void Hmi101ThreadEntity(void *param)
 {
 	rt_err_t result;
-	time_static_init();
+	//time_static_init();
 	result = rt_event_init(&Cmd101SendEvent, "hmi101", RT_IPC_FLAG_PRIO);
 	if (result != RT_EOK){  
 	}

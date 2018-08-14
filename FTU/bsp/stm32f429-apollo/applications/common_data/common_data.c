@@ -656,54 +656,52 @@ void CalibrationFactorCal(uint8_t num)
 }
 
 /**
+  * @brief: 更新遥信值
+  * @param:  cos-状态值
+  * @return: [none]
+  * @updata: [YYYY-MM-DD] [更改人姓名][变更描述]
+  */
+void DBupdate_YX(struct COS_Str *cos)
+{
+    *TelesignalExCfg[cos->addr - TELESIGNAL_START_ADDR]->pVal = cos->value;
+}
+
+/**
+  * @brief: 更新soe
+  * @param:  soe-状态值
+  * @return: [none]
+  * @updata: [YYYY-MM-DD] [更改人姓名][变更描述]
+  */
+void DBupdate_SOE(struct SOE_Str *soe)
+{
+    DBWriteNewSOE(soe->addr,soe->value,&soe->time);
+}
+
+/**
+  * @brief: 更新遥测值
+  * @param:  nva-状态值
+  * @return: [none]
+  * @updata: [YYYY-MM-DD] [更改人姓名][变更描述]
+  */
+void DBupdate_YC(struct NVA_Str *nva)
+{
+    *TelemetryCfg[nva->addr - TELEMETRY_START_ADDR]->pVal = nva->value;
+}
+
+/**
   * @brief: 将SOE写入数据缓存.
   * @param:  addr-地址
   * @param:  state-值
   * @return: 无
   * @updata: [YYYY-MM-DD] [更改人姓名][变更描述]
   */
-rt_uint8_t DBWriteSOE(uint16_t addr, rt_uint8_t state)
+rt_uint8_t DBWriteNewSOE(uint16_t addr, rt_uint8_t state,struct CP56Time2a_t *time)
 {
     rt_uint32_t i;
     rt_uint16_t value,valuetemp;
     ListElmt *element;
     rt_uint8_t Property;
     uint16_t newaddr;
-    
-    if (addr < g_TelesignalCfg_Len)
-    {
-        if(state == g_TelesignalDB[addr])
-        return FALSE;
-
-        g_TelesignalDB[addr] = state;
-        g_SOEDB[g_FlagDB.queue_soe.in].addr = addr + TELESIGNAL_START_ADDR;		
-
-        g_SOEDB[g_FlagDB.queue_soe.in].value = state;
-        g_SOEDB[g_FlagDB.queue_soe.in].time.year = g_SystemTime.year;
-        g_SOEDB[g_FlagDB.queue_soe.in].time.month = g_SystemTime.month;
-        g_SOEDB[g_FlagDB.queue_soe.in].time.dayofWeek = g_SystemTime.day | g_SystemTime.week << 5;
-        g_SOEDB[g_FlagDB.queue_soe.in].time.hour = g_SystemTime.hour;
-        g_SOEDB[g_FlagDB.queue_soe.in].time.minute = g_SystemTime.minute;
-        g_SOEDB[g_FlagDB.queue_soe.in].time.msecondH = HIBYTE(g_SystemTime.second * 1000 + g_SystemTime.msecond);
-        g_SOEDB[g_FlagDB.queue_soe.in].time.msecondL = LOBYTE(g_SystemTime.second * 1000 + g_SystemTime.msecond);
-
-        if (++(g_FlagDB.queue_soe.in) >= SOE_MAX_NUM)
-        {
-            g_FlagDB.queue_soe.in = 0;
-            g_FlagDB.queue_soe.full = FULL;
-        }
-        
-        for (i = 0; i < DEV_MAX_NUM; i++)
-        {
-            if ((g_FlagDB.queue_soe.in) == g_FlagDB.queue_soe.out[i])
-            if (++(g_FlagDB.queue_soe.out[i]) >= SOE_MAX_NUM)
-            {
-                g_FlagDB.queue_soe.out[i] = 0;
-            }
-        }
-    }
-
-    //*MemoryCounter.soe = DB_COUNTER_EN;	
     
     if ((addr < g_TelesignalCfg_Len + g_ConfigurationSetModDB.ModYxMaxNum)&&(g_NewListTelesignal != NULL))
     {
@@ -749,11 +747,11 @@ rt_uint8_t DBWriteSOE(uint16_t addr, rt_uint8_t state)
                 {
                     g_SOENewDB[g_FlagDB.queue_soe_new.in].addr = newaddr;           
                     g_SOENewDB[g_FlagDB.queue_soe_new.in].value = value;
-                    g_SOENewDB[g_FlagDB.queue_soe_new.in].time.year = g_SystemTime.year;
-                    g_SOENewDB[g_FlagDB.queue_soe_new.in].time.month = g_SystemTime.month;
-                    g_SOENewDB[g_FlagDB.queue_soe_new.in].time.dayofWeek = g_SystemTime.day | g_SystemTime.week << 5;
-                    g_SOENewDB[g_FlagDB.queue_soe_new.in].time.hour = g_SystemTime.hour;
-                    g_SOENewDB[g_FlagDB.queue_soe_new.in].time.minute = g_SystemTime.minute;
+                    g_SOENewDB[g_FlagDB.queue_soe_new.in].time.year = time->year;
+                    g_SOENewDB[g_FlagDB.queue_soe_new.in].time.month = time->month;
+                    g_SOENewDB[g_FlagDB.queue_soe_new.in].time.dayofWeek = time->dayofWeek;
+                    g_SOENewDB[g_FlagDB.queue_soe_new.in].time.hour = time->hour;
+                    g_SOENewDB[g_FlagDB.queue_soe_new.in].time.minute = time->minute;
                     g_SOENewDB[g_FlagDB.queue_soe_new.in].time.msecondH = HIBYTE(g_SystemTime.second * 1000 + g_SystemTime.msecond);
                     g_SOENewDB[g_FlagDB.queue_soe_new.in].time.msecondL = LOBYTE(g_SystemTime.second * 1000 + g_SystemTime.msecond);
                     
@@ -793,7 +791,62 @@ rt_uint8_t DBWriteSOE(uint16_t addr, rt_uint8_t state)
             }
             while(element != NULL); 
         }
-    }	
+    }
+    return TRUE;	
+}
+
+/**
+  * @brief: 将SOE写入数据缓存.
+  * @param:  addr-地址
+  * @param:  state-值
+  * @return: 无
+  * @updata: [YYYY-MM-DD] [更改人姓名][变更描述]
+  */
+rt_uint8_t DBWriteSOE(uint16_t addr, rt_uint8_t state)
+{
+    rt_uint32_t i;
+    struct CP56Time2a_t time;
+    
+    if (addr < g_TelesignalCfg_Len)
+    {
+        if(state == g_TelesignalDB[addr])
+        return FALSE;
+
+        g_TelesignalDB[addr] = state;
+        g_SOEDB[g_FlagDB.queue_soe.in].addr = addr + TELESIGNAL_START_ADDR;		
+
+        g_SOEDB[g_FlagDB.queue_soe.in].value = state;
+        g_SOEDB[g_FlagDB.queue_soe.in].time.year = g_SystemTime.year;
+        g_SOEDB[g_FlagDB.queue_soe.in].time.month = g_SystemTime.month;
+        g_SOEDB[g_FlagDB.queue_soe.in].time.dayofWeek = g_SystemTime.day | g_SystemTime.week << 5;
+        g_SOEDB[g_FlagDB.queue_soe.in].time.hour = g_SystemTime.hour;
+        g_SOEDB[g_FlagDB.queue_soe.in].time.minute = g_SystemTime.minute;
+        g_SOEDB[g_FlagDB.queue_soe.in].time.msecondH = HIBYTE(g_SystemTime.second * 1000 + g_SystemTime.msecond);
+        g_SOEDB[g_FlagDB.queue_soe.in].time.msecondL = LOBYTE(g_SystemTime.second * 1000 + g_SystemTime.msecond);
+
+        if (++(g_FlagDB.queue_soe.in) >= SOE_MAX_NUM)
+        {
+            g_FlagDB.queue_soe.in = 0;
+            g_FlagDB.queue_soe.full = FULL;
+        }
+        
+        for (i = 0; i < DEV_MAX_NUM; i++)
+        {
+            if ((g_FlagDB.queue_soe.in) == g_FlagDB.queue_soe.out[i])
+            if (++(g_FlagDB.queue_soe.out[i]) >= SOE_MAX_NUM)
+            {
+                g_FlagDB.queue_soe.out[i] = 0;
+            }
+        }
+    }
+    
+    time.year = g_SystemTime.year;
+    time.month = g_SystemTime.month;
+    time.dayofWeek = g_SystemTime.day | g_SystemTime.week << 5;
+    time.hour = g_SystemTime.hour;
+    time.minute = g_SystemTime.minute;
+    DBWriteNewSOE(addr, state , &time);
+
     return TRUE;
 }
 

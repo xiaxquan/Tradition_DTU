@@ -1689,6 +1689,21 @@
               <FileType>1</FileType>
               <FilePath>.\applications\ptotocol\iec60870\channel_monitor.c</FilePath>
             </File>
+            <File>
+              <FileName>dlt634_5101master_app.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\applications\ptotocol\iec60870\dlt634_5101master_app.c</FilePath>
+            </File>
+            <File>
+              <FileName>dlt634_5101master_disk.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\applications\ptotocol\iec60870\dlt634_5101master_disk.c</FilePath>
+            </File>
+            <File>
+              <FileName>sMasterDpuControl.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\applications\ptotocol\iec60870\sMasterDpuControl.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

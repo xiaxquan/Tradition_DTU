@@ -97,6 +97,7 @@ typedef enum
     SLAVE101_ID1,
     SLAVE104_ID0,
     SLAVE104_ID1,
+    
     DEV_MAX_NUM
 } DEV_ID;
 
@@ -310,11 +311,11 @@ enum FramArea
     FEVENT_RECODE,                     // FAULT_EVENT数据
     CO_RECODE,                         // 操作记录  
     LOG_RECODE,                        // 日志记录   
-		MEMORY_FLAG,                       // 记录标志缓存
+    MEMORY_FLAG,                       // 记录标志缓存
     CFG_RECODE,                        // 配置   
     HARDMAP_RECODE,                        // 硬件映射    
     TELESIGNAL,                        // 遥信数据
-		PASSPHRASE,                        // 密码管理
+	PASSPHRASE,                        // 密码管理
     CURRENT_SN,                        // 当前定值区号
     JSON_MD5,                          // JSON校验码
     FRAM_AREA_NUM                      // 分区数量
@@ -322,7 +323,7 @@ enum FramArea
 
 enum UpdateState
 {
-  UPDATE_START,    // 升级启动
+    UPDATE_START,    // 升级启动
 	UPDATE_COMPLATE, // 更新完成
 	UPDATE_BACK,     // 回退
 	RUN_NOMAL        // 运行正常
@@ -1018,11 +1019,11 @@ struct ConfigurationSetDatabase
 struct ConfigurationSetModbase
 {
     //模块设置
-    uint16_t ModMaxNum;//值
-    uint16_t ModYxMaxNum;//值
-    uint16_t ModYcMaxNum;//值
-    uint16_t ModYkMaxNum;//值
-    uint16_t ModAddr[16];//值
+    uint16_t ModMaxNum;//从站数量
+    uint16_t ModYxMaxNum;//遥信总数
+    uint16_t ModYcMaxNum;//遥测总数
+    uint16_t ModYkMaxNum;//遥控总数
+    uint16_t ModAddr[16];//从站地址
     uint16_t ModYxAddr[16];//yx起始地址
     uint16_t ModYxNum[16];//yx个数
     uint16_t ModYcAddr[16];//yc起始地址
@@ -1220,6 +1221,11 @@ extern uint8_t DBReadValue(uint16_t *pAddr, uint32_t num, uint8_t *pData, uint8_
 extern void DBReadSystemTime(struct CP56Time2a_t *pTime);
 extern void DBWriteSystemTime(struct CP56Time2a_t *pTime);
 
+extern void DBupdate_YX(struct COS_Str *cos);
+extern void DBupdate_SOE(struct SOE_Str *soe);
+extern void DBupdate_YC(struct NVA_Str *nva);
+    
+extern rt_uint8_t DBWriteNewSOE(uint16_t addr, rt_uint8_t state,struct CP56Time2a_t *time);
 extern rt_uint8_t DBWriteSOE(uint16_t addr, rt_uint8_t state);
 extern rt_uint8_t DBWriteCO(uint16_t addr, rt_uint8_t state);
 extern rt_uint8_t DBWriteUlog(uint16_t addr, rt_uint8_t state);
