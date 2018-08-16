@@ -710,23 +710,29 @@ rt_uint8_t DBWriteNewSOE(uint16_t addr, rt_uint8_t state,struct CP56Time2a_t *ti
         {
             element = g_NewListTelesignal[addr].head;
             do//遍历链表
-            {
-				value = *(TelemetryExCfg[(((((rt_uint16_t*)(element->data))[2])>>NEWONEYX_ADDR)&NEWJUDG_ADDR)-TELESIGNAL_START_ADDR]->pVal) - 1;
+            {				
                 for(i=1;i<((((rt_uint16_t*)(element->data))[1])>>NEWONEYX_NUM);i++)
                 {
-                    valuetemp = *(TelesignalCfg[(((((rt_uint16_t*)(element->data))[2+i])>>NEWONEYX_ADDR)&NEWJUDG_ADDR)-TELESIGNAL_START_ADDR].pVal) - 1;//单点
-                    if((((rt_uint16_t*)(element->data))[2+i]>>NEWONEYX_CAL>>NEWCAL_NEG)&NEWPROPERTY_JUDG)
+                    if(i==0)
                     {
-                        valuetemp = (~valuetemp)&0x01;                
+                        value = *(TelesignalExCfg[(((((rt_uint16_t*)(element->data))[2])>>NEWONEYX_ADDR)&NEWJUDG_ADDR)-TELESIGNAL_START_ADDR]->pVal) - 1;
                     }
-                    if(((((rt_uint16_t*)(element->data))[2+i]>>NEWONEYX_CAL>>NEWCAL_AND)&NEWPROPERTY_JUDG) == NEWJUDG_AND)
-                    {
-                        value &= valuetemp;                 
-                    }  
                     else
                     {
-                        value |= valuetemp;  
-                    }      
+                        valuetemp = *(TelesignalExCfg[(((((rt_uint16_t*)(element->data))[2+i])>>NEWONEYX_ADDR)&NEWJUDG_ADDR)-TELESIGNAL_START_ADDR]->pVal) - 1;//单点
+                        if((((rt_uint16_t*)(element->data))[2+i]>>NEWONEYX_CAL>>NEWCAL_NEG)&NEWPROPERTY_JUDG)
+                        {
+                            valuetemp = (~valuetemp)&0x01;                
+                        }
+                        if(((((rt_uint16_t*)(element->data))[2+i]>>NEWONEYX_CAL>>NEWCAL_AND)&NEWPROPERTY_JUDG) == NEWJUDG_AND)
+                        {
+                            value &= valuetemp;                 
+                        }  
+                        else
+                        {
+                            value |= valuetemp;  
+                        } 
+                    }                    
                 }
                 
                 value = value + 1;//双点
@@ -2310,7 +2316,7 @@ void rt_multi_common_data_read_config(void)
 void rt_multi_common_data_config(void)
 {    
     rt_uint32_t i,j,temp1,temp2;
-    rt_uint8_t addr,value;
+    rt_uint8_t addr,value,valuetemp;
     char buf[24];
     /* 北京双杰汉字编码 */
     char tempstr[24];
@@ -2364,17 +2370,28 @@ void rt_multi_common_data_config(void)
 
     for(i=0,temp1=0,temp2=0,value=0;i<g_NewMaxNumTelesignal;i++)//原点表内添加地址和初始遥信
     {
-		value = (*(TelesignalExCfg[((g_ConfigurationSetDB->YXSet[temp1+1]>>NEWONEYX_ADDR)&NEWJUDG_ADDR)-TELESIGNAL_START_ADDR]->pVal)-1);
         for(j=0;j<(g_ConfigurationSetDB->YXSet[temp1]>>NEWONEYX_NUM);j++)
         {
-			if(((g_ConfigurationSetDB->YXSet[temp1+1+j]>>NEWONEYX_CAL>>NEWCAL_NEG)&NEWPROPERTY_JUDG) == NEWJUDG_AND)
-			{
-				value &= (*(TelesignalExCfg[((g_ConfigurationSetDB->YXSet[temp1+1+j]>>NEWONEYX_ADDR)&NEWJUDG_ADDR)-TELESIGNAL_START_ADDR]->pVal)-1);                 
-			}  
-			else
-			{
-				value |= (*(TelesignalExCfg[((g_ConfigurationSetDB->YXSet[temp1+1+j]>>NEWONEYX_ADDR)&NEWJUDG_ADDR)-TELESIGNAL_START_ADDR]->pVal)-1);  
-			}
+            if(j==0)
+            {
+                value = (*(TelesignalExCfg[((g_ConfigurationSetDB->YXSet[temp1+1]>>NEWONEYX_ADDR)&NEWJUDG_ADDR)-TELESIGNAL_START_ADDR]->pVal)-1);
+            }
+            else
+            {
+                valuetemp = (*(TelesignalExCfg[((g_ConfigurationSetDB->YXSet[temp1+1+j]>>NEWONEYX_ADDR)&NEWJUDG_ADDR)-TELESIGNAL_START_ADDR]->pVal)-1);
+                if((g_ConfigurationSetDB->YXSet[temp1+1+j]>>NEWONEYX_CAL>>NEWCAL_NEG)&NEWPROPERTY_JUDG)
+                {
+                    valuetemp = (~valuetemp)&0x01;                
+                }
+                if(((g_ConfigurationSetDB->YXSet[temp1+1+j]>>NEWONEYX_CAL>>NEWCAL_AND)&NEWPROPERTY_JUDG) == NEWJUDG_AND)
+                {
+                    value &= valuetemp;                 
+                }  
+                else
+                {
+                    value |= valuetemp;  
+                }
+            }
         }
         value = value + 1;//双点
         g_NewToOldTelesignal[temp2] = (value<<NEWONEYX_VAULE)|((i+TELESIGNAL_START_ADDR)<<NEWONEYX_ADDR);
