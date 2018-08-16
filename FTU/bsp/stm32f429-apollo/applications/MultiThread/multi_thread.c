@@ -345,10 +345,10 @@ static void rt_slave104_thread_entry(void *param)
 #if RT_USING_DPU
 static void rt_dpu_thread_entry(void *param)
 {    
-//    SMasterDpuControlInit();
+    SMasterDpuControlInit();
     for (;;)
     {    
-//       SMasterDpuControlMain();
+       SMasterDpuControlMain();
        rt_thread_delay(20);
     }  
 }
@@ -869,7 +869,7 @@ static void dpu_thread_start(void *param)
     /* startup */
     RT_ASSERT(result == RT_EOK);
 
-    result = rt_thread_startup(rt_thread_watch);
+    result = rt_thread_startup(rt_thread_dpu);
 														
     RT_ASSERT(result == RT_EOK);
 		THREAD_PRINTF("dpu thread start \r\n"); 

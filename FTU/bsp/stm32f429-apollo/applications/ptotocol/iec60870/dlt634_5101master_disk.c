@@ -418,12 +418,12 @@ int DLT634_5101_MASTER_INIT(void)
 	DLT634_5101Master_Pad[pdrv].ASDUCotSize = 2;//1:97,2:02
 	DLT634_5101Master_Pad[pdrv].ASDUAddr = 1;
 	DLT634_5101Master_Pad[pdrv].ASDUAddrSize = 2;//1:97,2:02
-	DLT634_5101Master_Pad[pdrv].TimeOutValue = 5000;//ms
+	DLT634_5101Master_Pad[pdrv].TimeOutValue = 2000;//ms
 	/* Á´Â·×´Ì¬¿ÕÏÐ */
 	SMasterInfo[pdrv].linkStatus = LINK_IDLE;
 	SMasterInfo[pdrv].lastFCB = 1;
 	SMasterInfo[pdrv].otsCheck = 0;
-	SMasterInfo[pdrv].reSend = 3;
+	SMasterInfo[pdrv].reSend = 0;
 	SMasterInfo[pdrv].slave = 0;
 	SMasterInfo[pdrv].slen = 0;
 	SMasterEventInit();	
@@ -456,6 +456,32 @@ void DLT634_5101_MasterTask(void)
   */
 int8_t DataResult_M_SP_NA_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff)
 {
+	DpuSlaveInfo *sInfo = GetSlaveInfo(slave);
+	struct COS_Str yxValue;
+	pBuff += 2;
+	if(vsq < 128){//SQ = 0
+		for(uint8_t i = 0; i < vsq; i += 3){
+			yxValue.addr = (pBuff[i] + (pBuff[i + 1] << 8)) + sInfo->yxBaddr;
+			if(yxValue.addr >= sInfo->yxEaddr){
+				continue;
+			}
+			yxValue.value = (pBuff[i + 2] + 1)&0x03;
+			DBupdate_YX(&yxValue);
+		}
+	}
+	else{
+		uint8_t tNum = vsq - 128;
+		uint8_t tAddr = (pBuff[i] + (pBuff[i + 1] << 8)) + sInfo->yxBaddr;
+		pBuff += 2;
+		for(uint8_t i = 0; i < tNum; i ++){
+			yxValue.addr = tAddr + i;
+			if(yxValue.addr >= sInfo->yxEaddr){
+				break;
+			}
+			yxValue.value = (pBuff[i] + 1)&0x03;
+			DBupdate_YX(&yxValue);
+		}
+	}
 	return 0;
 }
 
@@ -468,6 +494,44 @@ int8_t DataResult_M_SP_NA_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff)
   */
 int8_t DataResult_M_ME_NC_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff)
 {
+	DpuSlaveInfo *sInfo = GetSlaveInfo(slave);
+	struct NVA_Str ycValue;
+	union{
+		float f;
+		uint8_t u8[4];
+	}fU8;
+	pBuff += 2;
+	if(vsq < 128){//SQ = 0
+		for(uint8_t i = 0; i < vsq; i += 7){
+			ycValue.addr = (pBuff[i] + (pBuff[i + 1] << 8)) + sInfo->ycBaddr;
+			if(ycValue.addr >= sInfo->ycEaddr){
+				continue;
+			}		
+			fU8.u8[0] = pBuff[i + 2];
+			fU8.u8[1] = pBuff[i + 3];
+			fU8.u8[2] = pBuff[i + 4];
+			fU8.u8[3] = pBuff[i + 5];
+			ycValue.value = fU8.f;
+			DBupdate_YC(&yxValue);
+		}
+	}
+	else{
+		uint8_t tNum = vsq - 128;
+		uint8_t tAddr = (pBuff[i] + (pBuff[i + 1] << 8)) + sInfo->ycBaddr;
+		pBuff += 2;
+		for(uint8_t i = 0; i < tNum; i += 5){
+			ycValue.addr = tAddr + i;
+			if(ycValue.addr >= sInfo->ycEaddr){
+				break;
+			}
+			fU8.u8[0] = pBuff[i];
+			fU8.u8[1] = pBuff[i + 1];
+			fU8.u8[2] = pBuff[i + 2];
+			fU8.u8[3] = pBuff[i + 3];
+			ycValue.value = fU8.f;
+			DBupdate_YC(&ycValue);
+		}
+	}
 	return 0;
 }
 /**

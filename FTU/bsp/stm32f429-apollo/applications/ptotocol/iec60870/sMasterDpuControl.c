@@ -9,13 +9,16 @@
 #include "sMasterDpuControl.h"
 #include "dlt634_5101master_app.h"
 #include "dlt634_5101master_disk.h"
+#include "common_data.h"
+#include <rtthread.h>
 
 /* 从机调用表 */
 DpuSlaveList SlaveList;
-static DpuSlaveInfo UserSlave[8];
+static DpuSlaveInfo UserSlave[SM_SLAVEMAXNUM];
 /* 当前运行的从机 */
 static DpuSlaveInfo *RunSlave;
 static uint8_t SMasterAsduLen = 2;
+static RequestSendList RsendList;
 /**
   *@brief  插入从机到列表中
   *@param  pSlave 从机
@@ -43,21 +46,6 @@ int8_t InsertSlaveToList(DpuSlaveInfo *pSlave)
 	return 0;
 }
 
-
-/**
-  *@brief  从机初始化
-  *@param  pSlave 从机
-  *@retval None
-  */
-void DpuSlaveInit(DpuSlaveInfo *pSlave,SlaveInfo *pInfo)
-{
-	pSlave->slave = pInfo->addr;
-	pSlave->runflag = SLAVE_CLOSE;
-	pSlave->next = NULL;
-	pSlave->asduAddr = 0;
-	InsertSlaveToList(pSlave);
-}
-
 /**
   *@brief  获取从机信息并初始化
   *@param  None
@@ -65,13 +53,137 @@ void DpuSlaveInit(DpuSlaveInfo *pSlave,SlaveInfo *pInfo)
   */
 void GetSlaveAndInit(void)
 {
-	for(uint8_t i = 0; i < 8; i ++){
-		SlaveInfo tInfo;
-		tInfo.addr = i + 20;
-		DpuSlaveInit(&UserSlave[i],&tInfo);
+	struct ConfigurationSetModbase *slavecfg = &g_ConfigurationSetModDB;
+	SlaveInfo tInfo;
+	uint8_t slaveNum = SM_SLAVEMAXNUM;
+	if(slavecfg->ModMaxNum < SM_SLAVEMAXNUM){
+		slaveNum = slavecfg->ModMaxNum;
+	}
+	for(uint8_t i = 0; i < slaveNum; i ++){
+		UserSlave[i].slave = slavecfg->ModAddr[i];
+		UserSlave[i].yxBaddr = slavecfg->ModYxAddr[i];
+		UserSlave[i].ycBaddr = slavecfg->ModYcAddr[i];
+		UserSlave[i].ykBaddr = slavecfg->ModYkAddr[i];
+		/* 不包含结束地址 */
+		UserSlave[i].yxEaddr = slavecfg->ModYxNum[i] + UserSlave[i].yxBaddr;
+		UserSlave[i].ycEaddr = slavecfg->ModYcNum[i] + UserSlave[i].yxBaddr;
+		UserSlave[i].ykEaddr = slavecfg->ModYkNum[i] + UserSlave[i].yxBaddr;
+		
+		UserSlave[i].asduAddr = 1;
+		UserSlave[i].runflag = SLAVE_CLOSE;
+		UserSlave[i].lastFcb = 0;
+		UserSlave[i].event = 0;
+		UserSlave[i].sourceId = 0;
+		UserSlave[i].ykState = 0;
+		UserSlave[i].next = NULL;
+		InsertSlaveToList(&UserSlave[i]);
 	}
 }
 
+void InsertReSendToList(RequestSend *pReSend)
+{
+	RequestSend *tpSend = RsendList.head;
+
+	while(1){
+		if(tpSend == NULL){
+			tpSend = pReSend;
+			RsendList.num ++;
+			break;
+		}
+		tpSend = tpSend->next;
+	}
+}
+
+static int8_t YaokongResult(RequestSend *pReSend)
+{
+	uint8_t errorStatus = 0;
+	uint8_t offset = 6;
+	DpuSlaveInfo *tSlave = SlaveList.head;
+	uint8_t slaveNum = SlaveList.num;
+	uint16_t ykAddr = pReSend->pbuff[offset] + (pReSend->pbuff[offset + 1]<<8);
+	for(uint8_t i = 0; i < slaveNum; i ++){
+		if((tSlave->ykBaddr <= ykAddr) && (tSlave->ykEaddr > ykAddr)){
+			if(tSlave->runflag == SLAVE_CLOSE || tSlave->event & SLAVE_YAOKONG){
+				errorStatus = 1;
+			}
+			else{
+				pReSend->slave = tSlave->slave;
+				ykAddr = ykAddr - tSlave->ykBaddr + 1;
+				pReSend->pbuff[offset] = (uint8_t)ykAddr;
+				pReSend->pbuff[offset + 1] = (uint8_t)(ykAddr<<8);
+				DPU_SET_EVENT_FLAG(tSlave,SLAVE_YAOKONG);
+				errorStatus = 0;
+			}
+			break;
+		}
+		if(tSlave->next != NULL){
+			tSlave = tSlave->next;
+		}
+		else{
+			errorStatus = -1;
+			break;
+		}
+	}
+	return errorStatus;
+}
+
+
+static uint8_t RequestSendCmd(uint8_t drvid,uint8_t *pbuf)
+{ //LENTH/Lock_ID/
+	uint8_t errorStatus = 0;
+	RequestSend *pReSend;
+	uint8_t len = pbuf[0] - 2;
+	
+	pReSend = rt_malloc(sizeof(RequestSend));
+	if(pReSend == NULL){
+		return 0;
+	}
+	pReSend->pbuff = rt_malloc(len);
+	if(pReSend->pbuff == NULL){
+		rt_free(pReSend);
+		return 0;
+	}
+	pReSend->id = drvid;
+	pReSend->next = NULL;
+	pReSend->len = len;
+	rt_memcpy(pReSend->pbuff,&pbuf[2],len);
+	switch(pbuf[2]){
+/* + 控制方向的过程信息 */	
+		/* - 单点命令 双点命令 */
+		case _DLT634_5101MASTER_C_SC_NA_1:
+		case _DLT634_5101MASTER_C_SC_NB_1:
+			errorStatus = YaokongResult(pReSend);
+			if(errorStatus != 0){
+				pbuf[3] = 47;
+				pbuf[4] = 0;
+				DBSend(drvid,pbuf);
+				rt_free(pReSend->pbuff);
+				rt_free(pReSend);
+			}
+			else{
+				InsertReSendToList(pReSend);
+			}
+			break;
+/* + 控制方向的系统命令 */
+		/* - 总召唤 电能量召唤 时钟同步 测试命令 复位进程 */
+		case _DLT634_5101MASTER_C_IC_NA_1:break;
+		case _DLT634_5101MASTER_C_CI_NA_1:break;
+		case _DLT634_5101MASTER_C_CS_NA_1:break;
+		case _DLT634_5101MASTER_C_TS_NA_1:break;
+		case _DLT634_5101MASTER_C_RP_NA_1:break;
+		/* -  切换定值区 读定值区号 读参数和定值 写参数和定值 */
+		case _DLT634_5101MASTER_C_SR_NA_1:break;
+		case _DLT634_5101MASTER_C_RR_NA_1:break;
+		case _DLT634_5101MASTER_C_RS_NA_1:break;
+		case _DLT634_5101MASTER_C_WS_NA_1:break;
+		/* -  文件传输 软件升级 */
+		case _DLT634_5101MASTER_F_FR_NA_1:break;
+		case _DLT634_5101MASTER_F_SR_NA_1:break;
+	}
+	return 1;
+}
+
+static Scan
 /**
   *@brief  总初始化
   *@param  None
@@ -80,6 +192,10 @@ void GetSlaveAndInit(void)
 void SMasterDpuControlInit(void)
 {
 	GetSlaveAndInit();
+	RsendList.num = 0;
+	RsendList.head = NULL;
+	(DBSend[SMASTER101_ID0]) = RequestSendCmd;
+	
 	RunSlave = NULL;
 }
 
@@ -124,15 +240,27 @@ void SlaveCheckoutDealWith(void)
 {
 	if(RunSlave == NULL){
 		RunSlave = LookShouldRunSlave();
-		return;
+		DPU_SET_EVENT_FLAG(RunSlave,SLAVE_INIT);
 	}
-	if(RunSlave->checkout == SLAVE_REQUESTSWITCH){
-		RunSlave = LookShouldRunSlave();
-		if(RunSlave->event == 0 && RunSlave->runflag == SLAVE_CLOSE){
-			RunSlave->event |= SLAVE_INIT;
+	else if(RunSlave->next != NULL){
+		RunSlave = RunSlave->next;
+	}
+	else{
+		RunSlave = SlaveList.head;
+	}
+	if(RunSlave->runflag == SLAVE_CLOSE){
+		if(GetTimer1IntervalTick(RunSlave->timeConut) > 15000){
+			RunSlave->timeConut = GetTimer1Tick();
+			DPU_SET_EVENT_FLAG(RunSlave,SLAVE_INIT);
 		}
-		return;
 	}
+//	if(RunSlave->checkout == SLAVE_REQUESTSWITCH){
+//		RunSlave = LookShouldRunSlave();
+//		if(RunSlave->event == 0 && RunSlave->runflag == SLAVE_CLOSE){
+//			RunSlave->event |= SLAVE_INIT;
+//		}
+//		return;
+//	}
 }
 
 /**
@@ -225,6 +353,10 @@ void SMasterHaveData2CmdFun(DpuSlaveInfo *sInfo)
 	if(eErrStatus == SM_MRE_NO_ERR){
 		if(tRev.ackC & _DLT634_5101MASTER_ACD){
 			DPU_SET_EVENT_FLAG(sInfo,SLAVE_HAVEDATA_1);
+		}
+		/* 无所请求的用户数据 */
+		if((tRev.ackC & _DLT634_5101MASTER_FUNCODE) == _DLT634_5101MASTER_M_FUN9){
+			//DPU_RESET_EVENT_FLAG(sInfo,SLAVE_HAVEDATA_2);
 		}
 	}
 	else if(eErrStatus == SM_MRE_TIMEDOUT){

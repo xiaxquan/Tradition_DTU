@@ -52,6 +52,7 @@ static uint8_t FrameSendToDevice(uint8_t pdrv)
 	/* 启动超时检测 */
 	SMasterInfo[pdrv].otTick = GetTimer1Tick();
 	SMasterInfo[pdrv].otsCheck = 1;
+	SMasterInfo[pdrv].otflag = 0;
 	return 0;
 }
 
@@ -70,18 +71,18 @@ static void LinkTimeOutResult(uint8_t pdrv)
 		SMasterInfo[pdrv].otflag = 1;
 	}
 	if(SMasterInfo[pdrv].otflag == 1){//超时
-		if((++SMasterInfo[pdrv].reSend) <= 3){
-			SMasterInfo[pdrv].otsCheck = 0;
+		if((++SMasterInfo[pdrv].reSend) <= 2){
 			SMasterInfo[pdrv].linkStatus = LINK_SEND;
 			FrameSendToDevice(pdrv);//重发
 		}
 		else{//超时重发次数上限
+			SMasterInfo[pdrv].otsCheck = 0;
+			SMasterInfo[pdrv].otflag = 0;
 			SMasterInfo[pdrv].reSend = 0;
 			SMasterInfo[pdrv].linkStatus = LINK_IDLE;
 			SMasterEventPost(EV_SMASTER_ERROR_RESPOND_TIMEOUT);
 			DebugPrintf("通信超时\r\n");
 		}
-		SMasterInfo[pdrv].otflag = 0;
 	}	
 }
 
@@ -423,6 +424,7 @@ static void WaitReceiveFullFrame(uint8_t pdrv)
 			else{//帧异常处理
 				/* 触发超时重发 */
 				SMasterInfo[pdrv].otflag = 1;
+				SMasterInfo[pdrv].otsCheck = 1;
 				
 			}
 		}

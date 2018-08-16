@@ -97,7 +97,7 @@ typedef enum
     SLAVE101_ID1,
     SLAVE104_ID0,
     SLAVE104_ID1,
-    
+    SMASTER101_ID0,
     DEV_MAX_NUM
 } DEV_ID;
 

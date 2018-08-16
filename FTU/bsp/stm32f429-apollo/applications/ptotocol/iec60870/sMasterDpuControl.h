@@ -16,7 +16,7 @@
 #endif
 
 #define SM_LINKID 0
-
+#define SM_SLAVEMAXNUM 16/* 从机最大数 */
 #define SLAVE_RUNCLOSEWAITTIME 3000/* 从机在未连接状态下的循环调用时间 */
 #define SLAVE_RUNSUSPENDWAITTIME 1000/* 从机在挂起状态下的循环调用时间 */
 #define SLAVE_HAVEDATA_2_TIME 1000/* 从机在空闲状态下的二级数据循环调用时间 */
@@ -53,12 +53,24 @@ enum SwitchFlagState{
 /* 从机信息 */
 typedef struct SlaveInfo_{
 	uint16_t addr; 	/* 从站地址 */
+	uint16_t yxBaddr;/* 遥信开始地址 */
+	uint16_t ycBaddr;
+	uint16_t ykBaddr;
+	uint8_t yxNum;
+	uint8_t ycNum;
+	uint8_t ykNum;
 }SlaveInfo;
 
 /* 从机信息 */
 typedef struct DpuSlaveInfo_{
 	uint16_t slave; 	/* 从站地址 */
 	uint16_t asduAddr;	/* ASDU地址 */
+	uint16_t yxBaddr;	/* 遥信开始地址 */
+	uint16_t ycBaddr;
+	uint16_t ykBaddr;
+	uint16_t yxEaddr;	/* 遥信结束地址 */
+	uint16_t ycEaddr;
+	uint16_t ykEaddr;
 	enum RunFlagState runflag;/* 运行状态,调度使用 */
 	uint8_t lastFcb;
 	uint8_t ackstatus;	/* 应答状态 */
@@ -74,9 +86,24 @@ typedef struct DpuSlaveInfo_{
 
 /* 从机表 */
 typedef struct DpuSlaveList_{
-	uint8_t num;/* 从机数 */
+	uint8_t num;	/* 从机数 */
+	uint8_t count;	/* 计数器 */
 	DpuSlaveInfo *head;/* 从机开始头 */
 }DpuSlaveList;
+
+
+typedef struct RequestSend_{
+	uint16_t slave;	/* 从机地址 */
+	uint8_t id;	/* 命令源id */
+	uint8_t len;/* 命令长度 */
+	uint8_t *pbuff;/* 命令内容指针 */
+	struct RequestSend_ *next;
+}RequestSend;
+
+typedef struct RequestSendList_{
+	uint8_t num;
+	struct RequestSend_ *head;
+}RequestSendList;
 
 /* 101初始化命令函数 */
 void Master101InitCmdFun(DpuSlaveInfo *sInfo);
