@@ -454,15 +454,17 @@ void DLT634_5101_MasterTask(void)
   *@param  pBuff ASDU公共地址开始的数据
   *@retval 0 ok
   */
-int8_t DataResult_M_SP_NA_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff)
+int8_t DataResult_M_SP_NA_1(ReqRevInfo *revInfo,uint8_t *pBuff)
 {
-	DpuSlaveInfo *sInfo = GetSlaveInfo(slave);
+	DpuSlaveInfo *sInfo = GetSlaveInfoUseAddr(revInfo->slave);
+	uint16_t addrOffset = 0x0001;
+	
 	struct COS_Str yxValue;
-	pBuff += 2;
+	uint8_t vsq;
 	if(vsq < 128){//SQ = 0
 		for(uint8_t i = 0; i < vsq; i += 3){
-			yxValue.addr = (pBuff[i] + (pBuff[i + 1] << 8)) + sInfo->yxBaddr;
-			if(yxValue.addr >= sInfo->yxEaddr){
+			yxValue.addr = (pBuff[i] + (pBuff[i + 1] << 8)) + sInfo->yxBaddr - addrOffset;
+			if(yxValue.addr > sInfo->yxEaddr){
 				continue;
 			}
 			yxValue.value = (pBuff[i + 2] + 1)&0x03;
@@ -471,11 +473,11 @@ int8_t DataResult_M_SP_NA_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff)
 	}
 	else{
 		uint8_t tNum = vsq - 128;
-		uint8_t tAddr = (pBuff[i] + (pBuff[i + 1] << 8)) + sInfo->yxBaddr;
+		uint8_t tAddr = (pBuff[0] + (pBuff[1] << 8)) + sInfo->yxBaddr - addrOffset;
 		pBuff += 2;
 		for(uint8_t i = 0; i < tNum; i ++){
 			yxValue.addr = tAddr + i;
-			if(yxValue.addr >= sInfo->yxEaddr){
+			if(yxValue.addr > sInfo->yxEaddr){
 				break;
 			}
 			yxValue.value = (pBuff[i] + 1)&0x03;
@@ -486,25 +488,67 @@ int8_t DataResult_M_SP_NA_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff)
 }
 
 /**
+  *@brief  双点信息处理
+  *@param  slave 从机地址
+  *@param  vsq 可变结构限定词
+  *@param  pBuff ASDU公共地址开始的数据
+  *@retval 0 ok
+  */
+int8_t DataResult_M_DP_NA_1(ReqRevInfo *revInfo,uint8_t *pBuff)
+{
+	DpuSlaveInfo *sInfo = GetSlaveInfoUseAddr(revInfo->slave);
+	uint16_t addrOffset = 0x0001;
+	
+	struct COS_Str yxValue;
+	uint8_t vsq;
+	if(vsq < 128){//SQ = 0
+		for(uint8_t i = 0; i < vsq; i += 3){
+			yxValue.addr = (pBuff[i] + (pBuff[i + 1] << 8)) + sInfo->yxBaddr - addrOffset;
+			if(yxValue.addr > sInfo->yxEaddr){
+				continue;
+			}
+			yxValue.value = (pBuff[i + 2] + 1)&0x03;
+			DBupdate_YX(&yxValue);
+		}
+	}
+	else{
+		uint8_t tNum = vsq - 128;
+		uint8_t tAddr = (pBuff[0] + (pBuff[1] << 8)) + sInfo->yxBaddr - addrOffset;
+		pBuff += 2;
+		for(uint8_t i = 0; i < tNum; i ++){
+			yxValue.addr = tAddr + i;
+			if(yxValue.addr > sInfo->yxEaddr){
+				break;
+			}
+			yxValue.value = (pBuff[i])&0x03;
+			DBupdate_YX(&yxValue);
+		}
+	}
+	return 0;
+}
+/**
   *@brief  遥测浮点数处理
   *@param  slave 从机地址
   *@param  vsq 可变结构限定词
   *@param  pBuff ASDU公共地址开始的数据
   *@retval 0 ok
   */
-int8_t DataResult_M_ME_NC_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff)
+int8_t DataResult_M_ME_NC_1(ReqRevInfo *revInfo,uint8_t * pBuff)
 {
-	DpuSlaveInfo *sInfo = GetSlaveInfo(slave);
+	DpuSlaveInfo *sInfo = GetSlaveInfoUseAddr(revInfo->slave);
+	uint16_t addrOffset = 0x4001;
+	
 	struct NVA_Str ycValue;
+	uint8_t vsq;
 	union{
 		float f;
 		uint8_t u8[4];
 	}fU8;
-	pBuff += 2;
+	
 	if(vsq < 128){//SQ = 0
 		for(uint8_t i = 0; i < vsq; i += 7){
-			ycValue.addr = (pBuff[i] + (pBuff[i + 1] << 8)) + sInfo->ycBaddr;
-			if(ycValue.addr >= sInfo->ycEaddr){
+			ycValue.addr = (pBuff[i] + (pBuff[i + 1] << 8)) + sInfo->ycBaddr - addrOffset;
+			if(ycValue.addr > sInfo->ycEaddr){
 				continue;
 			}		
 			fU8.u8[0] = pBuff[i + 2];
@@ -512,16 +556,16 @@ int8_t DataResult_M_ME_NC_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff)
 			fU8.u8[2] = pBuff[i + 4];
 			fU8.u8[3] = pBuff[i + 5];
 			ycValue.value = fU8.f;
-			DBupdate_YC(&yxValue);
+			DBupdate_YC(&ycValue);
 		}
 	}
 	else{
 		uint8_t tNum = vsq - 128;
-		uint8_t tAddr = (pBuff[i] + (pBuff[i + 1] << 8)) + sInfo->ycBaddr;
+		uint8_t tAddr = (pBuff[0] + (pBuff[1] << 8)) + sInfo->ycBaddr - addrOffset;
 		pBuff += 2;
 		for(uint8_t i = 0; i < tNum; i += 5){
 			ycValue.addr = tAddr + i;
-			if(ycValue.addr >= sInfo->ycEaddr){
+			if(ycValue.addr > sInfo->ycEaddr){
 				break;
 			}
 			fU8.u8[0] = pBuff[i];
@@ -541,8 +585,54 @@ int8_t DataResult_M_ME_NC_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff)
   *@param  pBuff ASDU公共地址开始的数据
   *@retval 0 ok
   */
-int8_t DataResult_C_IC_NA_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff)
+int8_t DataResult_C_IC_NA_1(ReqRevInfo *revInfo,uint8_t * pBuff)
 {
+	return 0;
+}
+
+/**
+  *@brief  单点命令处理
+  *@param  slave 从机地址
+  *@param  vsq 可变结构限定词
+  *@param  pBuff ASDU公共地址开始的数据
+  *@retval 0 ok
+  */
+int8_t DataResult_C_SC_NA_1(ReqRevInfo *revInfo,uint8_t *pBuff)
+{
+	uint8_t pSendBuff[12];
+	DpuSlaveInfo *sInfo = GetSlaveInfoUseAddr(revInfo->slave);
+	pSendBuff[0] = 11;
+	pSendBuff[1] = 0;
+	pSendBuff[2] = revInfo->TI;
+	pSendBuff[3] = revInfo->VSQ;
+	pSendBuff[4] = (uint8_t)revInfo->COT;
+	pSendBuff[5] = (uint8_t)(revInfo->COT >> 8);
+	pSendBuff[6] = (uint8_t)revInfo->asduAddr;
+	pSendBuff[7] = (uint8_t)(revInfo->asduAddr >> 8);
+	
+	uint16_t ykAddr = pBuff[0] + (pBuff[1]<<8);
+	if(ykAddr + sInfo->ykBaddr >= sInfo->ykEaddr){
+		return  0;
+	}
+	ykAddr += sInfo->ykBaddr;
+	
+	pSendBuff[8] = pBuff[0];
+	pSendBuff[9] = pBuff[1];
+	pSendBuff[10] = pBuff[2];
+	DBSend[sInfo->sourceId](sInfo->sourceId,pSendBuff);
+	return 0;
+}
+
+/**
+  *@brief  双点命令处理
+  *@param  slave 从机地址
+  *@param  vsq 可变结构限定词
+  *@param  pBuff ASDU公共地址后的数据
+  *@retval 0 ok
+  */
+int8_t DataResult_C_SC_NB_1(ReqRevInfo *revInfo,uint8_t *pBuff)
+{
+	DataResult_C_SC_NA_1(revInfo,pBuff);
 	return 0;
 }
 
@@ -667,21 +757,20 @@ uint8_t DataFill_MASTER_C_TS_NA_1(uint8_t pdrv, uint8_t *pBuff)
 uint8_t DataFill_MASTER_C_SC_NA_1(uint8_t pdrv, uint8_t *pBuff)
 {
 	uint8_t offset = 0;
-	
-	pBuff[offset++] = _DLT634_5101MASTER_C_SC_NA_1;//TI
+
+	pBuff[offset++] = SMasterInfo[pdrv].TI;//TI
 	pBuff[offset++] = 1;//VSQ
-	pBuff[offset++] = (_DLT634_5101MASTER_COT_ACT & 0xFF);//COTL
+	pBuff[offset++] = (SMasterInfo[pdrv].COT & 0xFF);//COTL
 	if(DLT634_5101Master_Pad[pdrv].ASDUCotSize == 2){
-		pBuff[offset++] = (uint8_t)(_DLT634_5101MASTER_COT_ACT >> 8);//COTH
+		pBuff[offset++] = (uint8_t)(SMasterInfo[pdrv].COT >> 8);//COTH
 	}
-	pBuff[offset++] = (DLT634_5101Master_Pad[pdrv].ASDUAddr & 0xFF);//ASDU_addrL
+	pBuff[offset++] = (SMasterInfo[pdrv].asduAddr & 0xFF);//ASDU_addrL
 	if(DLT634_5101Master_Pad[pdrv].ASDUAddrSize == 2){
-		pBuff[offset++] = (uint8_t)(DLT634_5101Master_Pad[pdrv].ASDUAddr >> 8);//ASDU_addrH
+		pBuff[offset++] = (uint8_t)(SMasterInfo[pdrv].asduAddr >> 8);//ASDU_addrH
 	}
-	pBuff[offset++] = 0;//信息对象地址L
-	pBuff[offset++] = 0;//信息对象地址H
-	pBuff[offset++] = 0x55;//FBPL
-	pBuff[offset++] = 0xAA;//FBPH
+	pBuff[offset++] = SMasterInfo[pdrv].pbuff[0];//信息对象地址L
+	pBuff[offset++] = SMasterInfo[pdrv].pbuff[1];//信息对象地址H
+	pBuff[offset++] = SMasterInfo[pdrv].pbuff[2];//SCO
 	
 	return offset;
 }

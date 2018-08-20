@@ -176,7 +176,9 @@ static uint8_t Get68FrameASDU_COT(uint8_t pdrv, uint8_t *pBuff)
   */
 static uint8_t *Get68FrameASDU_pData(uint8_t pdrv, uint8_t *pBuff)
 {
-	uint8_t offset = DLT634_5101Master_Pad[pdrv].LinkAddrSize + 7;
+	uint8_t offset = DLT634_5101Master_Pad[pdrv].LinkAddrSize +\
+		DLT634_5101Master_Pad[pdrv].ASDUCotSize +\
+		DLT634_5101Master_Pad[pdrv].ASDUAddrSize + 7;
 	
 	return &pBuff[offset];
 }
@@ -275,36 +277,35 @@ static int8_t FrameValidCheck(uint8_t pdrv, uint8_t *pBuff,uint8_t len)
   */
 static void AppDataResult(uint8_t pdrv, uint8_t *pbuff)
 {
-	uint8_t AsduTi = Get68FrameASDU_TI(pdrv, pbuff);
-	uint8_t AsduVsq = Get68FrameASDU_VSQ(pdrv, pbuff);
+	SMasterInfo[pdrv].rev->TI = Get68FrameASDU_TI(pdrv, pbuff);
+	SMasterInfo[pdrv].rev->VSQ = Get68FrameASDU_VSQ(pdrv, pbuff);
+	SMasterInfo[pdrv].rev->COT = Get68FrameASDU_COT(pdrv, pbuff);
 	uint8_t *pDataBuff = Get68FrameASDU_pData(pdrv, pbuff);
 	
-	SMasterInfo[pdrv].rev->COT = Get68FrameASDU_COT(pdrv, pbuff);
-	SMasterInfo[pdrv].rev->VSQ = AsduVsq;
-	SMasterInfo[pdrv].rev->TI = AsduTi;
 	SMasterInfo[pdrv].rev->rlen = 0;/* 目前不用 */
-	switch(AsduTi){
+	
+	switch(SMasterInfo[pdrv].rev->TI){
 /* + 监视方向的过程信息 */
 		/* - 单点 双点 */
 		case _DLT634_5101MASTER_M_SP_NA_1:
-			DataResult_M_SP_NA_1(SMasterInfo[pdrv].slave,AsduVsq,pDataBuff);
+			DataResult_M_SP_NA_1(SMasterInfo[pdrv].rev,pDataBuff);
 			break;
 		case _DLT634_5101MASTER_M_DP_NA_1:
-			//DataResult_M_DP_NA_1(SMasterInfo[pdrv].slave,AsduVsq,pDataBuff);
+			DataResult_M_DP_NA_1(SMasterInfo[pdrv].rev,pDataBuff);
 			break;
 		/* - 测量值 归一化 标度化 短浮点数 */
 		case _DLT634_5101MASTER_M_ME_NA_1:
-			//DataResult_M_ME_NA_1(SMasterInfo[pdrv].slave,AsduVsq,pDataBuff);
+			//DataResult_M_ME_NA_1(SMasterInfo[pdrv].rev,pDataBuff);
 			break;
 		case _DLT634_5101MASTER_M_ME_NB_1:
-			//DataResult_M_ME_NB_1(SMasterInfo[pdrv].slave,AsduVsq,pDataBuff);
+			//DataResult_M_ME_NB_1(SMasterInfo[pdrv].rev,pDataBuff);
 			break;
 		case _DLT634_5101MASTER_M_ME_NC_1:
-			DataResult_M_ME_NC_1(SMasterInfo[pdrv].slave,AsduVsq,pDataBuff);
+			DataResult_M_ME_NC_1(SMasterInfo[pdrv].rev,pDataBuff);
 			break;
 		/* - 带时标的单点 双点 故障事件 */
 		case _DLT634_5101MASTER_M_SP_TB_1:
-			//DataResult_M_SP_TB_1(SMasterInfo[pdrv].slave,AsduVsq,pDataBuff);
+			//DataResult_M_SP_TB_1(SMasterInfo[pdrv].rev,pDataBuff);
 			break;
 		case _DLT634_5101MASTER_M_DP_TB_1:break;
 		case _DLT634_5101MASTER_M_FT_NA_1:break;
@@ -313,15 +314,19 @@ static void AppDataResult(uint8_t pdrv, uint8_t *pbuff)
 		case _DLT634_5101MASTER_M_IT_TC_1:break;
 /* + 控制方向的过程信息 */	
 		/* - 单点命令 双点命令 */
-		case _DLT634_5101MASTER_C_SC_NA_1:break;
-		case _DLT634_5101MASTER_C_SC_NB_1:break;
+		case _DLT634_5101MASTER_C_SC_NA_1:
+			DataResult_C_SC_NA_1(SMasterInfo[pdrv].rev,pDataBuff);
+			break;
+		case _DLT634_5101MASTER_C_SC_NB_1:
+			DataResult_C_SC_NB_1(SMasterInfo[pdrv].rev,pDataBuff);
+			break;
 /* + 监视方向的系统命令 */
 		/* - 初始化结束 */
 		case _DLT634_5101MASTER_M_EI_NA_1:break;
 /* + 控制方向的系统命令 */
 		/* - 总召唤 电能量召唤 时钟同步 测试命令 复位进程 */
 		case _DLT634_5101MASTER_C_IC_NA_1:
-			DataResult_C_IC_NA_1(SMasterInfo[pdrv].slave,AsduVsq,pDataBuff);
+			DataResult_C_IC_NA_1(SMasterInfo[pdrv].rev,pDataBuff);
 			break;
 		case _DLT634_5101MASTER_C_CI_NA_1:break;
 		case _DLT634_5101MASTER_C_CS_NA_1:break;
@@ -460,8 +465,10 @@ static uint8_t SMaster68FrameDataFill(uint8_t pdrv, uint8_t *pBuff)
 		case _DLT634_5101MASTER_M_IT_TC_1:break;
 /* + 控制方向的过程信息 */	
 		/* - 单点命令 双点命令 */
-		case _DLT634_5101MASTER_C_SC_NA_1:break;
-		case _DLT634_5101MASTER_C_SC_NB_1:break;
+		case _DLT634_5101MASTER_C_SC_NA_1:
+		case _DLT634_5101MASTER_C_SC_NB_1:
+			DataFill_MASTER_C_SC_NA_1(pdrv,pBuff);
+			break;
 /* + 监视方向的系统命令 */
 		/* - 初始化结束 */
 		case _DLT634_5101MASTER_M_EI_NA_1:break;
@@ -601,7 +608,7 @@ SMasterReqErrCode SMasterSendFrame(uint8_t pdrv,ReqSendInfo *sInfo)
 		SMasterInfo[pdrv].slen = sInfo->slen;
 		SMasterInfo[pdrv].rev = sInfo->rev;
 		SMasterInfo[pdrv].linkStatus = LINK_REQUESTSEND;
-		
+		SMasterInfo[pdrv].asduAddr = sInfo->asduAddr;
 		/* 等待接收完成 */
 		eErrStatus = SMasterWaitRequestFinish();
 		*(sInfo->rev->fcb) = SMasterInfo[pdrv].lastFCB;

@@ -17,8 +17,10 @@ DpuSlaveList SlaveList;
 static DpuSlaveInfo UserSlave[SM_SLAVEMAXNUM];
 /* 当前运行的从机 */
 static DpuSlaveInfo *RunSlave;
-static uint8_t SMasterAsduLen = 2;
+
 static RequestSendList RsendList;
+
+uint8_t reqSendBUff[256];
 /**
   *@brief  插入从机到列表中
   *@param  pSlave 从机
@@ -54,7 +56,6 @@ int8_t InsertSlaveToList(DpuSlaveInfo *pSlave)
 void GetSlaveAndInit(void)
 {
 	struct ConfigurationSetModbase *slavecfg = &g_ConfigurationSetModDB;
-	SlaveInfo tInfo;
 	uint8_t slaveNum = SM_SLAVEMAXNUM;
 	if(slavecfg->ModMaxNum < SM_SLAVEMAXNUM){
 		slaveNum = slavecfg->ModMaxNum;
@@ -65,9 +66,24 @@ void GetSlaveAndInit(void)
 		UserSlave[i].ycBaddr = slavecfg->ModYcAddr[i];
 		UserSlave[i].ykBaddr = slavecfg->ModYkAddr[i];
 		/* 不包含结束地址 */
-		UserSlave[i].yxEaddr = slavecfg->ModYxNum[i] + UserSlave[i].yxBaddr;
-		UserSlave[i].ycEaddr = slavecfg->ModYcNum[i] + UserSlave[i].yxBaddr;
-		UserSlave[i].ykEaddr = slavecfg->ModYkNum[i] + UserSlave[i].yxBaddr;
+		if(slavecfg->ModYxNum[i] > 0){
+			UserSlave[i].yxEaddr = slavecfg->ModYxNum[i] + UserSlave[i].yxBaddr - 1;
+		}
+		else{
+			UserSlave[i].yxEaddr = UserSlave[i].yxBaddr;
+		}
+		if(slavecfg->ModYcNum[i] > 0){
+			UserSlave[i].ycEaddr = slavecfg->ModYcNum[i] + UserSlave[i].ycBaddr - 1;
+		}
+		else{
+			UserSlave[i].ycEaddr = UserSlave[i].ycBaddr;
+		}
+		if(slavecfg->ModYkNum[i] > 0){
+			UserSlave[i].ykEaddr = slavecfg->ModYkNum[i] + UserSlave[i].ykBaddr - 1;
+		}
+		else{
+			UserSlave[i].ykEaddr = UserSlave[i].ykBaddr;
+		}
 		
 		UserSlave[i].asduAddr = 1;
 		UserSlave[i].runflag = SLAVE_CLOSE;
@@ -80,6 +96,11 @@ void GetSlaveAndInit(void)
 	}
 }
 
+/**
+  *@brief  将请求发送命令插入列表
+  *@param  pReSend 信息结构体
+  *@retval None
+  */
 void InsertReSendToList(RequestSend *pReSend)
 {
 	RequestSend *tpSend = RsendList.head;
@@ -94,20 +115,100 @@ void InsertReSendToList(RequestSend *pReSend)
 	}
 }
 
+/**
+  *@brief  寻找相应的发送命令
+  *@param  sAddr 从机地址
+  *@param  type 类型
+  *@retval 信息结构体 NULL 未找到
+  */
+RequestSend *LookReSendFromList(uint16_t sAddr, uint32_t type)
+{
+	RequestSend *tpSend;
+	
+	for(tpSend = RsendList.head; tpSend != NULL; tpSend = tpSend->next){
+		if(tpSend->slave == sAddr && tpSend->type == type){
+			return tpSend;
+		}
+	}
+	return NULL;
+}
+
+/**
+  *@brief  删除相应的发送命令
+  *@param  reqInfo 信息结构体
+  *@retval None
+  */
+void DeleteReSendFromList(RequestSend *reqInfo)
+{
+	RequestSend *tpSend,*tpSend2;
+	
+	tpSend = RsendList.head;
+	
+	if(tpSend == reqInfo){
+		tpSend = reqInfo->next;
+		return;
+	}
+	
+	while(1)
+	{
+		if(tpSend != NULL){
+			tpSend2 = tpSend->next;
+			if(tpSend2 == reqInfo){
+				tpSend->next = reqInfo->next;
+				rt_free(reqInfo);
+				break;
+			}
+		}
+		else{
+			break;
+		}
+		tpSend = tpSend2;
+	}
+}
+
+/**
+  *@brief  用从机地址获取从机信息
+  *@param  sAddr 从机地址
+  *@retval 从机信息 NULL 未找到
+  */
+DpuSlaveInfo *GetSlaveInfoUseAddr(uint16_t sAddr)
+{
+	
+	DpuSlaveInfo *tSlave = SlaveList.head;
+	while(tSlave != NULL)
+	{
+		if(tSlave->slave == sAddr){
+			return tSlave;
+		}
+		tSlave = tSlave->next;
+	}
+	return NULL;
+}
+
+/**
+  *@brief  用从机地址获取从机信息
+  *@param  sAddr 从机地址
+  *@retval 从机信息 NULL 未找到
+  */
 static int8_t YaokongResult(RequestSend *pReSend)
 {
-	uint8_t errorStatus = 0;
+	int8_t errorStatus = 0;
 	uint8_t offset = 6;
 	DpuSlaveInfo *tSlave = SlaveList.head;
 	uint8_t slaveNum = SlaveList.num;
+	
+	/* 获取地址 */
 	uint16_t ykAddr = pReSend->pbuff[offset] + (pReSend->pbuff[offset + 1]<<8);
+	
 	for(uint8_t i = 0; i < slaveNum; i ++){
+		/* 查找此地址对应的从机 */
 		if((tSlave->ykBaddr <= ykAddr) && (tSlave->ykEaddr > ykAddr)){
-			if(tSlave->runflag == SLAVE_CLOSE || tSlave->event & SLAVE_YAOKONG){
-				errorStatus = 1;
+			if(tSlave->runflag == SLAVE_CLOSE || (tSlave->event & SLAVE_YAOKONG)){
+				errorStatus = 1;/* 当前不可以执行遥控 */
 			}
 			else{
 				pReSend->slave = tSlave->slave;
+				/* 遥控地址映射 */
 				ykAddr = ykAddr - tSlave->ykBaddr + 1;
 				pReSend->pbuff[offset] = (uint8_t)ykAddr;
 				pReSend->pbuff[offset + 1] = (uint8_t)(ykAddr<<8);
@@ -124,40 +225,45 @@ static int8_t YaokongResult(RequestSend *pReSend)
 			break;
 		}
 	}
+	
+	if(errorStatus != 0){
+		pReSend->pbuff[5] = 47;
+		pReSend->pbuff[6] = 0;
+		DBSend[pReSend->id](pReSend->id,pReSend->pbuff);
+	}
 	return errorStatus;
 }
 
-
+/**
+  *@brief  请求发送命令回调
+  *@param  drvid 
+  *@param  drvid
+  *@retval 1 ok  0 false
+  */
 static uint8_t RequestSendCmd(uint8_t drvid,uint8_t *pbuf)
-{ //LENTH/Lock_ID/
-	uint8_t errorStatus = 0;
+{ //LENTH/Lock_ID/TI
 	RequestSend *pReSend;
-	uint8_t len = pbuf[0] - 2;
+	
+	if(pbuf[0] > 250){
+		return 0;
+	}
 	
 	pReSend = rt_malloc(sizeof(RequestSend));
 	if(pReSend == NULL){
 		return 0;
 	}
-	pReSend->pbuff = rt_malloc(len);
-	if(pReSend->pbuff == NULL){
-		rt_free(pReSend);
-		return 0;
-	}
 	pReSend->id = drvid;
 	pReSend->next = NULL;
-	pReSend->len = len;
-	rt_memcpy(pReSend->pbuff,&pbuf[2],len);
+	pReSend->len = pbuf[0];
+	rt_memcpy(pReSend->pbuff,&pbuf[0],pbuf[0]);
+	
 	switch(pbuf[2]){
 /* + 控制方向的过程信息 */	
 		/* - 单点命令 双点命令 */
 		case _DLT634_5101MASTER_C_SC_NA_1:
 		case _DLT634_5101MASTER_C_SC_NB_1:
-			errorStatus = YaokongResult(pReSend);
-			if(errorStatus != 0){
-				pbuf[3] = 47;
-				pbuf[4] = 0;
-				DBSend(drvid,pbuf);
-				rt_free(pReSend->pbuff);
+			pReSend->type = SLAVE_YAOKONG;
+			if(YaokongResult(pReSend) != 0){
 				rt_free(pReSend);
 			}
 			else{
@@ -183,7 +289,31 @@ static uint8_t RequestSendCmd(uint8_t drvid,uint8_t *pbuf)
 	return 1;
 }
 
-static Scan
+/**
+  *@brief  获取遥控命令
+  *@param  sInfo 
+  *@param  pSend
+  *@retval 0 ok  
+  */
+int8_t GetAndFillYaokongCmd(DpuSlaveInfo *sInfo,ReqSendInfo *pSend)
+{
+	int8_t errorStatus = 0;
+	
+	RequestSend *reqInfo = LookReSendFromList(sInfo->slave,SLAVE_YAOKONG);
+	if(reqInfo == NULL){
+		return -1;
+	}
+	
+	pSend->TI = reqInfo->pbuff[2];
+	pSend->VSQ = reqInfo->pbuff[3];
+	pSend->COT = reqInfo->pbuff[4] + (reqInfo->pbuff[5]<<8);
+	pSend->asduAddr = reqInfo->pbuff[6] + (reqInfo->pbuff[7]<<8);
+	
+	rt_memcpy(pSend->pbuff,&(reqInfo->pbuff[8]),3);
+	DeleteReSendFromList(reqInfo);
+	return errorStatus;
+}
+
 /**
   *@brief  总初始化
   *@param  None
@@ -224,12 +354,8 @@ DpuSlaveInfo *LookShouldRunSlave(void)
 	return tSInfo2;
 }
 
-static void CycleEventDealwith(void)
+void CycleEventDealwith(void)
 {
-	DpuSlaveInfo *tSInfo = SlaveList.head;
-	for(uint8_t i = 0; i < SlaveList.num; i ++){
-		
-	}
 }
 /**
   *@brief  从机切换处理
@@ -275,12 +401,12 @@ void ResetSendRevInfoDefault(DpuSlaveInfo *sInfo,ReqSendInfo *pSend,ReqRevInfo *
 	pSend->slave = sInfo->slave;
 	pSend->lastFCB = sInfo->lastFcb;
 	pSend->rev = pRev;
-	pSend->pbuff = NULL;
+	pSend->pbuff = reqSendBUff;
 	pSend->slen = 0;
 	pSend->TI = 0;
 	pRev->ackC = 0;
 	pRev->fcb = &(sInfo->lastFcb);
-	pRev->pbuff = NULL;
+	pRev->pbuff = reqSendBUff;
 	pRev->rlen = 0;
 }
 
@@ -401,18 +527,19 @@ void SMasterYaokongCmdFun(DpuSlaveInfo *sInfo)
 	ReqRevInfo tRev;
 	
 	ResetSendRevInfoDefault(sInfo,&tSend,&tRev);
-	//ResetSendRevInfoDefault(sInfo,&tSend,&tRev);
-	//GetAndFillYaokongCmd(&tSend);
-	
-	//uint8_t ykCmd = tSend.pbuff[SMasterAsduLen + 2];
-
+	if(GetAndFillYaokongCmd(sInfo,&tSend) != 0){
+		return;
+	}
 	tSend.type = _DLT634_5101MASTER_M_FUN3;
-	eErrStatus =SMasterSendFrame(SM_LINKID,&tSend);
+	eErrStatus = SMasterSendFrame(SM_LINKID,&tSend);
 	if(eErrStatus == SM_MRE_NO_ERR){
-		DPU_RESET_EVENT_FLAG(sInfo,SLAVE_YAOKONG);
-		if(tRev.ackC & _DLT634_5101MASTER_ACD){
+		if((tRev.ackC & _DLT634_5101MASTER_FUNCODE) == 0){//确认认可
 			DPU_SET_EVENT_FLAG(sInfo,SLAVE_HAVEDATA_1);
 		}
+		else{
+			//发送失败
+		}
+		DPU_RESET_EVENT_FLAG(sInfo,SLAVE_YAOKONG);
 	}
 	else if(eErrStatus == SM_MRE_TIMEDOUT){
 		sInfo->runflag = SLAVE_CLOSE;

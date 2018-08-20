@@ -45,6 +45,32 @@ typedef enum
     SM_MRE_EXE_FUN                  /*!< execute function error. */
 } SMasterReqErrCode;
 
+typedef struct{
+	uint16_t slave;		/* 从机addr */
+	uint8_t *fcb;
+	uint8_t ackC;		/* 应答控制域 */
+	uint8_t type;		/* 请求发送的帧类型 */
+	uint8_t TI;			/* 当type = F3时 有用 */
+	uint16_t COT;		/* 传送原因 */
+	uint16_t asduAddr;	/* ASDU addr */
+	uint8_t VSQ;		/* 可变结构限定词 */
+	uint8_t *pbuff;		/* 实体数据buff */
+	uint8_t rlen;		/* 实体数据长度 */
+}ReqRevInfo;
+
+typedef struct{
+	uint16_t slave;		/* 从机addr */
+	uint16_t asduAddr;	/* ASDU addr */
+	uint8_t lastFCB;	/* 发送的控制码FCB位记录 */ 
+	uint8_t type;		/* 请求发送的帧类型 */
+	uint8_t TI;			/* 当type = F3时 有用 */
+	uint16_t COT;		/* 传送原因 */
+	uint8_t VSQ;		/* 可变结构限定词 */
+	uint8_t *pbuff;	/* 实体数据buff */
+	uint8_t slen;		/* 实体数据长度 */
+	ReqRevInfo *rev;	/* 接收回调相关 */	
+}ReqSendInfo;
+
 /* PUBLIC FUNCTION DECLARATION -----------------------------------------------*/
 extern uint16_t DLT634_5101_MASTER_ReadData(uint8_t pdrv, uint8_t *pbuf, uint16_t count);
 extern uint16_t DLT634_5101_MASTER_WriteData(uint8_t pdrv, uint8_t *pbuf, uint16_t count);
@@ -71,9 +97,13 @@ uint8_t SMasterEventInit(void);
 uint32_t GetTimer1Tick(void);
 uint32_t GetTimer1IntervalTick(uint32_t beginTick);
 /* 应用数据处理 */
-int8_t DataResult_M_SP_NA_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff);
-int8_t DataResult_M_ME_NC_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff);
-int8_t DataResult_C_IC_NA_1(uint16_t slave,uint8_t vsq,uint8_t * pBuff);
+int8_t DataResult_M_SP_NA_1(ReqRevInfo *revInfo,uint8_t * pBuff);
+int8_t DataResult_M_DP_NA_1(ReqRevInfo *revInfo,uint8_t *pBuff);
+int8_t DataResult_M_ME_NC_1(ReqRevInfo *revInfo,uint8_t * pBuff);
+int8_t DataResult_C_IC_NA_1(ReqRevInfo *revInfo,uint8_t * pBuff);
+
+int8_t DataResult_C_SC_NA_1(ReqRevInfo *revInfo,uint8_t *pBuff);
+int8_t DataResult_C_SC_NB_1(ReqRevInfo *revInfo,uint8_t *pBuff);
 
 /* 帧实体填充 */
 uint8_t DataFill_MASTER_C_SC_NA_1(uint8_t pdrv, uint8_t *pBuff);

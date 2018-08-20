@@ -78,6 +78,8 @@ typedef struct DpuSlaveInfo_{
 	uint32_t event;		/* 事件标记 */
 	enum SwitchFlagState checkout;		/* 切换标志 */
 	uint8_t sourceId;	/* 命令源 */
+	uint32_t ykAllTick;
+	uint32_t ykTick;
 	uint16_t ykaddr;	/* 遥控地址 */
 	uint8_t ykState;	/* 0 无 1 选择完成 */
 	struct DpuSlaveInfo_ *next;			/* 连接下一个从机 */
@@ -96,7 +98,8 @@ typedef struct RequestSend_{
 	uint16_t slave;	/* 从机地址 */
 	uint8_t id;	/* 命令源id */
 	uint8_t len;/* 命令长度 */
-	uint8_t *pbuff;/* 命令内容指针 */
+	uint32_t type;/* 命令类型 */
+	uint8_t pbuff[250];/* 命令内容指针 */
 	struct RequestSend_ *next;
 }RequestSend;
 
@@ -109,6 +112,7 @@ typedef struct RequestSendList_{
 void Master101InitCmdFun(DpuSlaveInfo *sInfo);
 void SMasterDpuControlMain(void);
 void SMasterDpuControlInit(void);
+DpuSlaveInfo *GetSlaveInfoUseAddr(uint16_t sAddr);
 #endif /* __SMASTERDPUCONTROL_H */
 
 /* END */
