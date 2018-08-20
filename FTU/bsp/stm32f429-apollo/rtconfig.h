@@ -442,7 +442,7 @@
 #define INT_EXTI9_5_PRIO                                               ((0x00 << 4) | 0x03) // sd2405
 #define INT_TIM3_PRIO                                                  ((0x01 << 4) | 0x01) // frequency measurement
 #define INT_TIM6_PRIO                                                  ((0x01 << 4) | 0x00) // 1ms timer
-#define INT_TIM2_PRIO                                                  ((0x01 << 4) | 0x02) // none
+#define INT_TIM4_PRIO                                                  ((0x01 << 4) | 0x02) // none
 #define INT_TIM5_PRIO                                                  ((0x01 << 4) | 0x03) // none
 #define INT_TIM7_PRIO                                                  ((0x01 << 4) | 0x04) // none
 #define INT_USART1_PRIO                                                ((0x03 << 4) | 0x04) // xiansuo

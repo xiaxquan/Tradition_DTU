@@ -711,7 +711,7 @@ rt_uint8_t DBWriteNewSOE(uint16_t addr, rt_uint8_t state,struct CP56Time2a_t *ti
             element = g_NewListTelesignal[addr].head;
             do//遍历链表
             {				
-                for(i=1;i<((((rt_uint16_t*)(element->data))[1])>>NEWONEYX_NUM);i++)
+                for(i=0;i<((((rt_uint16_t*)(element->data))[1])>>NEWONEYX_NUM);i++)
                 {
                     if(i==0)
                     {
@@ -1853,10 +1853,9 @@ static void rt_common_data_save_value_default_to_fram(void)
   */
 void rt_multi_common_data_read_config_from_fram(void)
 {
-    uint32_t i,j,k,temp1;
+    uint32_t i,j,temp1;
     uint8_t sn =0,configureFault=0;
     struct tagzkDigitalInputCfg tagzkDigitalInputTemp;
-    char tStr[4];
     struct tagzkAnalogInputCfg tagzkAnalogInputTemp;
 
     /* FRAM上电判断 */
@@ -2170,22 +2169,6 @@ void rt_multi_common_data_read_config_from_fram(void)
                 memcpy(&zkDigitalInputCfg[j],&zkDigitalInputCfg[i],sizeof(struct tagzkDigitalInputCfg));
                 memcpy(&zkDigitalInputCfg[i],&tagzkDigitalInputTemp,sizeof(struct tagzkDigitalInputCfg));
                 zkDigitalInputCfg[i].isNegated = g_HardwareInterfaceSetDB->DIProperty[i];
-                for(k = 0; k < g_TelesignalCfg_Len; k++)
-                {
-                    if(zkDigitalInputCfg[i].pAddr == TelesignalCfg[k].pAddr)
-                    {
-                        if(strcmp("DI0000",TelesignalCfg[k].pName) == 0)
-                        { 
-                            TelesignalCfg[k].enable = 1;
-                            TelesignalCfg[k].pName = rt_malloc(20);
-                            memcpy(TelesignalCfg[k].pName,YingKaiRu,20);
-                            sprintf(tStr,"%d",i+1);
-                            memcpy(&TelesignalCfg[k].pName[6],tStr,4);
-                            TelesignalCfg[k].pName[19] = '\0';
-                        }
-                        break;
-                    }
-                }
             }
         }
     }

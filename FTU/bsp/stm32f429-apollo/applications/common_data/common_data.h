@@ -350,11 +350,6 @@ typedef struct TagTelesignalAddr
     di02,                                            // 硬开入
     di03,                                            // 硬开入
     di04,                                            // 硬开入    
-    di05,                                            // 硬开入
-    di06,                                            // 硬开入
-    di07,                                            // 硬开入
-    di08,                                            // 硬开入
-    di09,                                            // 硬开入
     manOpen,                                         // 手动分闸
     manClose,                                        // 手动合闸
     swtichClass,                                    // 开关类型

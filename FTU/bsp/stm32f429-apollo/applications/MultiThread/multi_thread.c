@@ -233,7 +233,7 @@ static void rt_protect_thread_entry(void *param)
         g_FixedMenu0Enable = 1;
         g_FixedMenu1Enable = 1;					
     }
-    DzhiChangeCallBack();
+    //DzhiChangeCallBack();
     ParameterCheck();
     menuTemp = (((g_TelesignalDB[g_TelesignalAddr.workmodeCommon]-1)<<0)|
                 ((g_TelesignalDB[g_TelesignalAddr.workmodeVolcur]-1)<<1));
