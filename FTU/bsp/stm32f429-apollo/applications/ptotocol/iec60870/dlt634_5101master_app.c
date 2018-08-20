@@ -428,8 +428,8 @@ static void WaitReceiveFullFrame(uint8_t pdrv)
 			}
 			else{//帧异常处理
 				/* 触发超时重发 */
-				SMasterInfo[pdrv].otflag = 1;
-				SMasterInfo[pdrv].otsCheck = 1;
+//				SMasterInfo[pdrv].otflag = 1;
+//				SMasterInfo[pdrv].otsCheck = 1;
 				
 			}
 		}

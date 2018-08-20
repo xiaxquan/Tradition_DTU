@@ -930,23 +930,29 @@ uint16_t DLT634_5101_SLAVE_R_YXDATA(uint8_t pdrv,uint16_t addr,uint16_t num, uin
         }
         else 
         { 
-            Property = (g_NewToOldTelesignal[temp1 + 1]>>NEWONEYX_PROPERTY)&NEWJUDG_PROPERTY;      
-			value = *(TelesignalCfg[((g_NewToOldTelesignal[temp1 + 2]>>NEWONEYX_ADDR)&NEWJUDG_ADDR) - DLT634_5101Slave_Pad[pdrv].YX_FirstAddr].pVal) - 1;		
-            for(j=1;j<(g_NewToOldTelesignal[temp1 + 1]>>NEWONEYX_NUM);j++)
+            Property = (g_NewToOldTelesignal[temp1 + 1]>>NEWONEYX_PROPERTY)&NEWJUDG_PROPERTY;      					
+            for(j=0;j<(g_NewToOldTelesignal[temp1 + 1]>>NEWONEYX_NUM);j++)
             {
-                valuetemp = *(TelesignalCfg[((g_NewToOldTelesignal[temp1 + 2 + j]>>NEWONEYX_ADDR)&NEWJUDG_ADDR) - DLT634_5101Slave_Pad[pdrv].YX_FirstAddr].pVal) - 1;
-                if((g_NewToOldTelesignal[temp1 + 2 + j]>>NEWONEYX_CAL>>NEWCAL_NEG)&NEWPROPERTY_JUDG)
+                if(j==0)
                 {
-                    valuetemp = (~valuetemp)&0x01;                
+                    value = *(TelesignalExCfg[((g_NewToOldTelesignal[temp1 + 2]>>NEWONEYX_ADDR)&NEWJUDG_ADDR) - DLT634_5101Slave_Pad[pdrv].YX_FirstAddr]->pVal) - 1;
                 }
-                if(((g_NewToOldTelesignal[temp1 + 2 + j]>>NEWONEYX_CAL>>NEWCAL_AND)&NEWPROPERTY_JUDG) == NEWJUDG_AND)
-                {
-                    value &= valuetemp;                 
-                }  
                 else
                 {
-                    value |= valuetemp;  
-                }   
+                    valuetemp = *(TelesignalExCfg[((g_NewToOldTelesignal[temp1 + 2 + j]>>NEWONEYX_ADDR)&NEWJUDG_ADDR) - DLT634_5101Slave_Pad[pdrv].YX_FirstAddr]->pVal) - 1;
+                    if((g_NewToOldTelesignal[temp1 + 2 + j]>>NEWONEYX_CAL>>NEWCAL_NEG)&NEWPROPERTY_JUDG)
+                    {
+                        valuetemp = (~valuetemp)&0x01;                
+                    }
+                    if(((g_NewToOldTelesignal[temp1 + 2 + j]>>NEWONEYX_CAL>>NEWCAL_AND)&NEWPROPERTY_JUDG) == NEWJUDG_AND)
+                    {
+                        value &= valuetemp;                 
+                    }  
+                    else
+                    {
+                        value |= valuetemp;  
+                    } 
+                }                
             }
             
             value = value + 1;

@@ -15,7 +15,6 @@
 #include "drv_gpio.h"
 
 char *BeiJingSuangJie = "北京双杰";
-char *YingKaiRu = "硬开入";
 
 /* 面板硬遥信 */
 struct taghmiDigitalInputCfg hmiDigitalInputCfg[] = 
@@ -67,11 +66,11 @@ struct tagzkDigitalInputCfg zkDigitalInputCfg[] =
     { 1,       7,           &g_TelesignalAddr.di02,                         0,      0,      0},
     { 1,       8,           &g_TelesignalAddr.di03,                         0,      0,      0},
     { 1,       9,           &g_TelesignalAddr.di04,                         0,      0,      0},
-    { 1,       10,          &g_TelesignalAddr.di05,                         0,      0,      0},
-    { 1,       11,          &g_TelesignalAddr.di06,                         0,      0,      0},
-    { 1,       12,          &g_TelesignalAddr.di07,                         0,      0,      0},    
-    { 1,       13,          &g_TelesignalAddr.di08,                         0,      0,      0},
-    { 1,       14,          &g_TelesignalAddr.di09,                         0,      0,      0},
+    { 1,       10,          &g_TelesignalAddr.workmodeCommon,               0,      0,      0},
+    { 1,       11,          &g_TelesignalAddr.workmodeVolcur,               0,      0,      0},
+    { 1,       12,          &g_TelesignalAddr.functionHardStrap,            0,      0,      0},    
+    { 1,       13,          &g_TelesignalAddr.earth,                        0,      0,      0},
+    { 1,       14,          &g_TelesignalAddr.remote,                       0,      0,      0},
     { 1,       15,          &g_TelesignalAddr.manOpen,                      0,      0,      0},
     { 1,       16,          &g_TelesignalAddr.manClose,                     0,      0,      0},
 };
@@ -84,16 +83,11 @@ struct tagTelesignalCfg TelesignalCfg[] =
     { 1,  "开关合位",     &g_TelesignalAddr.switchClose,                 NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
     { 1,  "储能",         &g_TelesignalAddr.operatingMechanism,          NULL,     0xff,    	1,		{"无", "有"},      		{"有->无","无->有"}},
     { 1,  "低气压",       &g_TelesignalAddr.lowPressure,                 NULL,     0xff,    	1,		{"无", "告警"},    		{"告警->复位","无->告警"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di00,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di01,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di02,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di03,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di04,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di05,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di06,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di07,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di08,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
-    { 0,  "DI0000",       &g_TelesignalAddr.di09,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 1,  "硬开入A",      &g_TelesignalAddr.di00,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 1,  "硬开入B",      &g_TelesignalAddr.di01,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 1,  "硬开入C",      &g_TelesignalAddr.di02,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 1,  "硬开入D",      &g_TelesignalAddr.di03,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
+    { 1,  "硬开入E",      &g_TelesignalAddr.di04,                        NULL,     0xff,    	1,		{"分", "合"},      		{"合->分","分->合"}},
     { 0,  "手动分闸按键", &g_TelesignalAddr.manOpen,                     NULL,     0xff,    	1,		{"按下", "松开"},       {"按下->松开","松开->按下"}},
     { 0,  "手动合闸按键", &g_TelesignalAddr.manClose,                    NULL,     0xff,    	1,		{"按下", "松开"},      	{"按下->松开","松开->按下"}},
     { 1,  "开关类型",     &g_TelesignalAddr.swtichClass,                 NULL,     0xff,    	1,		{"断路器","负荷开关"},	{"断路器","负荷开关"}},

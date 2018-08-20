@@ -350,11 +350,6 @@ typedef struct TagTelesignalAddr
     di02,                                            // 硬开入
     di03,                                            // 硬开入
     di04,                                            // 硬开入    
-    di05,                                            // 硬开入
-    di06,                                            // 硬开入
-    di07,                                            // 硬开入
-    di08,                                            // 硬开入
-    di09,                                            // 硬开入
     manOpen,                                         // 手动分闸
     manClose,                                        // 手动合闸
     swtichClass,                                    // 开关类型
@@ -997,16 +992,16 @@ struct ConfigurationSetDatabase
 {
 //YX设置
     uint16_t YXSetNum;//YX设置总数
-    uint16_t YXSet[299];//YX设置
+    uint16_t YXSet[2047];//YX设置
 //YC设置
-    uint16_t YCAddr[300];//值
-    uint16_t YCProperty[300];//属性
-    float YCMultipleRate[300];//倍率
-    float YCRatingValue[300];//额定值
-    float YCDeadZone[300];//死区
+    uint16_t YCAddr[512];//值
+    uint16_t YCProperty[512];//属性
+    float YCMultipleRate[512];//倍率
+    float YCRatingValue[512];//额定值
+    float YCDeadZone[512];//死区
 //YK设置
-    uint16_t YKAddr[16];//值
-    uint16_t YKProperty[16];//属性
+    uint16_t YKAddr[256];//值
+    uint16_t YKProperty[256];//属性
 //模块设置
     uint16_t ModAddr[16];//值
     uint16_t ModYxNum[16];//yx个数

@@ -216,19 +216,27 @@ static void rt_protect_thread_entry(void *param)
     
     rt_sem_control(&protect_sem, RT_IPC_CMD_RESET, 0);
 	
+    if((((g_TelesignalDB[g_TelesignalAddr.workmodeCommon]-1)<<0)|
+    ((g_TelesignalDB[g_TelesignalAddr.workmodeVolcur]-1)<<1)) != 0)
+    {
+        if(g_TelesignalDB[g_TelesignalAddr.workmodeCommon] == ON)
+        {g_FixedMenu0Enable = 1;}
+        else
+        {g_FixedMenu0Enable = 0;}
+        if(g_TelesignalDB[g_TelesignalAddr.workmodeVolcur] == ON)
+        {g_FixedMenu1Enable = 1;}
+        else
+        {g_FixedMenu1Enable = 0;}
+    }
+    else
+    {
+        g_FixedMenu0Enable = 1;
+        g_FixedMenu1Enable = 1;					
+    }
+    //DzhiChangeCallBack();
+    ParameterCheck();
     menuTemp = (((g_TelesignalDB[g_TelesignalAddr.workmodeCommon]-1)<<0)|
-				((g_TelesignalDB[g_TelesignalAddr.workmodeVolcur]-1)<<1));
-	if(menuTemp != 0)
-	{
-		if(g_TelesignalDB[g_TelesignalAddr.workmodeCommon] == ON)
-		{g_FixedMenu0Enable = 1;}
-		else
-		{g_FixedMenu0Enable = 0;}
-		if(g_TelesignalDB[g_TelesignalAddr.workmodeVolcur] == ON)
-		{g_FixedMenu1Enable = 1;}
-		else
-		{g_FixedMenu1Enable = 0;}
-	}
+                ((g_TelesignalDB[g_TelesignalAddr.workmodeVolcur]-1)<<1));
     
     for (;;)
     {
