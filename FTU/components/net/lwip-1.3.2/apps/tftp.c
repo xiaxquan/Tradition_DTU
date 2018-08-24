@@ -23,7 +23,7 @@ void tftp_get(const char* host, const char* dir, const char* filename)
 
 	/* make local file name */
 	rt_snprintf((char*)tftp_buffer, sizeof(tftp_buffer),
-		"%s/%s", dir, filename);
+		"%s//%s", dir, filename);
 
 	/* open local file for write */
 	fd = open((char*)tftp_buffer, O_RDWR | O_CREAT, 0);
@@ -38,7 +38,7 @@ void tftp_get(const char* host, const char* dir, const char* filename)
     tftp_addr.sin_family = AF_INET;
     tftp_addr.sin_port = htons(TFTP_PORT);
     
-    sock_fd = socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
+    sock_fd = lwip_socket(AF_INET,SOCK_DGRAM,IPPROTO_UDP);
     if (sock_fd < 0)
 	{
 	    close(fd);

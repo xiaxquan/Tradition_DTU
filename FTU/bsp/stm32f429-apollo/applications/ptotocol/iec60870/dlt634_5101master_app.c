@@ -39,13 +39,13 @@ static void FrameReceiveInfoReset(uint8_t pdrv)
 static uint8_t FrameSendToDevice(uint8_t pdrv)
 {
 	FrameReceiveInfoReset(pdrv);
-	DebugPrintf("\r\nsend: ");
+//	DebugPrintf("\r\nsend: ");
 	char tstr[4];
 	for(uint8_t i = 0; i < SMasterInfo[pdrv].txLen; i++){
 		sprintf(tstr,"%02X",SMasterInfo[pdrv].TxdBuf[i]);
-		DebugPrintf("%s ",tstr);
+//		DebugPrintf("%s ",tstr);
 	}
-	DebugPrintf("\r\n");
+//	DebugPrintf("\r\n");
     DLT634_5101_MASTER_WriteData(pdrv, &SMasterInfo[pdrv].TxdBuf[0],\
 		SMasterInfo[pdrv].txLen);
 	SMasterInfo[pdrv].linkStatus = LINK_WAITACK;
@@ -81,7 +81,7 @@ static void LinkTimeOutResult(uint8_t pdrv)
 			SMasterInfo[pdrv].reSend = 0;
 			SMasterInfo[pdrv].linkStatus = LINK_IDLE;
 			SMasterEventPost(EV_SMASTER_ERROR_RESPOND_TIMEOUT);
-			DebugPrintf("通信超时\r\n");
+//			DebugPrintf("通信超时\r\n");
 		}
 	}	
 }

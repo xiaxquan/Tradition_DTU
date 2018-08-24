@@ -1045,7 +1045,7 @@ static void ReadData2Process(uint8_t pdrv)
 static void DLT634_5104_SLAVE_NetTest(uint8_t pdrv)
 {   
     if (!DLT634_5104_SLAVE_CheckLink(pdrv))// «∑Ò¡¥Ω”
-    {            
+    {   
         DLT634_5104_AppInitReset(pdrv);				
         DLT104SlaveApp[pdrv].Connect = 0;
     }

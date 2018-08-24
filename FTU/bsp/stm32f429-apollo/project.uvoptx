@@ -32,7 +32,7 @@
         <BeepAtEnd>1</BeepAtEnd>
         <RunSim>0</RunSim>
         <RunTarget>1</RunTarget>
-        <RunAbUc>0</RunAbUc>
+        <RunAbUc>1</RunAbUc>
       </OPTTT>
       <OPTHX>
         <HexSelection>1</HexSelection>
@@ -78,6 +78,48 @@
         <IsCurrentTarget>1</IsCurrentTarget>
       </OPTFL>
       <CpuCode>18</CpuCode>
+      <Books>
+        <Book>
+          <Number>0</Number>
+          <Title>STM32F429I-Discovery Quick Start Guide (STM32F429I-Discovery)</Title>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\MDK\Boards\ST\STM32F429I-Discovery\Documentation\32F429IDISCOVERY_QSG.pdf</Path>
+        </Book>
+        <Book>
+          <Number>1</Number>
+          <Title>Getting Started (STM32F429I-Discovery)</Title>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\MDK\Boards\ST\STM32F429I-Discovery\Documentation\DM00092920.pdf</Path>
+        </Book>
+        <Book>
+          <Number>2</Number>
+          <Title>User Manual (STM32F429I-Discovery)</Title>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\MDK\Boards\ST\STM32F429I-Discovery\Documentation\DM00093903.pdf</Path>
+        </Book>
+        <Book>
+          <Number>3</Number>
+          <Title>STM32F429I-Discovery: Blinky Lab (STM32F429I-Discovery)</Title>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\MDK\Boards\ST\STM32F429I-Discovery\Documentation\STMicroelectronics_Blinky_Lab.pdf</Path>
+        </Book>
+        <Book>
+          <Number>4</Number>
+          <Title>Bill of Materials (STM32F429I-Discovery)</Title>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\MDK\Boards\ST\STM32F429I-Discovery\Documentation\stm32f429i-disco_bom.zip</Path>
+        </Book>
+        <Book>
+          <Number>5</Number>
+          <Title>Gerber Files (STM32F429I-Discovery)</Title>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\MDK\Boards\ST\STM32F429I-Discovery\Documentation\stm32f429i-disco_gerber.zip</Path>
+        </Book>
+        <Book>
+          <Number>6</Number>
+          <Title>Schematics (STM32F429I-Discovery)</Title>
+          <Path>C:\Keil_v5\ARM\PACK\Keil\STM32F4xx_DFP\2.13.0\MDK\Boards\ST\STM32F429I-Discovery\Documentation\stm32f429i-disco_sch.zip</Path>
+        </Book>
+        <Book>
+          <Number>7</Number>
+          <Title>STM32F429I-Discovery Web Page (STM32F429I-Discovery)</Title>
+          <Path>http://www.st.com/web/catalog/tools/FM116/SC959/SS1532/LN1199/PF259090</Path>
+        </Book>
+      </Books>
       <DebugOpt>
         <uSim>0</uSim>
         <uTrg>1</uTrg>
@@ -100,7 +142,6 @@
         <tRSysVw>1</tRSysVw>
         <sRunDeb>0</sRunDeb>
         <sLrtime>0</sLrtime>
-        <bEvRecOn>1</bEvRecOn>
         <nTsel>5</nTsel>
         <sDll></sDll>
         <sDllPa></sDllPa>
@@ -123,7 +164,7 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>ST-LINKIII-KEIL_SWO</Key>
-          <Name>-U35FF6D064D4E353735491743 -O8431 -SF1800 -C0 -A0 -I0 -HNlocalhost -HP7184 -P2 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8004 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO15 -FD20000000 -FC1000 -FN1 -FF0STM32F4xx_1024.FLM -FS08040000 -FL0100000 -FP0($$Device:STM32F429IGTx$CMSIS\Flash\STM32F4xx_1024.FLM)</Name>
+          <Name>-U51FF6B067267495342592467 -O8431 -S1 -C0 -A0 -N00("ARM CoreSight SW-DP") -D00(2BA01477) -L00(0) -TO18 -TC10000000 -TP21 -TDS8004 -TDT0 -TDC1F -TIEFFFFFFFF -TIP8 -FO15 -FD20000000 -FC1000 -FN1 -FF0STM32F4xx_1024.FLM -FS08000000 -FL0100000 -FP0($$Device:STM32F429IGTx$CMSIS\Flash\STM32F4xx_1024.FLM)</Name>
         </SetRegEntry>
         <SetRegEntry>
           <Number>0</Number>
@@ -223,7 +264,7 @@
       <DebugFlag>
         <trace>0</trace>
         <periodic>0</periodic>
-        <aLwin>0</aLwin>
+        <aLwin>1</aLwin>
         <aCover>0</aCover>
         <aSer1>0</aSer1>
         <aSer2>0</aSer2>
@@ -249,16 +290,9 @@
       <LintExecutable></LintExecutable>
       <LintConfigFile></LintConfigFile>
       <bLintAuto>0</bLintAuto>
-      <bAutoGenD>0</bAutoGenD>
-      <LntExFlags>0</LntExFlags>
-      <pMisraName></pMisraName>
-      <pszMrule></pszMrule>
-      <pSingCmds></pSingCmds>
-      <pMultCmds></pMultCmds>
-      <pMisraNamep></pMisraNamep>
-      <pszMrulep></pszMrulep>
-      <pSingCmdsp></pSingCmdsp>
-      <pMultCmdsp></pMultCmdsp>
+      <Lin2Executable></Lin2Executable>
+      <Lin2ConfigFile></Lin2ConfigFile>
+      <bLin2Auto>0</bLin2Auto>
       <DebugDescription>
         <Enable>1</Enable>
         <EnableLog>0</EnableLog>
@@ -270,7 +304,7 @@
 
   <Group>
     <GroupName>Applications</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3310,7 +3344,7 @@
 
   <Group>
     <GroupName>IEC60870</GroupName>
-    <tvExp>1</tvExp>
+    <tvExp>0</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3577,6 +3611,18 @@
     <File>
       <GroupNumber>19</GroupNumber>
       <FileNumber>264</FileNumber>
+      <FileType>1</FileType>
+      <tvExp>0</tvExp>
+      <tvExpOptDlg>0</tvExpOptDlg>
+      <bDave2>0</bDave2>
+      <PathWithFileName>..\..\components\net\lwip-1.3.2\apps\tftp.c</PathWithFileName>
+      <FilenameWithoutPath>tftp.c</FilenameWithoutPath>
+      <RteFlg>0</RteFlg>
+      <bShared>0</bShared>
+    </File>
+    <File>
+      <GroupNumber>19</GroupNumber>
+      <FileNumber>265</FileNumber>
       <FileType>5</FileType>
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
