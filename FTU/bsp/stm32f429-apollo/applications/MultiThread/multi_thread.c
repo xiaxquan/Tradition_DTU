@@ -878,7 +878,7 @@ static void dpu_thread_start(void *param)
     RT_ASSERT(result == RT_EOK);
 
     result = rt_thread_startup(rt_thread_dpu);
-														
+
     RT_ASSERT(result == RT_EOK);
 		THREAD_PRINTF("dpu thread start \r\n"); 
 
