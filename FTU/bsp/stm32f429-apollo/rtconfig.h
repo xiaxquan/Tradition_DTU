@@ -361,6 +361,7 @@
 #define RT_USING_W5500                                                 (1) // LWIP通讯任务W5500_2404
 #define RT_USING_FTUIDLE                                               (1) // 空闲任务
 #define RT_USING_DPU                                                   (1) // dpu
+#define RT_USING_INIPARSER                                             (1) // iniparser测试线程
 
 /* thread parameter Configuration */
 #define RT_USING_STATIC_THREAD
@@ -432,6 +433,11 @@
 #define MBSLAVE_THREAD_PRIORITY                                        (19) // 18
 #define MBSLAVE_THREAD_STACK_SIZE                                      (4096)
 #define MBSLAVE_THREAD_TIMESLICE                                       (20)
+
+#define INIPARSER_THREAD_NAME                                          "iniparser"
+#define INIPARSER_THREAD_PRIORITY                                      (25)
+#define INIPARSER_THREAD_STACK_SIZE                                    (1024*8)
+#define INIPARSER_THREAD_TIMESLICE                                     (20)
 
 
 /* INTERRUPT PRIORITIES CONFIGURATION ----------------------------------------*/

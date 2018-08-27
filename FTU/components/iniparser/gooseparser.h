@@ -13,7 +13,8 @@
 #ifndef _GOOSEPARSER_H_
 #define _GOOSEPARSER_H_
 
-#include<stdint.h>
+#include <stdint.h>
+#include "rtdef.h"
 
 
 #define MAXSIZE 40
@@ -30,12 +31,12 @@
  */
 typedef struct TagFuncConDatAttr
 {
-    rt_uint8_t ref[MAXSIZE];
-    rt_uint8_t type[TYPESIZE];
-    rt_uint8_t inVarName[MAXSIZE];
-    rt_uint32_t act;
+    uint8_t ref[MAXSIZE];
+    uint8_t type[TYPESIZE];
+    uint8_t inVarName[MAXSIZE];
+    uint32_t act;
 
-}FuncConDatAttr;
+}FunctionConstraintDataAttribute;
 
 
 /**
@@ -43,11 +44,11 @@ typedef struct TagFuncConDatAttr
  */
 typedef struct TagGooseInput
 {
-    rt_uint32_t gocbIndex;
-    rt_uint32_t gocbEntryIntex;
-    rt_uint8_t ref[MAXSIZE];
-    rt_uint8_t type[TYPESIZE];
-    rt_uint8_t outVarName[MAXSIZE];
+    uint32_t gocbIndex;
+    uint32_t gocbEntryIntex;
+    uint8_t ref[MAXSIZE];
+    uint8_t type[TYPESIZE];
+    uint8_t outVarName[MAXSIZE];
 
 }GooseInput;
 
@@ -56,13 +57,13 @@ typedef struct TagGooseInput
  */
 typedef struct TagGooseControlBlockRx
 {
-    rt_uint8_t addr[8];
-    rt_uint32_t appid;
-    rt_uint8_t gocbRef[MAXSIZE];
-    rt_uint8_t appID[APPIDSIZE];
-    rt_uint8_t datSet[MAXSIZE];
-    rt_uint32_t confRev;
-    rt_uint32_t numDatSetEntriess;
+    uint8_t addr[8];
+    uint32_t appid;
+    uint8_t gocbRef[MAXSIZE];
+    uint8_t appID[APPIDSIZE];
+    uint8_t datSet[MAXSIZE];
+    uint32_t confRev;
+    uint32_t numDatSetEntriess;
 
 }GooseControlBlockRx;
 
@@ -71,18 +72,18 @@ typedef struct TagGooseControlBlockRx
  */
 typedef struct TagGooseControlBlockTx
 {
-    rt_uint8_t gocbRef[MAXSIZE];
-    rt_uint8_t appID[APPIDSIZE];
-    rt_uint8_t datSet[MAXSIZE];
-    rt_uint32_t confRev;
-    rt_uint32_t numDatSetEntriess;
-    rt_uint8_t addr[8];
-    rt_uint32_t priority;
-    rt_uint32_t vid;
-    rt_uint32_t appid;
-    rt_uint32_t minTime;
-    rt_uint32_t maxTime;
-    FuncConDatAttr* fcda;
+    uint8_t gocbRef[MAXSIZE];
+    uint8_t appID[APPIDSIZE];
+    uint8_t datSet[MAXSIZE];
+    uint32_t confRev;
+    uint32_t numDatSetEntriess;
+    uint8_t addr[8];
+    uint32_t priority;
+    uint32_t vid;
+    uint32_t appid;
+    uint32_t minTime;
+    uint32_t maxTime;
+    FunctionConstraintDataAttribute* fcda;
 
 }GooseControlBlockTx;
 
@@ -91,7 +92,7 @@ typedef struct TagGooseControlBlockTx
  */
 typedef struct TagGooseTxMessage
 {
-    rt_uint32_t numGoCb;
+    uint32_t numGoCb;
     GooseControlBlockTx* gocd;
 
 }GooseTxMessage;
@@ -101,8 +102,8 @@ typedef struct TagGooseTxMessage
  */
 typedef struct TagGooseRxMessage
 {
-    rt_uint32_t numGoCb;
-    rt_uint32_t numInput;
+    uint32_t numGoCb;
+    uint32_t numInput;
     GooseControlBlockRx* gocd;
     GooseInput* input;
 
@@ -113,7 +114,7 @@ typedef struct TagGooseRxMessage
 /*---------------------------------------------------------------------------
                                 Function
  ---------------------------------------------------------------------------*/
-rt_uint32_t GooseIniParser(rt_uint8_t* argv, GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRxMessage);
+uint32_t GooseIniParser(uint8_t* argv, GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRxMessage);
 void FreeGooseMessageMem(GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRxMessage);
 void PrintGooseTxRxMessage(GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRxMessage);
 

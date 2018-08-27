@@ -26,22 +26,22 @@ static void IniToStruct(const dictionary* dict, GooseTxMessage* gooseTxMessage, 
 static void GooseMessageInit(GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRxMessage);
 static void GocbTxStructInit(GooseTxMessage* gooseTxMessage);
 static void GocbRxStructInit(GooseRxMessage* gooseRxMessage);
-static void FcdaStructInit(GooseTxMessage* gooseMassage, rt_uint32_t num);
+static void FcdaStructInit(GooseTxMessage* gooseMassage, uint32_t num);
 static void GoInputStructInit(GooseRxMessage* gooseMassage);
-static void DictStrTrim(rt_uint8_t* srcStr, rt_uint8_t* destStr);
-static rt_uint32_t CharToInt(rt_uint8_t* str);
-static void AddrToInt(rt_uint8_t* str, rt_uint8_t* ret);
-static rt_uint32_t HexToInt(rt_uint8_t* str, rt_uint8_t size);
+static void DictStrTrim(uint8_t* srcStr, uint8_t* destStr);
+static uint32_t CharToInt(uint8_t* str);
+static void AddrToInt(uint8_t* str, uint8_t* ret);
+static uint32_t HexToInt(uint8_t* str, uint8_t size);
 
 /*--------------------------------------------------------------------------*/
 
 
 
 
-rt_uint32_t GooseIniParser(rt_uint8_t* argv, GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRxMessage)
+uint32_t GooseIniParser(uint8_t* argv, GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRxMessage)
 {
     dictionary* ini;
-    rt_uint8_t* iniName;
+    uint8_t* iniName;
 	
 	iniName = argv;
 
@@ -50,7 +50,6 @@ rt_uint32_t GooseIniParser(rt_uint8_t* argv, GooseTxMessage* gooseTxMessage, Goo
     ini = iniparser_load((char*)iniName);
     IniToStruct(ini, gooseTxMessage, gooseRxMessage);
     iniparser_freedict(ini);
-
 
     return 0;
 }
@@ -65,9 +64,9 @@ rt_uint32_t GooseIniParser(rt_uint8_t* argv, GooseTxMessage* gooseTxMessage, Goo
  **/
 void IniToStruct(const dictionary* dict, GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRxMessage)
 {
-    rt_uint32_t i = 0, numGocb = 0, numFcda = 0, numInput = 0;
-    rt_uint8_t flag = 0;
-    rt_uint8_t strTrim[20] = {0};
+    uint32_t i = 0, numGocb = 0, numFcda = 0, numInput = 0;
+    uint8_t flag = 0;
+    uint8_t strTrim[20] = {0};
 
     if(dict == NULL)
     {
@@ -94,7 +93,7 @@ void IniToStruct(const dictionary* dict, GooseTxMessage* gooseTxMessage, GooseRx
                     }
                     else
                     {
-                        rt_kprintf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
+                        printf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
                         continue;
                     }
                 }
@@ -124,7 +123,7 @@ void IniToStruct(const dictionary* dict, GooseTxMessage* gooseTxMessage, GooseRx
                     }
                     else
                     {
-                        rt_kprintf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
+                        printf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
                         continue;
                     }
                 }
@@ -157,7 +156,7 @@ void IniToStruct(const dictionary* dict, GooseTxMessage* gooseTxMessage, GooseRx
                     }
                     else
                     {
-                        rt_kprintf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
+                        printf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
                         continue;
                     }
                 }
@@ -182,13 +181,13 @@ void IniToStruct(const dictionary* dict, GooseTxMessage* gooseTxMessage, GooseRx
                     }
                     else
                     {
-                        rt_kprintf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
+                        printf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
                         continue;
                     }
                 }
                 else
                 {
-                    rt_kprintf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
+                    printf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
                     continue;
                 }
 
@@ -210,7 +209,7 @@ void IniToStruct(const dictionary* dict, GooseTxMessage* gooseTxMessage, GooseRx
                     }
                     else
                     {
-                        rt_kprintf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
+                        printf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
                         continue;
                     }
                 }
@@ -247,7 +246,7 @@ void IniToStruct(const dictionary* dict, GooseTxMessage* gooseTxMessage, GooseRx
                     }
                     else
                     {
-                        rt_kprintf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
+                        printf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
                         continue;
                     }
                 }
@@ -276,13 +275,13 @@ void IniToStruct(const dictionary* dict, GooseTxMessage* gooseTxMessage, GooseRx
                     }
                     else
                     {
-                        rt_kprintf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
+                        printf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
                         continue;
                     }
                 }
                 else
                 {
-                    rt_kprintf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
+                    printf("[%s] is nonrecognition!\r\n", dict->key[i]);        /* 不识别的字符串 */
                     continue;
                 }
 
@@ -368,13 +367,13 @@ static void GooseMessageInit(GooseTxMessage* gooseTxMessage, GooseRxMessage* goo
  **/
 static void GocbTxStructInit(GooseTxMessage* gooseTxMessage)
 {
-    rt_uint32_t i = 0;
+    uint32_t i = 0;
    
     gooseTxMessage->gocd  = (GooseControlBlockTx*)calloc(sizeof(GooseControlBlockTx), gooseTxMessage->numGoCb);
    
     if (!gooseTxMessage->gocd)
     {
-        rt_kprintf("DEBUG:%s():%d:gooseTxMessage->gocd Malloc Fail!\n", __FUNCTION__, __LINE__);
+        printf("DEBUG:%s():%d:gooseTxMessage->gocd Malloc Fail!\n", __FUNCTION__, __LINE__);
         return;
     }
 
@@ -396,7 +395,7 @@ static void GocbRxStructInit(GooseRxMessage* gooseRxMessage)
    
     if (!gooseRxMessage->gocd)
     {
-        rt_kprintf("DEBUG:%s():%d:gooseRxMessage->gocd Malloc Fail!\n", __FUNCTION__, __LINE__);
+        printf("DEBUG:%s():%d:gooseRxMessage->gocd Malloc Fail!\n", __FUNCTION__, __LINE__);
         return;
     }
 
@@ -408,14 +407,14 @@ static void GocbRxStructInit(GooseRxMessage* gooseRxMessage)
  * @param num FCDA结构体对应的GoCB的编号
  * 
  **/
-static void FcdaStructInit(GooseTxMessage* gooseTxMessage, rt_uint32_t num)
+static void FcdaStructInit(GooseTxMessage* gooseTxMessage, uint32_t num)
 {
     
-    gooseTxMessage->gocd[num].fcda = (FuncConDatAttr*)calloc(sizeof(FuncConDatAttr), gooseTxMessage->gocd[num].numDatSetEntriess);
+    gooseTxMessage->gocd[num].fcda = (FunctionConstraintDataAttribute*)calloc(sizeof(FunctionConstraintDataAttribute), gooseTxMessage->gocd[num].numDatSetEntriess);
 
     if (!gooseTxMessage->gocd[num].fcda)
     {
-        rt_kprintf("DEBUG:%s():%d:gooseTxMessage->gocd[%d].fcda Malloc Fail!\n", __FUNCTION__, __LINE__, num);
+        printf("DEBUG:%s():%d:gooseTxMessage->gocd[%d].fcda Malloc Fail!\n", __FUNCTION__, __LINE__, num);
         return;
     }
 
@@ -433,7 +432,7 @@ static void GoInputStructInit(GooseRxMessage* gooseRxMessage)
     
     if (!gooseRxMessage->input)
     {
-        rt_kprintf("DEBUG:%s():%d:gooseRxMessage->input Malloc Fail!\n", __FUNCTION__, __LINE__);
+        printf("DEBUG:%s():%d:gooseRxMessage->input Malloc Fail!\n", __FUNCTION__, __LINE__);
         return;
     }
 
@@ -446,11 +445,11 @@ static void GoInputStructInit(GooseRxMessage* gooseRxMessage)
  * @param destStr 最终提取出的字符串
  * 
  **/
-static void DictStrTrim(rt_uint8_t* srcStr, rt_uint8_t* destStr)
+static void DictStrTrim(uint8_t* srcStr, uint8_t* destStr)
 {
-    rt_uint8_t* pStr = srcStr;
-    rt_uint8_t* pTemp = pStr;
-    rt_uint8_t i = 0;
+    uint8_t* pStr = srcStr;
+    uint8_t* pTemp = pStr;
+    uint8_t i = 0;
     
     memset(destStr, 0, 20);
     for( ; *pStr!='\0'; pStr++)
@@ -474,11 +473,11 @@ static void DictStrTrim(rt_uint8_t* srcStr, rt_uint8_t* destStr)
  * @return 转换完成的数
  * 
  **/
-static rt_uint32_t CharToInt(rt_uint8_t* str)
+static uint32_t CharToInt(uint8_t* str)
 {
-    rt_uint32_t num = 0;
-    rt_uint8_t i = 0;
-    rt_uint8_t pStr[10] = {0};
+    uint32_t num = 0;
+    uint8_t i = 0;
+    uint8_t pStr[10] = {0};
     for(i=0; str[i]!='\0'; i++)
     {
         pStr[i] = str[i];
@@ -500,12 +499,12 @@ static rt_uint32_t CharToInt(rt_uint8_t* str)
  * 
  * @example "01-0C-CD-01-00-11"   ->   {0x01, 0x0C, 0xCD, 0x01, 0x00, 0x11}
  **/
-static void AddrToInt(rt_uint8_t* str, rt_uint8_t* ret)
+static void AddrToInt(uint8_t* str, uint8_t* ret)
 {
-    rt_uint32_t i = 0;
-    rt_uint8_t* pStr = str;
-    rt_uint32_t num = 0;
-    rt_uint8_t hexStr[5] = {0};           /* 拆分出单个的十六进制值字符串 */
+    uint32_t i = 0;
+    uint8_t* pStr = str;
+    uint32_t num = 0;
+    uint8_t hexStr[5] = {0};           /* 拆分出单个的十六进制值字符串 */
 
     for(; *pStr!='\0' && num<strlen(str); pStr++)
     {
@@ -533,11 +532,11 @@ static void AddrToInt(rt_uint8_t* str, rt_uint8_t* ret)
  * 
  * @example "CD"   ->   0xCD
  **/
-static rt_uint32_t HexToInt(rt_uint8_t* str, rt_uint8_t size)
+static uint32_t HexToInt(uint8_t* str, uint8_t size)
 {
-    rt_uint8_t i = 0;
-    rt_uint32_t retVal = 0;            /* 返回值 */
-    rt_uint8_t pStr[5] = {0};
+    uint8_t i = 0;
+    uint32_t retVal = 0;            /* 返回值 */
+    uint8_t pStr[5] = {0};
     strncpy(pStr, str, size);
     for(i=0; i<size; i++)
     {
@@ -571,7 +570,7 @@ static rt_uint32_t HexToInt(rt_uint8_t* str, rt_uint8_t size)
  **/
 void FreeGooseMessageMem(GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRxMessage)
 {
-    rt_uint32_t i = 0;
+    uint32_t i = 0;
     /* 释放发送结构体中的空间 */
     if(gooseTxMessage != NULL)
     {
@@ -603,95 +602,95 @@ void FreeGooseMessageMem(GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRx
  **/
 void PrintGooseTxRxMessage(GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRxMessage)
 {
-    rt_uint32_t i = 0, j = 0, k = 0;
+    uint32_t i = 0, j = 0, k = 0;
     /* 打印发送结构体中的元素 */
     if(gooseTxMessage != NULL)
     {
-        rt_kprintf("/*******************gooseTxMessage***********************/\r\n");
-        rt_kprintf("[gooseTxMessage]\r\n");
-        rt_kprintf("numGoCB : %d\r\n", gooseTxMessage->numGoCb);
+        printf("/*******************gooseTxMessage***********************/\r\n");
+        printf("[gooseTxMessage]\r\n");
+        printf("numGoCB : %d\r\n", gooseTxMessage->numGoCb);
         for(i=0; i<gooseTxMessage->numGoCb; i++)
         {
-            rt_kprintf("\r\n");
-            rt_kprintf("[GOCB%d]\r\n", i+1);
-            rt_kprintf("gocbRef : %s\r\n", gooseTxMessage->gocd[i].gocbRef);
-            rt_kprintf("appID : %s\r\n", gooseTxMessage->gocd[i].appID);
-            rt_kprintf("datSet : %s\r\n", gooseTxMessage->gocd[i].datSet);
-            rt_kprintf("confRev : %d\r\n", gooseTxMessage->gocd[i].confRev);
-            rt_kprintf("numDatSetEntriess : %d\r\n", gooseTxMessage->gocd[i].numDatSetEntriess);
+            printf("\r\n");
+            printf("[GOCB%d]\r\n", i+1);
+            printf("gocbRef : %s\r\n", gooseTxMessage->gocd[i].gocbRef);
+            printf("appID : %s\r\n", gooseTxMessage->gocd[i].appID);
+            printf("datSet : %s\r\n", gooseTxMessage->gocd[i].datSet);
+            printf("confRev : %d\r\n", gooseTxMessage->gocd[i].confRev);
+            printf("numDatSetEntriess : %d\r\n", gooseTxMessage->gocd[i].numDatSetEntriess);
             for(k=0; k<=6; k++)
             {
                 if(k == 0)
                 {
-                    rt_kprintf("addr :");
+                    printf("addr :");
                 }
                 if(k == 6)
                 {
-                    rt_kprintf("\r\n");
+                    printf("\r\n");
                     break;
                 }
-                rt_kprintf(" 0x%x", gooseTxMessage->gocd[i].addr[k]);
+                printf(" 0x%x", gooseTxMessage->gocd[i].addr[k]);
             }
-            rt_kprintf("priority : %d\r\n", gooseTxMessage->gocd[i].priority);
-            rt_kprintf("vid : %d\r\n", gooseTxMessage->gocd[i].vid);
-            rt_kprintf("appid : 0x%x\r\n", gooseTxMessage->gocd[i].appid);
-            rt_kprintf("minTime : %d\r\n", gooseTxMessage->gocd[i].minTime);
-            rt_kprintf("maxTime : %d\r\n", gooseTxMessage->gocd[i].maxTime);
+            printf("priority : %d\r\n", gooseTxMessage->gocd[i].priority);
+            printf("vid : %d\r\n", gooseTxMessage->gocd[i].vid);
+            printf("appid : 0x%x\r\n", gooseTxMessage->gocd[i].appid);
+            printf("minTime : %d\r\n", gooseTxMessage->gocd[i].minTime);
+            printf("maxTime : %d\r\n", gooseTxMessage->gocd[i].maxTime);
             for(j=0; j<gooseTxMessage->gocd[i].numDatSetEntriess; j++)
             {
-                rt_kprintf("\r\n");
-                rt_kprintf("[FCDA%d]\r\n", j+1);
-                rt_kprintf("ref : %s\r\n", gooseTxMessage->gocd[i].fcda->ref);
-                rt_kprintf("type : %s\r\n", gooseTxMessage->gocd[i].fcda->type);
-                rt_kprintf("inVarName : %s\r\n", gooseTxMessage->gocd[i].fcda->inVarName);
-                rt_kprintf("act : %d\r\n", gooseTxMessage->gocd[i].fcda->act);
+                printf("\r\n");
+                printf("[FCDA%d]\r\n", j+1);
+                printf("ref : %s\r\n", gooseTxMessage->gocd[i].fcda->ref);
+                printf("type : %s\r\n", gooseTxMessage->gocd[i].fcda->type);
+                printf("inVarName : %s\r\n", gooseTxMessage->gocd[i].fcda->inVarName);
+                printf("act : %d\r\n", gooseTxMessage->gocd[i].fcda->act);
             }
         }
-        rt_kprintf("\r\n");
+        printf("\r\n");
     }
 
     /* 打印接收结构体中的元素 */
     if(gooseRxMessage != NULL)
     {
-        rt_kprintf("/*******************gooseRxMessage***********************/\r\n");
-        rt_kprintf("[gooseRxMessage]\r\n");
-        rt_kprintf("numGoCB : %d\r\n", gooseRxMessage->numGoCb);
-        rt_kprintf("numInput : %d\r\n", gooseRxMessage->numInput);
+        printf("/*******************gooseRxMessage***********************/\r\n");
+        printf("[gooseRxMessage]\r\n");
+        printf("numGoCB : %d\r\n", gooseRxMessage->numGoCb);
+        printf("numInput : %d\r\n", gooseRxMessage->numInput);
         for(i=0; i<gooseRxMessage->numGoCb; i++)
         {
-            rt_kprintf("\r\n");
-            rt_kprintf("[GOCB%d]\r\n", i+1);
+            printf("\r\n");
+            printf("[GOCB%d]\r\n", i+1);
             for(k=0; k<=6; k++)
             {
                 if(k == 0)
                 {
-                    rt_kprintf("addr :");
+                    printf("addr :");
                 }
                 if(k == 6)
                 {
-                    rt_kprintf("\r\n");
+                    printf("\r\n");
                     break;
                 }
-                rt_kprintf(" 0x%x", gooseRxMessage->gocd[i].addr[k]);
+                printf(" 0x%x", gooseRxMessage->gocd[i].addr[k]);
             }
-            rt_kprintf("appid : 0x%x\r\n", gooseRxMessage->gocd[i].appid);
-            rt_kprintf("gocbRef : %s\r\n", gooseRxMessage->gocd[i].gocbRef);
-            rt_kprintf("appID : %s\r\n", gooseRxMessage->gocd[i].appID);
-            rt_kprintf("datSet : %s\r\n", gooseRxMessage->gocd[i].datSet);
-            rt_kprintf("confRev : %d\r\n", gooseRxMessage->gocd[i].confRev);
-            rt_kprintf("numDatSetEntriess : %d\r\n", gooseRxMessage->gocd[i].numDatSetEntriess);
+            printf("appid : 0x%x\r\n", gooseRxMessage->gocd[i].appid);
+            printf("gocbRef : %s\r\n", gooseRxMessage->gocd[i].gocbRef);
+            printf("appID : %s\r\n", gooseRxMessage->gocd[i].appID);
+            printf("datSet : %s\r\n", gooseRxMessage->gocd[i].datSet);
+            printf("confRev : %d\r\n", gooseRxMessage->gocd[i].confRev);
+            printf("numDatSetEntriess : %d\r\n", gooseRxMessage->gocd[i].numDatSetEntriess);
         }
         for(j=0; j<gooseRxMessage->numInput; j++)
         {
-            rt_kprintf("\r\n");
-            rt_kprintf("[INPUT%d]\r\n", j+1);
-            rt_kprintf("gocbIndex : %d\r\n", gooseRxMessage->input[j].gocbIndex);
-            rt_kprintf("gocbEntryIntex : %d\r\n", gooseRxMessage->input[j].gocbEntryIntex);
-            rt_kprintf("ref : %s\r\n", gooseRxMessage->input[j].ref);
-            rt_kprintf("type : %s\r\n", gooseRxMessage->input[j].type);
-            rt_kprintf("outVarName : %s\r\n", gooseRxMessage->input[j].outVarName);
+            printf("\r\n");
+            printf("[INPUT%d]\r\n", j+1);
+            printf("gocbIndex : %d\r\n", gooseRxMessage->input[j].gocbIndex);
+            printf("gocbEntryIntex : %d\r\n", gooseRxMessage->input[j].gocbEntryIntex);
+            printf("ref : %s\r\n", gooseRxMessage->input[j].ref);
+            printf("type : %s\r\n", gooseRxMessage->input[j].type);
+            printf("outVarName : %s\r\n", gooseRxMessage->input[j].outVarName);
         }
-        rt_kprintf("\r\n");
+        printf("\r\n");
     }
 }
 

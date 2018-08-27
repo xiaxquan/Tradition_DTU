@@ -272,22 +272,22 @@ int dictionary_set(dictionary * d, const char * key, const char * val)
 
     /* Lee：在goose的ini文件存在键名一样的情况，所以在此处对于重复的键名不做特殊处理 */
     /* Find if value is already in dictionary */
-    // if (d->n>0) {
-    //     for (i=0 ; i<d->size ; i++) {
-    //         if (d->key[i]==NULL)
-    //             continue ;
-    //         if (hash==d->hash[i]) { /* Same hash value */
-    //             if (!strcmp(key, d->key[i])) {   /* Same key */
-    //                 /* Found a value: modify and return */
-    //                 if (d->val[i]!=NULL)
-    //                     free(d->val[i]);
-    //                 d->val[i] = (val ? xstrdup(val) : NULL);
-    //                 /* Value has been modified: return */
-    //                 return 0 ;
-    //             }
-    //         }
-    //     }
-    // }
+//     if (d->n>0) {
+//         for (i=0 ; i<d->size ; i++) {
+//             if (d->key[i]==NULL)
+//                 continue ;
+//             if (hash==d->hash[i]) { /* Same hash value */
+//                 if (!strcmp(key, d->key[i])) {   /* Same key */
+//                     /* Found a value: modify and return */
+//                     if (d->val[i]!=NULL)
+//                         free(d->val[i]);
+//                     d->val[i] = (val ? xstrdup(val) : NULL);
+//                     /* Value has been modified: return */
+//                     return 0 ;
+//                 }
+//             }
+//         }
+//     }
 
 
     /* Add a new value */

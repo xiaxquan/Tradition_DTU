@@ -22,12 +22,12 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <sys/types.h>
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-typedef rt_uint32_t ssize_t;
 	
 /*---------------------------------------------------------------------------
                                 New types

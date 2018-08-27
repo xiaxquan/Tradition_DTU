@@ -1755,14 +1755,14 @@
               <FilePath>..\..\components\iniparser\gooseparser.c</FilePath>
             </File>
             <File>
-              <FileName>iniparser.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\components\iniparser\iniparser.c</FilePath>
-            </File>
-            <File>
               <FileName>dictionary.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\components\iniparser\dictionary.c</FilePath>
+            </File>
+            <File>
+              <FileName>iniparser.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\components\iniparser\iniparser.c</FilePath>
             </File>
           </Files>
         </Group>
