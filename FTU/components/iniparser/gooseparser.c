@@ -1,5 +1,5 @@
 /**
- * @file gooseparser.c
+ * @file GooseParser.c
  * @brief 对goose的ini文件进行解析，生成相应的结构体
  * @copyright Copyright (c) 2017 Beijing SOJO Electric CO., LTD.
  * @company SOJO
@@ -17,7 +17,7 @@
 #include <unistd.h>
 
 #include "iniparser.h"
-#include "gooseparser.h"
+#include "GooseParser.h"
 
 /*--------------------------------------------------------------------------*/
 
@@ -37,13 +37,33 @@ static uint32_t HexToInt(uint8_t* str, uint8_t size);
 
 
 
-
+/**
+ * @brief 将goose的ini文件转换为相应的结构体数据
+ * @param argv ini文件的文件名
+ * @param gooseTxMessage Goose发送结构体指针
+ * @param gooseRxMessage Goose接收结构体指针
+ * @return 0:成功    1:失败
+ *
+ **/
 uint32_t GooseIniParser(uint8_t* argv, GooseTxMessage* gooseTxMessage, GooseRxMessage* gooseRxMessage)
 {
     dictionary* ini;
-    uint8_t* iniName;
+    const uint8_t* iniName;
+	int fd = 0;
 	
 	iniName = argv;
+
+	fd = open((char*)iniName, O_RDONLY, 0);
+	if(fd == -1)
+	{
+		rt_kprintf("open %s fail\r\n", iniName);
+		return 1;
+	}
+	else
+	{
+		rt_kprintf("open %s success\r\n", iniName);
+		close(fd);
+	}
 
     GooseMessageInit(gooseTxMessage, gooseRxMessage);
 

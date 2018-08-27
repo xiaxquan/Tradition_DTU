@@ -1,5 +1,5 @@
 /**
- * @file gooseparser.h
+ * @file GooseParser.h
  * @brief 对goose的ini文件进行解析，生成相应的结构体
  * @copyright Copyright (c) 2017 Beijing SOJO Electric CO., LTD.
  * @company SOJO

@@ -434,10 +434,6 @@
 #define MBSLAVE_THREAD_STACK_SIZE                                      (4096)
 #define MBSLAVE_THREAD_TIMESLICE                                       (20)
 
-#define INIPARSER_THREAD_NAME                                          "iniparser"
-#define INIPARSER_THREAD_PRIORITY                                      (25)
-#define INIPARSER_THREAD_STACK_SIZE                                    (1024*8)
-#define INIPARSER_THREAD_TIMESLICE                                     (20)
 
 
 /* INTERRUPT PRIORITIES CONFIGURATION ----------------------------------------*/

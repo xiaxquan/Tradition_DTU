@@ -1750,11 +1750,6 @@
           <GroupName>iniparser</GroupName>
           <Files>
             <File>
-              <FileName>gooseparser.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>..\..\components\iniparser\gooseparser.c</FilePath>
-            </File>
-            <File>
               <FileName>dictionary.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\components\iniparser\dictionary.c</FilePath>
@@ -1763,6 +1758,16 @@
               <FileName>iniparser.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\..\components\iniparser\iniparser.c</FilePath>
+            </File>
+            <File>
+              <FileName>GooseParser.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\components\iniparser\GooseParser.c</FilePath>
+            </File>
+            <File>
+              <FileName>ParserThread.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\..\components\iniparser\ParserThread.c</FilePath>
             </File>
           </Files>
         </Group>

@@ -36,7 +36,7 @@
 #include "GUIdisplay.h"
 #include "dlt634_5101master_disk.h"
 #include "sMasterDpuControl.h"
-#include "gooseparser.h"
+#include "ParserThread.h"
 
 /* PRIVATE VARIABLES ---------------------------------------------------------*/
 //static struct rt_thread rt_thread_system;
@@ -98,11 +98,6 @@ struct rt_semaphore protect_sem; // protect semaphore
 static struct rt_thread *rt_thread_protect;
 static rt_uint8_t *rt_thread_protect_stack;
 #endif /* END RT_USING_PROTECT */
-
-#if RT_USING_INIPARSER    
-static struct rt_thread *rt_thread_iniparser;
-static rt_uint8_t *rt_thread_iniparser_stack;
-#endif /* END RT_USING_INIPARSER */
 
 #endif /* RT_USING_STATIC_THREAD */
 
@@ -317,7 +312,7 @@ static void rt_slave101_thread_entry(void *param)
 			DLT634_HMI_SlaveTask();
             
             DLT634_5101_MasterTask();
-        } 		
+        }
     }    
 }
 #endif /* RT_USING_SLAVE101 */
@@ -441,46 +436,6 @@ static void rt_ftuidle_thread_entry(void *param)
 }
 #endif /* RT_USING_FTUIDLE */
 
-/**
-  * @brief : iniparser thread entry
-  * @param : [param] the parameter.
-  * @return: none
-  * @updata: [2018-08-25][Lee][newly]
-  */
-#if RT_USING_INIPARSER
-static void rt_iniparser_thread_entry(void *param)
-{    
-	
-	rt_thread_delay(3000);
-    char* goosePathName = "//sojo//goose.txt";
-	int fd = 0;
-
-	fd = open(goosePathName, O_RDONLY, 0);
-	if(fd == -1)
-	{
-		rt_kprintf("open %s fail\r\n", goosePathName);
-		return;
-	}
-	else
-	{
-		rt_kprintf("open %s success\r\n", goosePathName);
-		close(fd);
-	}
-
-    GooseTxMessage gooseTxMessage;
-    GooseRxMessage gooseRxMessage;
-
-    GooseIniParser((rt_uint8_t*)goosePathName, &gooseTxMessage, &gooseRxMessage);
-    PrintGooseTxRxMessage(&gooseTxMessage, &gooseRxMessage);
-    FreeGooseMessageMem(&gooseTxMessage, &gooseRxMessage);
-	while(1)
-	{
-		rt_thread_delay(1000);
-	}
-	
-
-}
-#endif /* RT_USING_INIPARSER */
 
 ///**
 //  * @brief : hook function
@@ -944,39 +899,10 @@ static void dpu_thread_start(void *param)
         rt_thread_startup(tid);
         
         THREAD_PRINTF("dpu thread start \r\n"); 
-    }  
+    }
 #endif /* END RT_USING_STATIC_THREAD */									 
 }
 #endif /* RT_USING_DPU */
-
-/**
-  * @brief : goose ini file parser test
-  * @param : none
-  * @return: none
-  * @updata:
-  */
-#if RT_USING_INIPARSER
-static void iniparser_thread_start(void *param)
-{
-
-    rt_thread_t tid; 
-
-    tid = rt_thread_create(INIPARSER_THREAD_NAME, 
-                           rt_iniparser_thread_entry, 
-                           param, 
-                           INIPARSER_THREAD_STACK_SIZE, 
-                           INIPARSER_THREAD_PRIORITY, 
-                           INIPARSER_THREAD_TIMESLICE);
-
-    if (tid != RT_NULL)
-    {
-        rt_thread_startup(tid);
-        
-        THREAD_PRINTF("iniparser thread start \r\n"); 
-    }   
-
-}
-#endif /* RT_USING_INIPARSER */
 
 
 /* PUBLIC FUNCTION PROTOTYPES ------------------------------------------------*/
@@ -1190,22 +1116,6 @@ int rt_multi_thread_start(void)
     ftuidle_thread_start(RT_NULL);     
   #endif /* RT_USING_FTUIDLE */
 
-  #if RT_USING_INIPARSER
-    rt_thread_iniparser = rt_malloc(RT_THREAD_PER_STRUCT_SIZE);
-
-    if (rt_thread_iniparser == NULL)
-	{
-	    THREAD_PRINTF("rt_thread_iniparser malloc failed"); 
-	}
-
-    rt_thread_iniparser_stack = rt_malloc(INIPARSER_THREAD_STACK_SIZE);
-
-    if (rt_thread_iniparser_stack == NULL)
-	{
-	    THREAD_PRINTF("rt_thread_iniparser_stack malloc failed");
-	}
-    iniparser_thread_start(RT_NULL);
-  #endif /* RT_USING_INIPARSER */
 
     return(RT_EOK);    
 }
