@@ -49,12 +49,15 @@ static void rt_iniparser_thread_entry(void *param)
     GooseTxMessage gooseTxMessage;
     GooseRxMessage gooseRxMessage;
 
-	for(uint8_t i=0; i<10; i++)
+	printf("rt_iniparser_thread_entry start\r\n");
+	list_mem();
+	rt_thread_delay(5000);
+	for(uint8_t i=0; i<3; i++)
 	{
 		printf("%d:\r\n", i);
 		list_mem();
-		GooseIniParser((rt_uint8_t*)g_GoosePathName, &gooseTxMessage, &gooseRxMessage);
-//		PrintGooseTxRxMessage(&gooseTxMessage, &gooseRxMessage);
+		GooseIniParser((uint8_t*)g_GoosePathName, &gooseTxMessage, &gooseRxMessage);
+		PrintGooseTxRxMessage(&gooseTxMessage, &gooseRxMessage);
 		FreeGooseMessageMem(&gooseTxMessage, &gooseRxMessage);
 		list_mem();
 		printf("\r\n");

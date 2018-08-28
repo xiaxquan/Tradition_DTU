@@ -1456,13 +1456,13 @@ void file_operate_Init(void)
         ((g_FlagDB.fatfs_fevent.currentnum > FEVENT_FILE_MAXNUM)||(g_FlagDB.fatfs_fevent.fullnum > FEVENT_FILE_MAXNUM))||\
         ((g_FlagDB.fatfs_ulog.currentnum > ULOG_FILE_MAXNUM)||(g_FlagDB.fatfs_ulog.fullnum > ULOG_FILE_MAXNUM)))
         {
-            file_operate_Format(); 
+//            file_operate_Format(); 
             FILE_PRINTF("spi flash mount to /spi restart!\n");  
         }
     }
     else
     {
-        FILE_PRINTF("spi flash mount to /spi failed!\n");  
+        rt_kprintf("spi flash mount to /spi failed!\n");  
         file_operate_Format();        
     }
     
