@@ -2214,10 +2214,15 @@ void rt_multi_common_data_para_init(void)
 //    g_EthW5500 = (struct lwip_dev)RT_ETH2_CONFIG_DEFAULT;
 	
     //不同
-    g_EthDP83848.ip[0] = (uint8_t)g_Parameter[NET_IP1_0];
-    g_EthDP83848.ip[1] = (uint8_t)g_Parameter[NET_IP1_1];
-    g_EthDP83848.ip[2] = (uint8_t)g_Parameter[NET_IP1_2];
-    g_EthDP83848.ip[3] = (uint8_t)g_Parameter[NET_IP1_3];
+//    g_EthDP83848.ip[0] = (uint8_t)g_Parameter[NET_IP1_0];
+//    g_EthDP83848.ip[1] = (uint8_t)g_Parameter[NET_IP1_1];
+//    g_EthDP83848.ip[2] = (uint8_t)g_Parameter[NET_IP1_2];
+//    g_EthDP83848.ip[3] = (uint8_t)g_Parameter[NET_IP1_3];
+	
+	g_EthDP83848.ip[0] = 192;
+    g_EthDP83848.ip[1] = 168;
+    g_EthDP83848.ip[2] = 60;
+    g_EthDP83848.ip[3] = 200;
     
     g_EthW5500.ip[0] = (uint8_t)g_Parameter[NET_IP2_0];
     g_EthW5500.ip[1] = (uint8_t)g_Parameter[NET_IP2_1];
@@ -2230,7 +2235,7 @@ void rt_multi_common_data_para_init(void)
     g_EthDP83848.mac[3] = *(rt_uint8_t*)(UID_BASE + 4);
     g_EthDP83848.mac[4] = *(rt_uint8_t*)(UID_BASE + 2);
     g_EthDP83848.mac[5] = *(rt_uint8_t*)(UID_BASE + 0);
-	
+
     g_EthW5500.mac[0] = 0x00;
     g_EthW5500.mac[1] = 0x80;
     g_EthW5500.mac[2] = 0xE1;
