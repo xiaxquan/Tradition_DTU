@@ -11,6 +11,7 @@
 #ifndef __UDP_FINSH_THREAD_H__
 #define __UDP_FINSH_THREAD_H__
 
+#include "rtthread.h"
 
 
 #define UDP_FINSH_THREAD_NAME                                            "UDP_finsh"

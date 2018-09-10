@@ -40,6 +40,7 @@
 
 #include "finsh.h"
 #include "shell.h"
+#include "UDP_FinshApp.h"
 
 #ifdef FINSH_USING_MSH
 #include "msh.h"
@@ -243,7 +244,8 @@ static void finsh_wait_auth(void)
             while (1)
             {
                 /* read one character from device */
-                ch = finsh_getchar();
+//                ch = finsh_getchar();
+				ch = FinshCharDequeue(&UDP_FinshFifoHandle);
 
                 if (ch >= ' ' && ch <= '~' && cur_pos < FINSH_PASSWORD_MAX)
                 {
