@@ -81,7 +81,7 @@ void UDP_FinshIpSet(struct lwip_dev* lwip)
   */
 int8_t UDP_NetconnSendString(struct netconn* udpconn, uint8_t* sendString)
 {
-	struct netbuf* sendNetbuf = NULL;
+	static struct netbuf* sendNetbuf = NULL;
 	void* pointer = NULL;
 	int8_t error = 0;
 
@@ -100,7 +100,7 @@ int8_t UDP_NetconnSendString(struct netconn* udpconn, uint8_t* sendString)
 		rt_kprintf("ERROR:%s-Line %d: Netbuf Creat Error!\r\n", __FILE__, __LINE__);
 		return 2;
 	}
-	pointer = netbuf_alloc(sendNetbuf, strlen((char*)sendString)+1);
+	pointer = netbuf_alloc(sendNetbuf, strlen((char*)sendString));
 	if(NULL == pointer)
 	{
 		/*动态内存申请失败*/
@@ -108,7 +108,7 @@ int8_t UDP_NetconnSendString(struct netconn* udpconn, uint8_t* sendString)
 		return 2;
 	}
 	
-	memcpy(sendNetbuf->p->payload, (char*)sendString, strlen((char*)sendString)+1);
+	memcpy(sendNetbuf->p->payload, (void*)sendString, strlen((char*)sendString));
 	error = netconn_send(udpconn, sendNetbuf);
 	if(0 != error)
 	{
@@ -117,8 +117,8 @@ int8_t UDP_NetconnSendString(struct netconn* udpconn, uint8_t* sendString)
 		netbuf_delete(sendNetbuf);
 		return error;
 	}
-	rt_kprintf("1%s", (char*)sendString);
-	rt_kprintf("2%s", (char*)sendNetbuf->p->payload);
+	rt_kprintf("1:%s", (char*)sendString);
+	rt_kprintf("2:%s", (char*)sendNetbuf->p->payload);
 	netbuf_delete(sendNetbuf);      	//删除buf
 	
 	return 0;
@@ -133,7 +133,7 @@ int8_t UDP_NetconnSendString(struct netconn* udpconn, uint8_t* sendString)
   */
 uint8_t UDP_NetconnReceiveString(struct netconn* udpconn)
 {
-	struct netbuf* recvbuf = NULL;
+	static struct netbuf* recvbuf = NULL;
 	rt_base_t level;			/*开关中断的返回值*/
 	struct pbuf* q = NULL;
 	uint32_t data_len = 0;
@@ -165,7 +165,9 @@ uint8_t UDP_NetconnReceiveString(struct netconn* udpconn)
 			}
 		}
 //		UDP_NetconnSendString(udpconn, udp_demo_recvbuf);
-		netconn_send(udpconn, recvbuf);
+//		netconn_send(udpconn, recvbuf);
+		rt_kprintf("1:%s", (char*)udp_demo_recvbuf);
+		rt_kprintf("2:%s", (char*)recvbuf->p->payload);
 		data_len = 0;  //复制完成后data_len要清零
 		rt_hw_interrupt_enable(level);  //开中断
 		netbuf_delete(recvbuf);      //删除buf

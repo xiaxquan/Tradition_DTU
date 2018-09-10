@@ -48,8 +48,8 @@ static void rt_udp_finsh_thread_entry(void *param)
 	uint32_t cpu_sr;
 	err_t err;
 	static struct netconn* udpconn = NULL;
-	static struct netbuf* recvbuf = NULL;
-	static struct netbuf* sentbuf;
+//	static struct netbuf* recvbuf = NULL;
+//	static struct netbuf* sentbuf;
 	struct ip_addr destipaddr;
 	rt_base_t level;
 	struct pbuf* q = NULL;
