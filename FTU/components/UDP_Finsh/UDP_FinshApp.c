@@ -12,6 +12,8 @@
 /*****************************include***********************************/
 #include "UDP_FinshApp.h"
 #include <string.h>
+#include "board.h"
+#include "rtdef.h"
 
 
 /****************************全局变量***********************************/
@@ -28,6 +30,10 @@ FifoHandle UDP_FinshPrintfFifoHandle;
 static uint8_t UDP_PrintfBuffer[UDP_DEMO_BUFSIZE];
 static PointUint8 UDP_PrintfBufferPack;
 
+
+#if defined(RT_USING_DEVICE) && defined(RT_USING_CONSOLE)
+static rt_device_t _console_device = RT_NULL;
+#endif
 
 /*****************************Function**********************************/
 
@@ -252,7 +258,13 @@ void UDP_finsh_kprintf(const char *fmt, ...)
 	}
 	else
 	{
-//		rt_hw_console_output(rt_log_buf);
+		_console_device = rt_console_get_device();
+		rt_uint16_t old_flag = _console_device->open_flag;
+
+        _console_device->open_flag |= RT_DEVICE_FLAG_STREAM;
+        rt_device_write(_console_device, 0, rt_log_buf, length);
+        _console_device->open_flag = old_flag;
+		
 	}
 	
 	va_end(args);

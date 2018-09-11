@@ -19,10 +19,6 @@
 #define UDP_FINSH_THREAD_STACK_SIZE                                     (4096)
 #define UDP_FINSH_THREAD_TIMESLICE                                      (20)
 
-#define UDP_PRINTF_THREAD_NAME                                          "UDP_printf"
-#define UDP_PRINTF_THREAD_PRIORITY                                      (13)
-#define UDP_PRINTF_THREAD_STACK_SIZE                                    (4096)
-#define UDP_PRINTF_THREAD_TIMESLICE                                     (20)
 
 
 #endif

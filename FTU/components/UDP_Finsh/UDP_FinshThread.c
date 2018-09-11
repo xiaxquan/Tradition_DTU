@@ -29,9 +29,6 @@
 #if RT_USING_UDP_FINSH 
 static struct rt_thread *rt_thread_UDP_finsh;
 static rt_uint8_t *rt_thread_UDP_finsh_stack;
-
-static struct rt_thread *rt_thread_UDP_printf;
-static rt_uint8_t *rt_thread_UDP_printf_stack;
 #endif /* END RT_USING_UDP_FINSH */
 
 
@@ -50,6 +47,8 @@ static void rt_udp_finsh_thread_entry(void *param)
 	struct ip_addr destipAddr;
 	rt_base_t level;
 	struct lwip_dev lwipDev;
+	uint8_t i = 0;
+	uint8_t printBuffer[PRINT_BUFFER_SIZE] = {0};
 	
 	UDP_FinshFifoInit();		/*初始化fifo*/
 	UDP_PrintfFifoInit();
@@ -80,6 +79,19 @@ static void rt_udp_finsh_thread_entry(void *param)
 				{
 					/*等待接收，将接收到的字符入队*/
 					UDP_NetconnReceiveString(g_UDP_Netconn);
+					if(UDP_FinshFlag)
+					{
+						memset(printBuffer, 0, PRINT_BUFFER_SIZE);
+						for(i=0; (i<PRINT_BUFFER_SIZE) && (UDP_FinshPrintfFifoHandle.fifo.count); i++)
+						{
+							printBuffer[i] = FinshCharDequeue(&UDP_FinshPrintfFifoHandle);
+						}
+						if(0 != i)
+						{
+							UDP_NetconnSendString(g_UDP_Netconn, printBuffer);
+						}
+						
+					}
 				}
 			}
 			else
@@ -94,42 +106,6 @@ static void rt_udp_finsh_thread_entry(void *param)
 	UDP_FinshFlag = 0;
 	}
 	while(1);
-}
-#endif
-
-
-/**
-  * @brief : udp printf thread entry
-  * @param : none
-  * @return: none
-  * @updata: 
-  */ 
-#if RT_USING_UDP_FINSH
-static void rt_udp_printf_thread_entry(void *param)
-{
-	uint8_t i = 0;
-	uint8_t printBuffer[PRINT_BUFFER_SIZE] = {0};
-	
-	rt_kprintf("\r\nUDP printf start");
-	while(1)
-	{
-		if(UDP_FinshFlag)
-		{
-			memset(printBuffer, 0, PRINT_BUFFER_SIZE);
-			for(i=0; (i<PRINT_BUFFER_SIZE) && (UDP_FinshPrintfFifoHandle.fifo.count); i++)
-			{
-				printBuffer[i] = FinshCharDequeue(&UDP_FinshPrintfFifoHandle);
-			}
-			if(0 != i)
-			{
-				UDP_NetconnSendString(g_UDP_Netconn, printBuffer);
-			}
-			else
-			{
-				rt_thread_delay(10);
-			}
-		}
-	}
 }
 #endif
 
@@ -163,34 +139,6 @@ static void udp_finsh_thread_start(void* param)
 
 
 /**
-  * @brief : Start udp printf thread
-  * @param : none
-  * @return: none
-  * @updata: 
-  */
-#if RT_USING_UDP_FINSH
-static void udp_printf_thread_start(void* param)
-{
-	rt_thread_t tid; 
-
-    tid = rt_thread_create(UDP_PRINTF_THREAD_NAME, 
-                           rt_udp_printf_thread_entry, 
-                           param, 
-                           UDP_PRINTF_THREAD_STACK_SIZE, 
-                           UDP_PRINTF_THREAD_PRIORITY, 
-                           UDP_PRINTF_THREAD_TIMESLICE);
-
-    if (tid != RT_NULL)
-    {
-        rt_thread_startup(tid);
-        
-        THREAD_PRINTF("UDP printf thread start \r\n"); 
-    }   
-}
-#endif
-
-
-/**
   * @brief : 使用dp83848和UDP协议完成finsh远程登录的功能
   * @param : none
   * @return: 0:成功; 1:失败
@@ -200,7 +148,6 @@ static void udp_printf_thread_start(void* param)
 uint8_t rt_UDP_FinshThread_start(void)
 {
     udp_finsh_thread_start(RT_NULL);
-	udp_printf_thread_start(RT_NULL);
 	
 	return RT_EOK;
 }
