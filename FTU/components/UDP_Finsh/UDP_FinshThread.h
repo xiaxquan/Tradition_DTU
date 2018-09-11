@@ -14,10 +14,10 @@
 #include "rtthread.h"
 
 
-#define UDP_FINSH_THREAD_NAME											"UDP_finsh"
-#define UDP_FINSH_THREAD_PRIORITY                                       (13)
-#define UDP_FINSH_THREAD_STACK_SIZE                                     (4096)
-#define UDP_FINSH_THREAD_TIMESLICE                                      (20)
+#define NET_FINSH_THREAD_NAME											                      "net_finsh"
+#define NET_FINSH_THREAD_PRIORITY                                       (13)
+#define NET_FINSH_THREAD_STACK_SIZE                                     (4096)
+#define NET_FINSH_THREAD_TIMESLICE                                      (20)
 
 
 

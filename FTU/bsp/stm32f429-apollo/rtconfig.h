@@ -361,7 +361,7 @@
 #define RT_USING_W5500                                                 (1) // LWIP通讯任务W5500_2404
 #define RT_USING_FTUIDLE                                               (1) // 空闲任务
 #define RT_USING_DPU                                                   (1) // dpu
-#define RT_USING_UDP_FINSH                                             (1) // UDP网络实现远程finsh
+#define RT_USING_NET_FINSH                                             (1) // UDP网络实现远程finsh
 
 /* thread parameter Configuration */
 #define RT_USING_STATIC_THREAD

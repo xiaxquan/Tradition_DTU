@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "udp_finshapp.h": "c",
+        "udp_finshthread.h": "c"
+    }
+}

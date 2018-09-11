@@ -515,8 +515,8 @@ void rt_kprintf(const char *fmt, ...);
 void rt_kputs(const char *str);
 #endif
 
-extern void UDP_finsh_kprintf(const char *fmt, ...);		/*将打印函数替换为网口打印输出*/
-#define rt_kprintf UDP_finsh_kprintf
+extern void NetFinsh_kprintf(const char *fmt, ...);		/*将打印函数替换为网口打印输出*/
+#define rt_kprintf NetFinsh_kprintf
 
 rt_int32_t rt_vsprintf(char *dest, const char *format, va_list arg_ptr);
 rt_int32_t rt_vsnprintf(char *buf, rt_size_t size, const char *fmt, va_list args);

@@ -17,18 +17,18 @@
 #include <stdbool.h>
 
 /****************************全局变量***********************************/
-struct netconn* g_UDP_Netconn = NULL;
-bool UDP_FinshFlag = false;
+struct netconn* g_NetFinshNetconn = NULL;
+bool NET_FinshFlag = false;
 
 /*接收FIFO*/
-FifoHandle UDP_FinshReceiveFifoHandle;
-static uint8_t UDP_FinshBuffer[UDP_DEMO_BUFSIZE];
-static PointUint8 UDP_FinshBufferPack;
+FifoHandle FinshReceiveFifoHandle;
+static uint8_t FinshBuffer[NET_FINSH_BUFSIZE];
+static PointUint8 FinshBufferPack;
 
 /*打印FIFO*/
-FifoHandle UDP_FinshPrintfFifoHandle;
-static uint8_t UDP_PrintfBuffer[UDP_DEMO_BUFSIZE];
-static PointUint8 UDP_PrintfBufferPack;
+FifoHandle PrintfFifoHandle;
+static uint8_t PrintfBuffer[NET_FINSH_BUFSIZE];
+static PointUint8 PrintfBufferPack;
 
 
 #if defined(RT_USING_DEVICE) && defined(RT_USING_CONSOLE)
@@ -43,7 +43,7 @@ static rt_device_t _console_device = RT_NULL;
   * @return: none
   * @updata: 
   */
-void UDP_FinshIpSet(struct lwip_dev* lwip)
+void NetFinshIpSet(struct lwip_dev* lwip)
 {
 	uint8_t i = 0;
 	
@@ -135,15 +135,15 @@ uint8_t UDP_NetconnReceiveString(struct netconn* udpNetConn)
 		{
 			//判断要拷贝到UDP_DEMO_RX_BUFSIZE中的数据是否大于UDP_DEMO_RX_BUFSIZE的剩余空间,如果大于
 			//的话就只拷贝UDP_DEMO_RX_BUFSIZE中剩余长度的数据,否则的话机拷贝所有的数据
-			if(q->len > UDP_DEMO_BUFSIZE)
+			if(q->len > NET_FINSH_BUFSIZE)
 			{
-				FinshStringEnqueue(&UDP_FinshReceiveFifoHandle, q->payload, UDP_DEMO_BUFSIZE);
+				FinshStringEnqueue(&FinshReceiveFifoHandle, q->payload, NET_FINSH_BUFSIZE);
 			}
 			else
 			{
-				FinshStringEnqueue(&UDP_FinshReceiveFifoHandle, q->payload, q->len);
+				FinshStringEnqueue(&FinshReceiveFifoHandle, q->payload, q->len);
 			}	
-			if(dataLenth > UDP_DEMO_BUFSIZE)
+			if(dataLenth > NET_FINSH_BUFSIZE)
 			{
 				break; //超出TCP客户端接收数组,跳出
 			}
@@ -161,11 +161,11 @@ uint8_t UDP_NetconnReceiveString(struct netconn* udpNetConn)
   * @return: none
   * @updata: 
   */
-void UDP_FinshFifoInit(void)
+void FinshFifoInit(void)
 {
-	UDP_FinshBufferPack.len = UDP_DEMO_BUFSIZE;
-	UDP_FinshBufferPack.pData = UDP_FinshBuffer;
-	FifoInit(&UDP_FinshReceiveFifoHandle, &UDP_FinshBufferPack);
+	FinshBufferPack.len = NET_FINSH_BUFSIZE;
+	FinshBufferPack.pData = FinshBuffer;
+	FifoInit(&FinshReceiveFifoHandle, &FinshBufferPack);
 }
 
 
@@ -175,11 +175,11 @@ void UDP_FinshFifoInit(void)
   * @return: none
   * @updata: 
   */
-void UDP_PrintfFifoInit(void)
+void PrintfFifoInit(void)
 {
-	UDP_PrintfBufferPack.len = UDP_DEMO_BUFSIZE;
-	UDP_PrintfBufferPack.pData = UDP_PrintfBuffer;
-	FifoInit(&UDP_FinshPrintfFifoHandle, &UDP_PrintfBufferPack);
+	PrintfBufferPack.len = NET_FINSH_BUFSIZE;
+	PrintfBufferPack.pData = PrintfBuffer;
+	FifoInit(&PrintfFifoHandle, &PrintfBufferPack);
 }
 
 
@@ -229,9 +229,9 @@ char FinshCharDequeue(FifoHandle *handle)
   * @return: 出队的字符
   * @updata: 
   */
-char UDP_getchar(void)
+char NetGetchar(void)
 {
-	return FinshCharDequeue(&UDP_FinshReceiveFifoHandle);
+	return FinshCharDequeue(&FinshReceiveFifoHandle);
 }
 
 /**
@@ -240,7 +240,7 @@ char UDP_getchar(void)
   * @return: none
   * @updata: 
   */
-void UDP_finsh_kprintf(const char *fmt, ...)
+void NetFinsh_kprintf(const char *fmt, ...)
 {
 	va_list args;
     rt_size_t length;
@@ -252,9 +252,9 @@ void UDP_finsh_kprintf(const char *fmt, ...)
     if (length > RT_CONSOLEBUF_SIZE - 1)
         length = RT_CONSOLEBUF_SIZE - 1;
 
-	if(true == UDP_FinshFlag)		/*UDP_FinshFlag为1说明UDP打印已经初始化，可以使用了*/
+	if(true == NET_FinshFlag)		/*UDP_FinshFlag为1说明UDP打印已经初始化，可以使用了*/
 	{
-		FinshStringEnqueue(&UDP_FinshPrintfFifoHandle, (uint8_t*)rt_log_buf, length);
+		FinshStringEnqueue(&PrintfFifoHandle, (uint8_t*)rt_log_buf, length);
 	}
 	else
 	{

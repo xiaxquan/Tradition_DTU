@@ -89,7 +89,7 @@ static char finsh_getchar(void)
 {
 #ifdef RT_USING_POSIX
 //    return getchar();
-	return UDP_getchar();
+	return NetGetchar();
 #else
     char ch;
 

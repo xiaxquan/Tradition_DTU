@@ -25,11 +25,6 @@
 
 
 
-/***************************静态全局变量********************************/
-#if RT_USING_UDP_FINSH 
-static struct rt_thread *rt_thread_UDP_finsh;
-static rt_uint8_t *rt_thread_UDP_finsh_stack;
-#endif /* END RT_USING_UDP_FINSH */
 
 
 /*****************************Function**********************************/
@@ -40,7 +35,7 @@ static rt_uint8_t *rt_thread_UDP_finsh_stack;
   * @return: none
   * @updata: 
   */  
-#if RT_USING_UDP_FINSH
+#if RT_USING_NET_FINSH
 static void rt_udp_finsh_thread_entry(void *param)
 {
 	err_t err;
@@ -50,45 +45,46 @@ static void rt_udp_finsh_thread_entry(void *param)
 	uint8_t i = 0;
 	uint8_t printBuffer[PRINT_BUFFER_SIZE] = {0};
 	
-	UDP_FinshFifoInit();		/*初始化fifo*/
-	UDP_PrintfFifoInit();
+	FinshFifoInit();		/*初始化fifo*/
+	PrintfFifoInit();
 
 	do
 	{
-		rt_kprintf("\r\nUDP finsh start");
+		rt_kprintf("\r\nNet finsh start");
 		rt_thread_delay(1000);
-		UDP_FinshIpSet(&lwipDev);
+		NetFinshIpSet(&lwipDev);
 		
 		LWIP_UNUSED_ARG(param);	
 
-		g_UDP_Netconn = netconn_new(NETCONN_UDP);  //创建一个UDP链接
+		g_NetFinshNetconn = netconn_new(NETCONN_UDP);  //创建一个UDP链接
 		
 		
-		if(g_UDP_Netconn != NULL)  //创建UDP链接成功
+		if(g_NetFinshNetconn != NULL)  //创建UDP链接成功
 		{
-			g_UDP_Netconn->recv_timeout = 100;
-			err = netconn_bind(g_UDP_Netconn, IP_ADDR_ANY, LOCAL_PORT); 
+			g_NetFinshNetconn->recv_timeout = 100;
+			err = netconn_bind(g_NetFinshNetconn, IP_ADDR_ANY, LOCAL_PORT); 
 			IP4_ADDR(&destipAddr, lwipDev.remoteip[0], lwipDev.remoteip[1], lwipDev.remoteip[2], lwipDev.remoteip[3]); //构造目的IP地址
-			netconn_connect(g_UDP_Netconn, &destipAddr, REMOTE_PORT); 	//连接到远端主机
+			netconn_connect(g_NetFinshNetconn, &destipAddr, REMOTE_PORT); 	//连接到远端主机
 			if(err == ERR_OK)//绑定完成
 			{
 				/*UDP链接已经创建，之后可以使用网口的打印函数了*/
-				UDP_FinshFlag = true;
+				NET_FinshFlag = true;
 				
 				while(1)
 				{
 					/*等待接收，将接收到的字符入队*/
-					UDP_NetconnReceiveString(g_UDP_Netconn);
-					if(true == UDP_FinshFlag)
+					UDP_NetconnReceiveString(g_NetFinshNetconn);
+
+					if(true == NET_FinshFlag)
 					{
 						memset(printBuffer, 0, PRINT_BUFFER_SIZE);
-						for(i=0; (i<PRINT_BUFFER_SIZE) && (UDP_FinshPrintfFifoHandle.fifo.count); i++)
+						for(i=0; (i<PRINT_BUFFER_SIZE) && (PrintfFifoHandle.fifo.count); i++)
 						{
-							printBuffer[i] = FinshCharDequeue(&UDP_FinshPrintfFifoHandle);
+							printBuffer[i] = FinshCharDequeue(&PrintfFifoHandle);
 						}
 						if(0 != i)
 						{
-							UDP_NetconnSendString(g_UDP_Netconn, printBuffer);
+							UDP_NetconnSendString(g_NetFinshNetconn, printBuffer);
 						}
 						
 					}
@@ -103,7 +99,7 @@ static void rt_udp_finsh_thread_entry(void *param)
 		{
 			rt_kprintf("UDP connect failure\r\n");
 		}
-	UDP_FinshFlag = false;
+	NET_FinshFlag = false;
 	}
 	while(1);
 }
@@ -116,17 +112,17 @@ static void rt_udp_finsh_thread_entry(void *param)
   * @return: none
   * @updata: 
   */
-#if RT_USING_UDP_FINSH
-static void udp_finsh_thread_start(void* param)
+#if RT_USING_NET_FINSH
+static void net_finsh_thread_start(void* param)
 {
 	rt_thread_t tid; 
 
-    tid = rt_thread_create(UDP_FINSH_THREAD_NAME, 
+    tid = rt_thread_create(NET_FINSH_THREAD_NAME, 
                            rt_udp_finsh_thread_entry, 
                            param, 
-                           UDP_FINSH_THREAD_STACK_SIZE, 
-                           UDP_FINSH_THREAD_PRIORITY, 
-                           UDP_FINSH_THREAD_TIMESLICE);
+                           NET_FINSH_THREAD_STACK_SIZE, 
+                           NET_FINSH_THREAD_PRIORITY, 
+                           NET_FINSH_THREAD_TIMESLICE);
 
     if (tid != RT_NULL)
     {
@@ -144,14 +140,14 @@ static void udp_finsh_thread_start(void* param)
   * @return: 0:成功; 1:失败
   * @updata: 
   */
-#if RT_USING_UDP_FINSH
-uint8_t rt_UDP_FinshThread_start(void)
+#if RT_USING_NET_FINSH
+uint8_t rt_NetFinshThread_start(void)
 {
-    udp_finsh_thread_start(RT_NULL);
+    net_finsh_thread_start(RT_NULL);
 	
 	return RT_EOK;
 }
-INIT_APP_EXPORT(rt_UDP_FinshThread_start);
+INIT_APP_EXPORT(rt_NetFinshThread_start);
 #endif
 
 
