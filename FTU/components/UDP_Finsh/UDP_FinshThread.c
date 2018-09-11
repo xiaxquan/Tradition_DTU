@@ -24,8 +24,9 @@
 
 
 /****************************全局变量***********************************/
-
-
+uint8_t udp_demo_recvbuf[UDP_DEMO_BUFSIZE];
+const uint8_t* udp_demo_sendbuf = "sojo\r\n";
+uint8_t udp_flag;
 
 /***************************静态全局变量********************************/
 #if RT_USING_UDP_FINSH 
@@ -48,8 +49,8 @@ static void rt_udp_finsh_thread_entry(void *param)
 	uint32_t cpu_sr;
 	err_t err;
 	static struct netconn* udpconn = NULL;
-//	static struct netbuf* recvbuf = NULL;
-//	static struct netbuf* sentbuf;
+	static struct netbuf* sentbuf = NULL;
+	static struct netbuf* recvbuf;
 	struct ip_addr destipaddr;
 	rt_base_t level;
 	struct pbuf* q = NULL;
@@ -79,19 +80,44 @@ static void rt_udp_finsh_thread_entry(void *param)
 			{
 				while(1)
 				{
-//					rt_thread_delay(1000);
-//					UDP_NetconnSendString(udpconn, "sojo\r\n");
-					UDP_NetconnReceiveString(udpconn);
+					
 //					sentbuf = netbuf_new();
-//					netbuf_alloc(sentbuf, strlen("sojo\r\n"));
-//					memcpy(sentbuf->p->payload, (void*)"sojo\r\n", strlen("sojo\r\n"));
+//					netbuf_alloc(sentbuf,strlen((char *)"qwerty\r\n"));
+//					memcpy(sentbuf->p->payload,(void*)"qwerty\r\n",strlen((char*)"qwerty\r\n"));
 //					err = netconn_send(udpconn, sentbuf);
 //					if(err != ERR_OK)
 //					{
-//						rt_kprintf("send error\r\n");
+//						printf("send error\r\n");
 //						netbuf_delete(sentbuf);
 //					}
 //					netbuf_delete(sentbuf);
+					
+					UDP_NetconnSendString(udpconn, (void*)udp_demo_sendbuf);
+				
+//					netconn_recv(udpconn,&recvbuf);
+//					if(recvbuf != NULL)
+//					{ 
+//						level = rt_hw_interrupt_disable();
+//						memset(udp_demo_recvbuf,0,UDP_DEMO_BUFSIZE);
+//						for(q=recvbuf->p;q!=NULL;q=q->next)
+//						{
+//							
+//							if(q->len > (UDP_DEMO_BUFSIZE-data_len)) memcpy(udp_demo_recvbuf+data_len,q->payload,(UDP_DEMO_BUFSIZE-data_len));//????
+//							else memcpy(udp_demo_recvbuf+data_len,q->payload,q->len);
+//							data_len += q->len;  	
+//							if(data_len > UDP_DEMO_BUFSIZE) break;	
+//						}
+//						rt_hw_interrupt_enable(level);
+//						data_len=0;
+//						printf("%s\r\n",udp_demo_recvbuf);
+//						err = netconn_send(udpconn,recvbuf);
+//						netbuf_delete(recvbuf);
+//						
+//					}else rt_thread_delay(200);
+					
+//					rt_thread_delay(2000);
+					
+					UDP_NetconnReceiveString(udpconn);
 				}
 			}
 			else

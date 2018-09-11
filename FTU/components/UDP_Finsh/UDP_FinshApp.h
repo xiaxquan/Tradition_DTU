@@ -30,6 +30,7 @@ uint8_t UDP_NetconnReceiveString(struct netconn* udpconn);
 void UDP_FinshFifoInit(void);
 void FinshStringEnqueue(FifoHandle *handle, uint8_t* indata, uint32_t size);
 char FinshCharDequeue(FifoHandle *handle);
+void MyMemcpy(uint8_t* dest, uint8_t* src, uint32_t size);
 
 #endif
 
