@@ -24,7 +24,7 @@ static uint8_t UDP_FinshBuffer[UDP_DEMO_BUFSIZE];
 static PointUint8 UDP_FinshBufferPack;
 
 /*打印FIFO*/
-FifoHandle UDP_FinshSendFifoHandle;
+FifoHandle UDP_FinshPrintfFifoHandle;
 static uint8_t UDP_PrintfBuffer[UDP_DEMO_BUFSIZE];
 static PointUint8 UDP_PrintfBufferPack;
 
@@ -173,7 +173,7 @@ void UDP_PrintfFifoInit(void)
 {
 	UDP_PrintfBufferPack.len = UDP_DEMO_BUFSIZE;
 	UDP_PrintfBufferPack.pData = UDP_PrintfBuffer;
-	FifoInit(&UDP_FinshSendFifoHandle, &UDP_PrintfBufferPack);
+	FifoInit(&UDP_FinshPrintfFifoHandle, &UDP_PrintfBufferPack);
 }
 
 
@@ -238,25 +238,21 @@ void UDP_finsh_kprintf(const char *fmt, ...)
 {
 	va_list args;
     rt_size_t length;
-    static char rt_log_buf[RT_CONSOLEBUF_SIZE];
+    char rt_log_buf[RT_CONSOLEBUF_SIZE] = {0};
 
     va_start(args, fmt);
 	
 	length = rt_vsnprintf(rt_log_buf, sizeof(rt_log_buf) - 1, fmt, args);
     if (length > RT_CONSOLEBUF_SIZE - 1)
         length = RT_CONSOLEBUF_SIZE - 1;
-	
+
 	if(UDP_FinshFlag)		/*UDP_FinshFlag为1说明UDP打印已经初始化，可以使用了*/
 	{
-//		UDP_NetconnSendString(g_UDP_Netconn, (void*)rt_log_buf);
-		/*需加入互斥操作*/
-		
-//		FinshStringEnqueue(&UDP_FinshSendFifoHandle, (uint8_t*)rt_log_buf, length);
-		
+		FinshStringEnqueue(&UDP_FinshPrintfFifoHandle, (uint8_t*)rt_log_buf, length);
 	}
 	else
 	{
-		rt_hw_console_output(rt_log_buf);
+//		rt_hw_console_output(rt_log_buf);
 	}
 	
 	va_end(args);

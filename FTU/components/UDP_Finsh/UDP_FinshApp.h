@@ -23,7 +23,7 @@
 extern struct netconn* g_UDP_Netconn;
 extern bool UDP_FinshFlag;
 extern FifoHandle UDP_FinshReceiveFifoHandle;
-extern FifoHandle UDP_FinshSendFifoHandle;
+extern FifoHandle UDP_FinshPrintfFifoHandle;
 
 
 void UDP_FinshIpSet(struct lwip_dev* lwip);

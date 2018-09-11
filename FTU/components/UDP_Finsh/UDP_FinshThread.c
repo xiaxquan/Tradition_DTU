@@ -52,10 +52,11 @@ static void rt_udp_finsh_thread_entry(void *param)
 	struct lwip_dev lwipDev;
 	
 	UDP_FinshFifoInit();		/*≥ı ºªØfifo*/
+	UDP_PrintfFifoInit();
 
 	do
 	{
-		rt_kprintf("UDP start\r\n");
+		rt_kprintf("\r\nUDP finsh start");
 		rt_thread_delay(1000);
 		UDP_FinshIpSet(&lwipDev);
 		
@@ -109,18 +110,24 @@ static void rt_udp_printf_thread_entry(void *param)
 	uint8_t i = 0;
 	uint8_t printBuffer[PRINT_BUFFER_SIZE] = {0};
 	
-	UDP_PrintfFifoInit();
-	
+	rt_kprintf("\r\nUDP printf start");
 	while(1)
 	{
 		if(UDP_FinshFlag)
 		{
 			memset(printBuffer, 0, PRINT_BUFFER_SIZE);
-			for(i=0; (i<PRINT_BUFFER_SIZE) && (UDP_FinshSendFifoHandle.fifo.count); i++)
+			for(i=0; (i<PRINT_BUFFER_SIZE) && (UDP_FinshPrintfFifoHandle.fifo.count); i++)
 			{
-				printBuffer[i] = FinshCharDequeue(&UDP_FinshSendFifoHandle);
+				printBuffer[i] = FinshCharDequeue(&UDP_FinshPrintfFifoHandle);
 			}
-			UDP_NetconnSendString(g_UDP_Netconn, printBuffer);
+			if(0 != i)
+			{
+				UDP_NetconnSendString(g_UDP_Netconn, printBuffer);
+			}
+			else
+			{
+				rt_thread_delay(10);
+			}
 		}
 	}
 }
