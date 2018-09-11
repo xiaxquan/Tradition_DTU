@@ -20,16 +20,20 @@
 #define UDP_DEMO_BUFSIZE		512	//»º³åÇø´óÐ¡
 
 
-extern FifoHandle UDP_FinshFifoHandle;
 extern struct netconn* g_UDP_Netconn;
+extern bool UDP_FinshFlag;
+extern FifoHandle UDP_FinshReceiveFifoHandle;
+extern FifoHandle UDP_FinshSendFifoHandle;
 
 
 void UDP_FinshIpSet(struct lwip_dev* lwip);
-int8_t UDP_NetconnSendString(struct netconn* udpconn, uint8_t* sendString);
-uint8_t UDP_NetconnReceiveString(struct netconn* udpconn);
+int8_t UDP_NetconnSendString(struct netconn* udpNetconn, uint8_t* sendString);
+uint8_t UDP_NetconnReceiveString(struct netconn* udpNetConn);
 void UDP_FinshFifoInit(void);
+void UDP_PrintfFifoInit(void);
 void FinshStringEnqueue(FifoHandle *handle, uint8_t* indata, uint32_t size);
 char FinshCharDequeue(FifoHandle *handle);
+char UDP_getchar(void);
 void UDP_finsh_kprintf(const char *fmt, ...);
 
 #endif

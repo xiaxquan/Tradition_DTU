@@ -14,13 +14,19 @@
 #include <string.h>
 
 
+/****************************全局变量***********************************/
 struct netconn* g_UDP_Netconn = NULL;
+bool UDP_FinshFlag = 0;
 
-FifoHandle UDP_FinshFifoHandle;
+/*接收FIFO*/
+FifoHandle UDP_FinshReceiveFifoHandle;
 static uint8_t UDP_FinshBuffer[UDP_DEMO_BUFSIZE];
 static PointUint8 UDP_FinshBufferPack;
 
-
+/*打印FIFO*/
+FifoHandle UDP_FinshSendFifoHandle;
+static uint8_t UDP_PrintfBuffer[UDP_DEMO_BUFSIZE];
+static PointUint8 UDP_PrintfBufferPack;
 
 
 /*****************************Function**********************************/
@@ -79,7 +85,7 @@ void UDP_FinshIpSet(struct lwip_dev* lwip)
   * @return: 0：成功  1：传参错误  2：netbuf创建失败或动态内存申请失败  其他：发送错误
   * @updata: 
   */
-int8_t UDP_NetconnSendString(struct netconn* udpconn, uint8_t* sendString)
+int8_t UDP_NetconnSendString(struct netconn* udpNetconn, uint8_t* sendString)
 {
 	struct netbuf* sendNetbuf = NULL;
 	void* pointer = NULL;
@@ -88,7 +94,7 @@ int8_t UDP_NetconnSendString(struct netconn* udpconn, uint8_t* sendString)
 	sendNetbuf = netbuf_new();
 	netbuf_alloc(sendNetbuf,strlen((char *)sendString));
 	memcpy(sendNetbuf->p->payload,(void*)sendString,strlen((char*)sendString));
-	error = netconn_send(udpconn, sendNetbuf);
+	error = netconn_send(udpNetconn, sendNetbuf);
 	if(error != ERR_OK)
 	{
 		rt_kprintf("send error\r\n");
@@ -110,7 +116,6 @@ int8_t UDP_NetconnSendString(struct netconn* udpconn, uint8_t* sendString)
 uint8_t UDP_NetconnReceiveString(struct netconn* udpNetConn)
 {
 	static struct netbuf* recvNetBuf = NULL;
-	uint8_t udpRecvBuf[UDP_DEMO_BUFSIZE] = {0};
 	rt_base_t level;			/*开关中断的返回值*/
 	struct pbuf* q = NULL;
 	uint32_t dataLenth = 0;
@@ -119,29 +124,24 @@ uint8_t UDP_NetconnReceiveString(struct netconn* udpNetConn)
 	if(recvNetBuf != NULL)          //接收到数据
 	{
 		level = rt_hw_interrupt_disable(); //关中断
-		memset(udpRecvBuf, 0, UDP_DEMO_BUFSIZE);  //数据接收缓冲区清零
 		
 		for(q=recvNetBuf->p; q!=NULL; q=q->next)  //遍历完整个pbuf链表
 		{
 			//判断要拷贝到UDP_DEMO_RX_BUFSIZE中的数据是否大于UDP_DEMO_RX_BUFSIZE的剩余空间,如果大于
 			//的话就只拷贝UDP_DEMO_RX_BUFSIZE中剩余长度的数据,否则的话机拷贝所有的数据
-			if(q->len > (UDP_DEMO_BUFSIZE-dataLenth))
+			if(q->len > UDP_DEMO_BUFSIZE)
 			{
-				memcpy((udpRecvBuf + dataLenth), q->payload, (UDP_DEMO_BUFSIZE - dataLenth));//拷贝数据
-				FinshStringEnqueue(&UDP_FinshFifoHandle, q->payload, (UDP_DEMO_BUFSIZE - dataLenth));
+				FinshStringEnqueue(&UDP_FinshReceiveFifoHandle, q->payload, UDP_DEMO_BUFSIZE);
 			}
 			else
 			{
-				memcpy((udpRecvBuf + dataLenth), q->payload, q->len);
-				FinshStringEnqueue(&UDP_FinshFifoHandle, q->payload, q->len);
-			}
-			dataLenth += q->len;  	
+				FinshStringEnqueue(&UDP_FinshReceiveFifoHandle, q->payload, q->len);
+			}	
 			if(dataLenth > UDP_DEMO_BUFSIZE)
 			{
 				break; //超出TCP客户端接收数组,跳出
 			}
 		}
-		dataLenth = 0;  //复制完成后data_len要清零
 		rt_hw_interrupt_enable(level);  //开中断
 		netbuf_delete(recvNetBuf);      //删除buf
 	}
@@ -159,7 +159,21 @@ void UDP_FinshFifoInit(void)
 {
 	UDP_FinshBufferPack.len = UDP_DEMO_BUFSIZE;
 	UDP_FinshBufferPack.pData = UDP_FinshBuffer;
-	FifoInit(&UDP_FinshFifoHandle, &UDP_FinshBufferPack);
+	FifoInit(&UDP_FinshReceiveFifoHandle, &UDP_FinshBufferPack);
+}
+
+
+/**
+  * @brief : 使用UDP协议的printf的FIFO初始化
+  * @param : none
+  * @return: none
+  * @updata: 
+  */
+void UDP_PrintfFifoInit(void)
+{
+	UDP_PrintfBufferPack.len = UDP_DEMO_BUFSIZE;
+	UDP_PrintfBufferPack.pData = UDP_PrintfBuffer;
+	FifoInit(&UDP_FinshSendFifoHandle, &UDP_PrintfBufferPack);
 }
 
 
@@ -204,6 +218,17 @@ char FinshCharDequeue(FifoHandle *handle)
 
 
 /**
+  * @brief : 使用UDP获取字符
+  * @param : none
+  * @return: 出队的字符
+  * @updata: 
+  */
+char UDP_getchar(void)
+{
+	return FinshCharDequeue(&UDP_FinshReceiveFifoHandle);
+}
+
+/**
   * @brief : 使用UDP的打印函数
   * @param : 打印的信息
   * @return: none
@@ -221,7 +246,18 @@ void UDP_finsh_kprintf(const char *fmt, ...)
     if (length > RT_CONSOLEBUF_SIZE - 1)
         length = RT_CONSOLEBUF_SIZE - 1;
 	
-	UDP_NetconnSendString(g_UDP_Netconn, (void*)rt_log_buf);
+	if(UDP_FinshFlag)		/*UDP_FinshFlag为1说明UDP打印已经初始化，可以使用了*/
+	{
+//		UDP_NetconnSendString(g_UDP_Netconn, (void*)rt_log_buf);
+		/*需加入互斥操作*/
+		
+//		FinshStringEnqueue(&UDP_FinshSendFifoHandle, (uint8_t*)rt_log_buf, length);
+		
+	}
+	else
+	{
+		rt_hw_console_output(rt_log_buf);
+	}
 	
 	va_end(args);
 }

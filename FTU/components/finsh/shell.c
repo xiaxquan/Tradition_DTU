@@ -34,7 +34,7 @@
  * 2011-02-23     Bernard      fix variable section end issue of finsh shell
  *                             initialization when use GNU GCC compiler.
  * 2016-11-26     armink       add password authentication
- * 2018-09-11	  Lei		   将函数finsh_getchar中的串口获取字符串的getchar函数替换为用网口获取FinshCharDequeue
+ * 2018-09-11	  Lei		   将函数finsh_getchar中的串口获取字符串的getchar函数替换为用网口获取UDP_getchar
  */
 
 #include <rthw.h>
@@ -43,7 +43,7 @@
 #include "shell.h"
 #include "UDP_FinshApp.h"
 
-#define rt_kprintf  UDP_finsh_kprintf
+#define rt_kprintf  UDP_finsh_kprintf		/*替换rt_kprintf函数*/
 
 #ifdef FINSH_USING_MSH
 #include "msh.h"
@@ -91,7 +91,7 @@ static char finsh_getchar(void)
 {
 #ifdef RT_USING_POSIX
 //    return getchar();
-	return FinshCharDequeue(&UDP_FinshFifoHandle);
+	return UDP_getchar();
 #else
     char ch;
 
