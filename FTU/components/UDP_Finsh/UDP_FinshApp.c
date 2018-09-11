@@ -166,8 +166,8 @@ uint8_t UDP_NetconnReceiveString(struct netconn* udpconn)
 		}
 //		UDP_NetconnSendString(udpconn, udp_demo_recvbuf);
 //		netconn_send(udpconn, recvbuf);
-		rt_kprintf("1:%s", (char*)udp_demo_recvbuf);
-		rt_kprintf("2:%s", (char*)recvbuf->p->payload);
+//		rt_kprintf("1:%s", (char*)udp_demo_recvbuf);
+//		rt_kprintf("2:%s", (char*)recvbuf->p->payload);
 		data_len = 0;  //复制完成后data_len要清零
 		rt_hw_interrupt_enable(level);  //开中断
 		netbuf_delete(recvbuf);      //删除buf

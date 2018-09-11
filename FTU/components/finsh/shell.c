@@ -34,6 +34,7 @@
  * 2011-02-23     Bernard      fix variable section end issue of finsh shell
  *                             initialization when use GNU GCC compiler.
  * 2016-11-26     armink       add password authentication
+ * 2018-09-11	  Lei		   将函数finsh_getchar中的串口获取字符串的getchar函数替换为用网口获取FinshCharDequeue
  */
 
 #include <rthw.h>
@@ -87,7 +88,8 @@ const char *finsh_get_prompt()
 static char finsh_getchar(void)
 {
 #ifdef RT_USING_POSIX
-    return getchar();
+//    return getchar();
+	return FinshCharDequeue(&UDP_FinshFifoHandle);
 #else
     char ch;
 
@@ -244,8 +246,8 @@ static void finsh_wait_auth(void)
             while (1)
             {
                 /* read one character from device */
-//                ch = finsh_getchar();
-				ch = FinshCharDequeue(&UDP_FinshFifoHandle);
+                ch = finsh_getchar();
+				
 
                 if (ch >= ' ' && ch <= '~' && cur_pos < FINSH_PASSWORD_MAX)
                 {
@@ -452,7 +454,7 @@ void finsh_thread_entry(void *parameter)
 
     while (1)
     {
-        ch = finsh_getchar();
+        ch = finsh_getchar(); 
 
         /*
          * handle control key
