@@ -14,11 +14,11 @@
 #include <string.h>
 #include "board.h"
 #include "rtdef.h"
-
+#include <stdbool.h>
 
 /****************************全局变量***********************************/
 struct netconn* g_UDP_Netconn = NULL;
-bool UDP_FinshFlag = 0;
+bool UDP_FinshFlag = false;
 
 /*接收FIFO*/
 FifoHandle UDP_FinshReceiveFifoHandle;
@@ -252,7 +252,7 @@ void UDP_finsh_kprintf(const char *fmt, ...)
     if (length > RT_CONSOLEBUF_SIZE - 1)
         length = RT_CONSOLEBUF_SIZE - 1;
 
-	if(UDP_FinshFlag)		/*UDP_FinshFlag为1说明UDP打印已经初始化，可以使用了*/
+	if(true == UDP_FinshFlag)		/*UDP_FinshFlag为1说明UDP打印已经初始化，可以使用了*/
 	{
 		FinshStringEnqueue(&UDP_FinshPrintfFifoHandle, (uint8_t*)rt_log_buf, length);
 	}

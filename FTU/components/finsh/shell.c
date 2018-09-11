@@ -43,8 +43,6 @@
 #include "shell.h"
 #include "UDP_FinshApp.h"
 
-#define rt_kprintf  UDP_finsh_kprintf		/*Ìæ»»rt_kprintfº¯Êý*/
-
 #ifdef FINSH_USING_MSH
 #include "msh.h"
 #endif

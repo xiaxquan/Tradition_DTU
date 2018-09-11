@@ -1148,6 +1148,7 @@ void rt_kputs(const char *str)
  *
  * @param fmt the format
  */
+#undef rt_kprintf
 void rt_kprintf(const char *fmt, ...)
 {
     va_list args;

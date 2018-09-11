@@ -27,6 +27,7 @@
  * 2010-04-11     yi.qiu       add module feature
  * 2013-06-24     Bernard      add rt_kprintf re-define when not use RT_USING_CONSOLE.
  * 2016-08-09     ArdaFu       add new thread and interrupt hook.
+ * 2018-09-11	  Lei		   将rt_kprintf函数替换为网口打印输出
  */
 
 #ifndef __RT_THREAD_H__
@@ -513,6 +514,10 @@ void rt_components_board_init(void);
 void rt_kprintf(const char *fmt, ...);
 void rt_kputs(const char *str);
 #endif
+
+extern void UDP_finsh_kprintf(const char *fmt, ...);		/*将打印函数替换为网口打印输出*/
+#define rt_kprintf UDP_finsh_kprintf
+
 rt_int32_t rt_vsprintf(char *dest, const char *format, va_list arg_ptr);
 rt_int32_t rt_vsnprintf(char *buf, rt_size_t size, const char *fmt, va_list args);
 rt_int32_t rt_sprintf(char *buf, const char *format, ...);

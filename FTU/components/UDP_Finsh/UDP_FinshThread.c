@@ -73,13 +73,13 @@ static void rt_udp_finsh_thread_entry(void *param)
 			if(err == ERR_OK)//绑定完成
 			{
 				/*UDP链接已经创建，之后可以使用网口的打印函数了*/
-				UDP_FinshFlag = 1;
+				UDP_FinshFlag = true;
 				
 				while(1)
 				{
 					/*等待接收，将接收到的字符入队*/
 					UDP_NetconnReceiveString(g_UDP_Netconn);
-					if(UDP_FinshFlag)
+					if(true == UDP_FinshFlag)
 					{
 						memset(printBuffer, 0, PRINT_BUFFER_SIZE);
 						for(i=0; (i<PRINT_BUFFER_SIZE) && (UDP_FinshPrintfFifoHandle.fifo.count); i++)
@@ -103,7 +103,7 @@ static void rt_udp_finsh_thread_entry(void *param)
 		{
 			rt_kprintf("UDP connect failure\r\n");
 		}
-	UDP_FinshFlag = 0;
+	UDP_FinshFlag = false;
 	}
 	while(1);
 }
