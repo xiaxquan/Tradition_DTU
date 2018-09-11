@@ -14,14 +14,12 @@
 #include <string.h>
 
 
-struct netconn* udpconn = NULL;
+struct netconn* g_UDP_Netconn = NULL;
 
 FifoHandle UDP_FinshFifoHandle;
 static uint8_t UDP_FinshBuffer[UDP_DEMO_BUFSIZE];
 static PointUint8 UDP_FinshBufferPack;
 
-
-//uint8_t udp_demo_recvbuf[UDP_DEMO_BUFSIZE];			//UDP接收数据缓冲区
 
 
 
@@ -97,41 +95,7 @@ int8_t UDP_NetconnSendString(struct netconn* udpconn, uint8_t* sendString)
 		netbuf_delete(sendNetbuf);
 	}
 	netbuf_delete(sendNetbuf);
-	
-//	/*进行传参检查*/
-//	if((NULL == udpconn) || (NULL == sendString))
-//	{
-//		/*所传参数错误*/
-//		rt_kprintf("ERROR:%s-Line %d: Transfer Parameters Error!\r\n", __FILE__, __LINE__);
-//		return 1;
-//	}
 
-//	sendNetbuf = netbuf_new();
-//	if(NULL == sendNetbuf)
-//	{
-//		/*netbuf创建失败*/
-//		rt_kprintf("ERROR:%s-Line %d: Netbuf Creat Error!\r\n", __FILE__, __LINE__);
-//		return 2;
-//	}
-//	pointer = netbuf_alloc(sendNetbuf, strlen((char*)sendString));
-//	if(NULL == pointer)
-//	{
-//		/*动态内存申请失败*/
-//		rt_kprintf("ERROR:%s-Line %d: Netbuf Alloc Error!\r\n", __FILE__, __LINE__);
-//		return 2;
-//	}
-//	memcpy(sendNetbuf->p->payload, (void*)sendString, strlen((char*)sendString));
-//	error = netconn_send(udpconn, sendNetbuf);
-//	if(0 != error)
-//	{
-//		/*发送数据失败*/
-//		rt_kprintf("ERROR:%s-Line %d: Netbuf Send Error!\r\n", __FILE__, __LINE__);
-//		netbuf_delete(sendNetbuf);
-//		return error;
-//	}
-//	rt_kprintf("1:%s", (char*)sendString);
-//	rt_kprintf("2:%s", (char*)sendNetbuf->p->payload);
-//	netbuf_delete(sendNetbuf);      	//删除buf
 	
 	return 0;
 }
@@ -143,43 +107,43 @@ int8_t UDP_NetconnSendString(struct netconn* udpconn, uint8_t* sendString)
   * @return: 0：成功  1：失败 2：传参错误
   * @updata: 
   */
-uint8_t UDP_NetconnReceiveString(struct netconn* udpconn)
+uint8_t UDP_NetconnReceiveString(struct netconn* udpNetConn)
 {
-	static struct netbuf* recvbuf = NULL;
+	static struct netbuf* recvNetBuf = NULL;
+	uint8_t udpRecvBuf[UDP_DEMO_BUFSIZE] = {0};
 	rt_base_t level;			/*开关中断的返回值*/
 	struct pbuf* q = NULL;
-	uint32_t data_len = 0;
+	uint32_t dataLenth = 0;
 	
-	netconn_recv(udpconn, &recvbuf); //接收数据
-	if(recvbuf != NULL)          //接收到数据
+	netconn_recv(udpNetConn, &recvNetBuf); //接收数据
+	if(recvNetBuf != NULL)          //接收到数据
 	{
 		level = rt_hw_interrupt_disable(); //关中断
-		memset(udp_demo_recvbuf, 0, UDP_DEMO_BUFSIZE);  //数据接收缓冲区清零
+		memset(udpRecvBuf, 0, UDP_DEMO_BUFSIZE);  //数据接收缓冲区清零
 		
-		for(q=recvbuf->p; q!=NULL; q=q->next)  //遍历完整个pbuf链表
+		for(q=recvNetBuf->p; q!=NULL; q=q->next)  //遍历完整个pbuf链表
 		{
 			//判断要拷贝到UDP_DEMO_RX_BUFSIZE中的数据是否大于UDP_DEMO_RX_BUFSIZE的剩余空间,如果大于
 			//的话就只拷贝UDP_DEMO_RX_BUFSIZE中剩余长度的数据,否则的话机拷贝所有的数据
-			if(q->len > (UDP_DEMO_BUFSIZE-data_len))
+			if(q->len > (UDP_DEMO_BUFSIZE-dataLenth))
 			{
-				memcpy((udp_demo_recvbuf + data_len), q->payload, (UDP_DEMO_BUFSIZE - data_len));//拷贝数据
-				FinshStringEnqueue(&UDP_FinshFifoHandle, q->payload, (UDP_DEMO_BUFSIZE - data_len));
+				memcpy((udpRecvBuf + dataLenth), q->payload, (UDP_DEMO_BUFSIZE - dataLenth));//拷贝数据
+				FinshStringEnqueue(&UDP_FinshFifoHandle, q->payload, (UDP_DEMO_BUFSIZE - dataLenth));
 			}
 			else
 			{
-				memcpy((udp_demo_recvbuf + data_len), q->payload, q->len);
+				memcpy((udpRecvBuf + dataLenth), q->payload, q->len);
 				FinshStringEnqueue(&UDP_FinshFifoHandle, q->payload, q->len);
 			}
-			data_len += q->len;  	
-			if(data_len > UDP_DEMO_BUFSIZE)
+			dataLenth += q->len;  	
+			if(dataLenth > UDP_DEMO_BUFSIZE)
 			{
 				break; //超出TCP客户端接收数组,跳出
 			}
 		}
-		data_len = 0;  //复制完成后data_len要清零
+		dataLenth = 0;  //复制完成后data_len要清零
 		rt_hw_interrupt_enable(level);  //开中断
-//		netconn_send(udpconn, recvbuf);
-		netbuf_delete(recvbuf);      //删除buf
+		netbuf_delete(recvNetBuf);      //删除buf
 	}
 	return 0;
 }
@@ -257,7 +221,7 @@ void UDP_finsh_kprintf(const char *fmt, ...)
     if (length > RT_CONSOLEBUF_SIZE - 1)
         length = RT_CONSOLEBUF_SIZE - 1;
 	
-	UDP_NetconnSendString(udpconn, (void*)rt_log_buf);
+	UDP_NetconnSendString(g_UDP_Netconn, (void*)rt_log_buf);
 	
 	va_end(args);
 }

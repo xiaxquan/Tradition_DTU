@@ -21,8 +21,7 @@
 
 
 extern FifoHandle UDP_FinshFifoHandle;
-extern uint8_t udp_demo_recvbuf[UDP_DEMO_BUFSIZE];
-extern struct netconn* udpconn;
+extern struct netconn* g_UDP_Netconn;
 
 
 void UDP_FinshIpSet(struct lwip_dev* lwip);
