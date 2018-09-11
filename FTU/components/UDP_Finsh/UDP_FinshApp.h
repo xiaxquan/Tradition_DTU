@@ -22,6 +22,7 @@
 
 extern FifoHandle UDP_FinshFifoHandle;
 extern uint8_t udp_demo_recvbuf[UDP_DEMO_BUFSIZE];
+extern struct netconn* udpconn;
 
 
 void UDP_FinshIpSet(struct lwip_dev* lwip);
@@ -30,7 +31,7 @@ uint8_t UDP_NetconnReceiveString(struct netconn* udpconn);
 void UDP_FinshFifoInit(void);
 void FinshStringEnqueue(FifoHandle *handle, uint8_t* indata, uint32_t size);
 char FinshCharDequeue(FifoHandle *handle);
-void MyMemcpy(uint8_t* dest, uint8_t* src, uint32_t size);
+void UDP_finsh_kprintf(const char *fmt, ...);
 
 #endif
 

@@ -24,6 +24,7 @@
 
 
 /****************************全局变量***********************************/
+
 uint8_t udp_demo_recvbuf[UDP_DEMO_BUFSIZE];
 const uint8_t* udp_demo_sendbuf = "sojo\r\n";
 uint8_t udp_flag;
@@ -48,7 +49,7 @@ static void rt_udp_finsh_thread_entry(void *param)
 { 
 	uint32_t cpu_sr;
 	err_t err;
-	static struct netconn* udpconn = NULL;
+	
 	static struct netbuf* sentbuf = NULL;
 	static struct netbuf* recvbuf;
 	struct ip_addr destipaddr;
@@ -92,28 +93,9 @@ static void rt_udp_finsh_thread_entry(void *param)
 //					}
 //					netbuf_delete(sentbuf);
 					
-					UDP_NetconnSendString(udpconn, (void*)udp_demo_sendbuf);
+//					UDP_NetconnSendString(udpconn, (void*)udp_demo_sendbuf);
 				
-//					netconn_recv(udpconn,&recvbuf);
-//					if(recvbuf != NULL)
-//					{ 
-//						level = rt_hw_interrupt_disable();
-//						memset(udp_demo_recvbuf,0,UDP_DEMO_BUFSIZE);
-//						for(q=recvbuf->p;q!=NULL;q=q->next)
-//						{
-//							
-//							if(q->len > (UDP_DEMO_BUFSIZE-data_len)) memcpy(udp_demo_recvbuf+data_len,q->payload,(UDP_DEMO_BUFSIZE-data_len));//????
-//							else memcpy(udp_demo_recvbuf+data_len,q->payload,q->len);
-//							data_len += q->len;  	
-//							if(data_len > UDP_DEMO_BUFSIZE) break;	
-//						}
-//						rt_hw_interrupt_enable(level);
-//						data_len=0;
-//						printf("%s\r\n",udp_demo_recvbuf);
-//						err = netconn_send(udpconn,recvbuf);
-//						netbuf_delete(recvbuf);
-//						
-//					}else rt_thread_delay(200);
+//					
 					
 //					rt_thread_delay(2000);
 					
@@ -177,6 +159,9 @@ uint8_t rt_UDP_FinshThread_start(void)
 }
 INIT_APP_EXPORT(rt_UDP_FinshThread_start);
 #endif
+
+
+
 
 
 /*****************************File End**********************************/

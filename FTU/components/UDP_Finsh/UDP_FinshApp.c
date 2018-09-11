@@ -14,6 +14,8 @@
 #include <string.h>
 
 
+struct netconn* udpconn = NULL;
+
 FifoHandle UDP_FinshFifoHandle;
 static uint8_t UDP_FinshBuffer[UDP_DEMO_BUFSIZE];
 static PointUint8 UDP_FinshBufferPack;
@@ -176,7 +178,7 @@ uint8_t UDP_NetconnReceiveString(struct netconn* udpconn)
 		}
 		data_len = 0;  //复制完成后data_len要清零
 		rt_hw_interrupt_enable(level);  //开中断
-		netconn_send(udpconn, recvbuf);
+//		netconn_send(udpconn, recvbuf);
 		netbuf_delete(recvbuf);      //删除buf
 	}
 	return 0;
@@ -237,13 +239,27 @@ char FinshCharDequeue(FifoHandle *handle)
 }
 
 
-void MyMemcpy(uint8_t* dest, uint8_t* src, uint32_t size)
+/**
+  * @brief : 使用UDP的打印函数
+  * @param : 打印的信息
+  * @return: none
+  * @updata: 
+  */
+void UDP_finsh_kprintf(const char *fmt, ...)
 {
-	uint32_t i = 0;
-	for(i=0; i<size; i++)
-	{
-		dest[i] = src[i];
-	}
+	va_list args;
+    rt_size_t length;
+    static char rt_log_buf[RT_CONSOLEBUF_SIZE];
+
+    va_start(args, fmt);
+	
+	length = rt_vsnprintf(rt_log_buf, sizeof(rt_log_buf) - 1, fmt, args);
+    if (length > RT_CONSOLEBUF_SIZE - 1)
+        length = RT_CONSOLEBUF_SIZE - 1;
+	
+	UDP_NetconnSendString(udpconn, (void*)rt_log_buf);
+	
+	va_end(args);
 }
 
 /*****************************File End**********************************/
