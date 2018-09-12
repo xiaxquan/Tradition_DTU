@@ -1,7 +1,7 @@
 /**
   *             Copyright (C) SOJO Electric CO., Ltd. 2017-2018. All right reserved.
   * @file:      UDP_FinshThread.c
-  * @brief:     使用网络UDP实现远程登录开发板finsh的相关任务
+  * @brief:     使用网络接口，UDP协议实现远程登录开发板finsh的相关任务
   * @version:   V1.0.0 
   * @author:    Lei
   * @date:      2018-09-06
@@ -38,19 +38,22 @@
 #if RT_USING_NET_FINSH
 static void rt_udp_finsh_thread_entry(void *param)
 {
-	err_t err;
+	err_t err = 0;
+	uint8_t ret = 0;
 	struct ip_addr destipAddr;
 	rt_base_t level;
 	struct lwip_dev lwipDev;
 	uint8_t i = 0;
 	uint8_t printBuffer[PRINT_BUFFER_SIZE] = {0};
 	
-	FinshFifoInit();		/*初始化fifo*/
-	PrintfFifoInit();
-
-	do
+	ret = FinshFifoInit();		/*初始化fifo*/
+	if(!ret)
 	{
-		rt_kprintf("\r\nNet finsh start");
+		ret = PrintfFifoInit();
+	}
+	
+	while(!ret)
+	{
 		rt_thread_delay(1000);
 		NetFinshIpSet(&lwipDev);
 		
@@ -69,6 +72,7 @@ static void rt_udp_finsh_thread_entry(void *param)
 			{
 				/*UDP链接已经创建，之后可以使用网口的打印函数了*/
 				NET_FinshFlag = true;
+				rt_kprintf("Net finsh Init Success\r\n");
 				
 				while(1)
 				{
@@ -78,9 +82,9 @@ static void rt_udp_finsh_thread_entry(void *param)
 					if(true == NET_FinshFlag)
 					{
 						memset(printBuffer, 0, PRINT_BUFFER_SIZE);
-						for(i=0; (i<PRINT_BUFFER_SIZE) && (PrintfFifoHandle.fifo.count); i++)
+						for(i=0; (i<PRINT_BUFFER_SIZE) && (PrintfFifoHandle->fifo.count); i++)
 						{
-							printBuffer[i] = FinshCharDequeue(&PrintfFifoHandle);
+							printBuffer[i] = FinshCharDequeue(PrintfFifoHandle);
 						}
 						if(0 != i)
 						{
@@ -99,9 +103,10 @@ static void rt_udp_finsh_thread_entry(void *param)
 		{
 			rt_kprintf("UDP connect failure\r\n");
 		}
-	NET_FinshFlag = false;
+		NET_FinshFlag = false;
 	}
-	while(1);
+	
+	NetFinshFifoFree();		/*释放接收和发送的队列所用到的动态分配的内存*/
 }
 #endif
 

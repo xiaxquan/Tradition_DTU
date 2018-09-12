@@ -1,7 +1,7 @@
 /**
   *             Copyright (C) SOJO Electric CO., Ltd. 2017-2018. All right reserved.
   * @file:      UDP_FinshApp.c
-  * @brief:     使用网络UDP实现远程登录开发板finsh的应用函数
+  * @brief:     使用网络接口，UDP协议实现远程登录开发板finsh的应用函数
   * @version:   V1.0.0 
   * @author:    Lei
   * @date:      2018-09-06
@@ -21,19 +21,15 @@ struct netconn* g_NetFinshNetconn = NULL;
 bool NET_FinshFlag = false;
 
 /*接收FIFO*/
-FifoHandle FinshReceiveFifoHandle;
-static uint8_t FinshBuffer[NET_FINSH_BUFSIZE];
-static PointUint8 FinshBufferPack;
+FifoHandle* FinshReceiveFifoHandle = NULL;
+static uint8_t* FinshBuffer = NULL;
+static PointUint8* FinshBufferPack = NULL;
 
 /*打印FIFO*/
-FifoHandle PrintfFifoHandle;
-static uint8_t PrintfBuffer[NET_FINSH_BUFSIZE];
-static PointUint8 PrintfBufferPack;
+FifoHandle* PrintfFifoHandle = NULL;
+static uint8_t* PrintfBuffer = NULL;
+static PointUint8* PrintfBufferPack = NULL;
 
-
-#if defined(RT_USING_DEVICE) && defined(RT_USING_CONSOLE)
-static rt_device_t _console_device = RT_NULL;
-#endif
 
 /*****************************Function**********************************/
 
@@ -137,11 +133,11 @@ uint8_t UDP_NetconnReceiveString(struct netconn* udpNetConn)
 			//的话就只拷贝UDP_DEMO_RX_BUFSIZE中剩余长度的数据,否则的话机拷贝所有的数据
 			if(q->len > NET_FINSH_BUFSIZE)
 			{
-				FinshStringEnqueue(&FinshReceiveFifoHandle, q->payload, NET_FINSH_BUFSIZE);
+				FinshStringEnqueue(FinshReceiveFifoHandle, q->payload, NET_FINSH_BUFSIZE);
 			}
 			else
 			{
-				FinshStringEnqueue(&FinshReceiveFifoHandle, q->payload, q->len);
+				FinshStringEnqueue(FinshReceiveFifoHandle, q->payload, q->len);
 			}	
 			if(dataLenth > NET_FINSH_BUFSIZE)
 			{
@@ -156,30 +152,131 @@ uint8_t UDP_NetconnReceiveString(struct netconn* udpNetConn)
 
 
 /**
-  * @brief : 使用UDP协议的finsh的FIFO初始化
+  * @brief : 使用网络实现finsh中的发送和接收队列动态内存释放
   * @param : none
   * @return: none
   * @updata: 
   */
-void FinshFifoInit(void)
+void NetFinshFifoFree(void)
 {
-	FinshBufferPack.len = NET_FINSH_BUFSIZE;
-	FinshBufferPack.pData = FinshBuffer;
-	FifoInit(&FinshReceiveFifoHandle, &FinshBufferPack);
+	if(NULL != FinshReceiveFifoHandle)
+	{
+		rt_free(FinshReceiveFifoHandle);
+		FinshReceiveFifoHandle = NULL;
+	}
+	if(NULL != FinshBuffer)
+	{
+		rt_free(FinshBuffer);
+		FinshBuffer = NULL;
+	}
+	if(NULL != FinshBufferPack)
+	{
+		rt_free(FinshBufferPack);
+		FinshBufferPack = NULL;
+	}
+	
+	if(NULL != PrintfFifoHandle)
+	{
+		rt_free(PrintfFifoHandle);
+		PrintfFifoHandle = NULL;
+	}
+	if(NULL != PrintfBuffer)
+	{
+		rt_free(PrintfBuffer);
+		PrintfBuffer = NULL;
+	}
+	if(NULL != PrintfBufferPack)
+	{
+		rt_free(PrintfBufferPack);
+		PrintfBufferPack = NULL;
+	}
+
+}
+
+
+/**
+  * @brief : 使用UDP协议的finsh的FIFO初始化
+  * @param : none
+  * @return: 0:成功    1:失败
+  * @updata: 
+  */
+uint8_t FinshFifoInit(void)
+{
+	uint8_t err = 0;
+	FinshReceiveFifoHandle = rt_malloc(sizeof(FifoHandle));
+	if(NULL == FinshReceiveFifoHandle)
+	{
+		rt_kprintf("%s:[%s] #-%d: FinshReceiveFifoHandle Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+	FinshBuffer = rt_malloc(sizeof(uint8_t) * NET_FINSH_BUFSIZE);
+	if(NULL == FinshReceiveFifoHandle)
+	{
+		rt_kprintf("%s:[%s] #-%d: FinshBuffer Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+	FinshBufferPack = rt_malloc(sizeof(PointUint8));
+	if(NULL == FinshReceiveFifoHandle)
+	{
+		rt_kprintf("%s:[%s] #-%d: FinshBufferPack Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+
+	if(0 == err)
+	{
+		FinshBufferPack->len = NET_FINSH_BUFSIZE;
+		FinshBufferPack->pData = FinshBuffer;
+		FifoInit(FinshReceiveFifoHandle, FinshBufferPack);
+	}
+	else
+	{
+		NetFinshFifoFree();
+	}
+
+	return err;
 }
 
 
 /**
   * @brief : 使用UDP协议的printf的FIFO初始化
   * @param : none
-  * @return: none
+  * @return: 0:成功    1:失败
   * @updata: 
   */
-void PrintfFifoInit(void)
+uint8_t PrintfFifoInit(void)
 {
-	PrintfBufferPack.len = NET_FINSH_BUFSIZE;
-	PrintfBufferPack.pData = PrintfBuffer;
-	FifoInit(&PrintfFifoHandle, &PrintfBufferPack);
+	uint8_t err = 0;
+	PrintfFifoHandle = rt_malloc(sizeof(FifoHandle));
+	if(NULL == PrintfFifoHandle)
+	{
+		rt_kprintf("%s:[%s] #-%d: PrintfFifoHandle Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+	PrintfBuffer = rt_malloc(sizeof(uint8_t) * NET_PRINTF_BUFSIZE);
+	if(NULL == PrintfBuffer)
+	{
+		rt_kprintf("%s:[%s] #-%d: PrintfBuffer Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+	PrintfBufferPack = rt_malloc(sizeof(PointUint8));
+	if(NULL == PrintfBufferPack)
+	{
+		rt_kprintf("%s:[%s] #-%d: PrintfBufferPack Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+
+	if(0 == err)
+	{
+		PrintfBufferPack->len = NET_PRINTF_BUFSIZE;
+		PrintfBufferPack->pData = PrintfBuffer;
+		FifoInit(PrintfFifoHandle, PrintfBufferPack);
+	}
+	else
+	{
+		NetFinshFifoFree();
+	}
+
+	return err;
 }
 
 
@@ -231,7 +328,7 @@ char FinshCharDequeue(FifoHandle *handle)
   */
 char NetGetchar(void)
 {
-	return FinshCharDequeue(&FinshReceiveFifoHandle);
+	return FinshCharDequeue(FinshReceiveFifoHandle);
 }
 
 /**
@@ -254,11 +351,15 @@ void NetFinsh_kprintf(const char *fmt, ...)
 
 	if(true == NET_FinshFlag)		/*UDP_FinshFlag为1说明UDP打印已经初始化，可以使用了*/
 	{
-		FinshStringEnqueue(&PrintfFifoHandle, (uint8_t*)rt_log_buf, length);
+		FinshStringEnqueue(PrintfFifoHandle, (uint8_t*)rt_log_buf, length);
 	}
 	else
 	{
-		_console_device = rt_console_get_device();
+		#if defined(RT_USING_DEVICE) && defined(RT_USING_CONSOLE)
+			static rt_device_t _console_device = RT_NULL;
+		#endif
+
+		_console_device = rt_console_get_device();			/*获取当前控制台输出的串口设备号*/
 		rt_uint16_t old_flag = _console_device->open_flag;
 
         _console_device->open_flag |= RT_DEVICE_FLAG_STREAM;
