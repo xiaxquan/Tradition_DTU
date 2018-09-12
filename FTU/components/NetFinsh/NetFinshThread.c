@@ -129,11 +129,7 @@ static void rt_udp_serve_thread_entry(void *param)
 	uint32_t i = 0;
 	uint8_t printBuffer[PRINT_BUFFER_SIZE] = {0};
 	
-	ret = UDP_ReceiveFifoInit();		/*初始化fifo*/
-	if(!ret)
-	{
-		ret = UDP_SendFifoInit();
-	}
+	ret = UDP_ServeFifoInit();		/*初始化fifo*/
 	
 	while(!ret)
 	{
@@ -160,14 +156,14 @@ static void rt_udp_serve_thread_entry(void *param)
 				while(1)
 				{
 					/*等待接收，将接收到的字符入队*/
-					UDP_NetconnReceiveString(g_UDP_ServeNetconn, UDP_ServeReceiveFifoHandle);
+					UDP_NetconnReceiveString(g_UDP_ServeNetconn, UDP_ServeFifoHandle);
 					
 					if(true == UDP_ServeFlag)
 					{
 						memset(printBuffer, 0, PRINT_BUFFER_SIZE);
-						for(i=0; (i<PRINT_BUFFER_SIZE) && (PrintfFifoHandle->fifo.count); i++)
+						for(i=0; (i<PRINT_BUFFER_SIZE) && (UDP_ServeFifoHandle->fifo.count); i++)
 						{
-							printBuffer[i] = FinshCharDequeue(UDP_ServeSendFifoHandle);
+							printBuffer[i] = FinshCharDequeue(UDP_ServeFifoHandle);
 						}
 						if(0 != i)
 						{

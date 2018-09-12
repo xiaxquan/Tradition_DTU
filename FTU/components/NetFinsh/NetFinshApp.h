@@ -27,8 +27,7 @@ extern struct netconn* g_UDP_ServeNetconn;
 extern bool UDP_ServeFlag;
 extern FifoHandle* FinshReceiveFifoHandle;
 extern FifoHandle* PrintfFifoHandle;
-extern FifoHandle* UDP_ServeReceiveFifoHandle;
-extern FifoHandle* UDP_ServeSendFifoHandle;
+extern FifoHandle* UDP_ServeFifoHandle;
 
 
 void NetFinshIpSet(struct lwip_dev* lwip);
@@ -38,13 +37,11 @@ void NetFinshFifoFree(void);
 void UDP_ServeFifoFree(void);
 uint8_t FinshFifoInit(void);
 uint8_t PrintfFifoInit(void);
-uint8_t UDP_ReceiveFifoInit(void);
-uint8_t UDP_SendFifoInit(void);
+uint8_t UDP_ServeFifoInit(void);
 void FinshStringEnqueue(FifoHandle *handle, uint8_t* indata, uint32_t size);
 char FinshCharDequeue(FifoHandle *handle);
 char NetGetchar(void);
 void NetFinsh_kprintf(const char *fmt, ...);
-void UDP_Serve_kprintf(const char *fmt, ...);
 
 
 #endif

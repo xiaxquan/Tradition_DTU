@@ -32,15 +32,11 @@ FifoHandle* PrintfFifoHandle = NULL;
 static uint8_t* PrintfBuffer = NULL;
 static PointUint8* PrintfBufferPack = NULL;
 
-/*UDP通信服务接收FIFO*/
-FifoHandle* UDP_ServeReceiveFifoHandle = NULL;
-static uint8_t* UDP_ServeReceiveBuffer = NULL;
-static PointUint8* UDP_ServeReceiveBufferPack = NULL;
+/*UDP通信服务FIFO*/
+FifoHandle* UDP_ServeFifoHandle = NULL;
+static uint8_t* UDP_ServeBuffer = NULL;
+static PointUint8* UDP_ServeBufferPack = NULL;
 
-/*UDP通信服务发送FIFO*/
-FifoHandle* UDP_ServeSendFifoHandle = NULL;
-static uint8_t* UDP_ServeSendBuffer = NULL;
-static PointUint8* UDP_ServeSendBufferPack = NULL;
 
 /*****************************Function**********************************/
 
@@ -212,38 +208,21 @@ void NetFinshFifoFree(void)
   */
 void UDP_ServeFifoFree(void)
 {
-	if(NULL != UDP_ServeReceiveFifoHandle)
+	if(NULL != UDP_ServeFifoHandle)
 	{
-		rt_free(UDP_ServeReceiveFifoHandle);
-		UDP_ServeReceiveFifoHandle = NULL;
+		rt_free(UDP_ServeFifoHandle);
+		UDP_ServeFifoHandle = NULL;
 	}
-	if(NULL != UDP_ServeReceiveBuffer)
+	if(NULL != UDP_ServeBuffer)
 	{
-		rt_free(UDP_ServeReceiveBuffer);
-		UDP_ServeReceiveBuffer = NULL;
+		rt_free(UDP_ServeBuffer);
+		UDP_ServeBuffer = NULL;
 	}
-	if(NULL != UDP_ServeReceiveBufferPack)
+	if(NULL != UDP_ServeBufferPack)
 	{
-		rt_free(UDP_ServeReceiveBufferPack);
-		UDP_ServeReceiveBufferPack = NULL;
+		rt_free(UDP_ServeBufferPack);
+		UDP_ServeBufferPack = NULL;
 	}
-	
-	if(NULL != UDP_ServeSendFifoHandle)
-	{
-		rt_free(UDP_ServeSendFifoHandle);
-		UDP_ServeSendFifoHandle = NULL;
-	}
-	if(NULL != UDP_ServeSendBuffer)
-	{
-		rt_free(UDP_ServeSendBuffer);
-		UDP_ServeSendBuffer = NULL;
-	}
-	if(NULL != UDP_ServeSendBufferPack)
-	{
-		rt_free(UDP_ServeSendBufferPack);
-		UDP_ServeSendBufferPack = NULL;
-	}
-
 }
 
 
@@ -334,81 +313,38 @@ uint8_t PrintfFifoInit(void)
 
 
 /**
-  * @brief : 使用UDP通信服务的接收fifo初始化
+  * @brief : 使用UDP通信服务的fifo初始化
   * @param : none
   * @return: 0:成功    1:失败
   * @updata: 
   */
-uint8_t UDP_ReceiveFifoInit(void)
+uint8_t UDP_ServeFifoInit(void)
 {
 	uint8_t err = 0;
-	UDP_ServeReceiveFifoHandle = rt_malloc(sizeof(FifoHandle));
-	if(NULL == UDP_ServeReceiveFifoHandle)
+	UDP_ServeFifoHandle = rt_malloc(sizeof(FifoHandle));
+	if(NULL == UDP_ServeFifoHandle)
 	{
-		rt_kprintf("%s:[%s] #-%d: UDP_ServeReceiveFifoHandle Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		rt_kprintf("%s:[%s] #-%d: UDP_ServeFifoHandle Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
 		err = 1;
 	}
-	UDP_ServeReceiveBuffer = rt_malloc(sizeof(uint8_t) * UDP_SERVE_BUFSIZE);
-	if(NULL == UDP_ServeReceiveBuffer)
+	UDP_ServeBuffer = rt_malloc(sizeof(uint8_t) * UDP_SERVE_BUFSIZE);
+	if(NULL == UDP_ServeBuffer)
 	{
-		rt_kprintf("%s:[%s] #-%d: UDP_ServeReceiveBuffer Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		rt_kprintf("%s:[%s] #-%d: UDP_ServeBuffer Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
 		err = 1;
 	}
-	UDP_ServeReceiveBufferPack = rt_malloc(sizeof(PointUint8));
-	if(NULL == UDP_ServeReceiveBufferPack)
+	UDP_ServeBufferPack = rt_malloc(sizeof(PointUint8));
+	if(NULL == UDP_ServeBufferPack)
 	{
-		rt_kprintf("%s:[%s] #-%d: UDP_ServeReceiveBufferPack Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		rt_kprintf("%s:[%s] #-%d: UDP_ServeBufferPack Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
 		err = 1;
 	}
 
 	if(0 == err)
 	{
-		UDP_ServeReceiveBufferPack->len = UDP_SERVE_BUFSIZE;
-		UDP_ServeReceiveBufferPack->pData = UDP_ServeReceiveBuffer;
-		FifoInit(UDP_ServeReceiveFifoHandle, UDP_ServeReceiveBufferPack);
-	}
-	else
-	{
-		UDP_ServeFifoFree();
-	}
-
-	return err;
-}
-
-
-/**
-  * @brief : 使用UDP通信服务的发送fifo初始化
-  * @param : none
-  * @return: 0:成功    1:失败
-  * @updata: 
-  */
-uint8_t UDP_SendFifoInit(void)
-{
-	uint8_t err = 0;
-	UDP_ServeSendFifoHandle = rt_malloc(sizeof(FifoHandle));
-	if(NULL == UDP_ServeSendFifoHandle)
-	{
-		rt_kprintf("%s:[%s] #-%d: UDP_ServeSendFifoHandle Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
-		err = 1;
-	}
-	UDP_ServeSendBuffer = rt_malloc(sizeof(uint8_t) * UDP_SERVE_BUFSIZE);
-	if(NULL == UDP_ServeSendBuffer)
-	{
-		rt_kprintf("%s:[%s] #-%d: UDP_ServeSendBuffer Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
-		err = 1;
-	}
-	UDP_ServeSendBufferPack = rt_malloc(sizeof(PointUint8));
-	if(NULL == UDP_ServeSendBufferPack)
-	{
-		rt_kprintf("%s:[%s] #-%d: UDP_ServeSendBufferPack Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
-		err = 1;
-	}
-
-	if(0 == err)
-	{
-		UDP_ServeSendBufferPack->len = UDP_SERVE_BUFSIZE;
-		UDP_ServeSendBufferPack->pData = UDP_ServeSendBuffer;
-		FifoInit(UDP_ServeSendFifoHandle, UDP_ServeSendBufferPack);
+		UDP_ServeBufferPack->len = UDP_SERVE_BUFSIZE;
+		UDP_ServeBufferPack->pData = UDP_ServeBuffer;
+		FifoInit(UDP_ServeFifoHandle, UDP_ServeBufferPack);
 	}
 	else
 	{
@@ -511,45 +447,6 @@ void NetFinsh_kprintf(const char *fmt, ...)
 }
 
 
-/**
-  * @brief : 使用UDP通信的输出函数
-  * @param : 打印的信息
-  * @return: none
-  * @updata: 
-  */
-void UDP_Serve_kprintf(const char *fmt, ...)
-{
-	va_list args;
-    rt_size_t length;
-    char rt_log_buf[RT_CONSOLEBUF_SIZE] = {0};
-
-    va_start(args, fmt);
-	
-	length = rt_vsnprintf(rt_log_buf, sizeof(rt_log_buf) - 1, fmt, args);
-    if (length > RT_CONSOLEBUF_SIZE - 1)
-        length = RT_CONSOLEBUF_SIZE - 1;
-
-	if(true == NetFinshFlag)		/*UDP_FinshFlag为1说明UDP打印已经初始化，可以使用了*/
-	{
-		FinshStringEnqueue(UDP_ServeSendFifoHandle, (uint8_t*)rt_log_buf, length);
-	}
-	else
-	{
-		#if defined(RT_USING_DEVICE) && defined(RT_USING_CONSOLE)
-			static rt_device_t _console_device = RT_NULL;
-		#endif
-
-		_console_device = rt_console_get_device();			/*获取当前控制台输出的串口设备号*/
-		rt_uint16_t old_flag = _console_device->open_flag;
-
-        _console_device->open_flag |= RT_DEVICE_FLAG_STREAM;
-        rt_device_write(_console_device, 0, rt_log_buf, length);
-        _console_device->open_flag = old_flag;
-		
-	}
-	
-	va_end(args);
-}
 
 
 /*****************************File End**********************************/
