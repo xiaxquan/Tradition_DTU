@@ -21,7 +21,7 @@
 /*****************************宏定义************************************/
 #define REMOTE_PORT				2404	//远端端口
 #define LOCAL_PORT				10000	//本地端口
-#define PRINT_BUFFER_SIZE		128		//打印输出的缓冲区大小
+#define PRINT_BUFFER_SIZE		512		//打印输出的缓冲区大小
 
 
 
@@ -43,7 +43,7 @@ static void rt_udp_finsh_thread_entry(void *param)
 	struct ip_addr destipAddr;
 	rt_base_t level;
 	struct lwip_dev lwipDev;
-	uint8_t i = 0;
+	uint32_t i = 0;
 	uint8_t printBuffer[PRINT_BUFFER_SIZE] = {0};
 	
 	ret = FinshFifoInit();		/*初始化fifo*/
@@ -78,7 +78,7 @@ static void rt_udp_finsh_thread_entry(void *param)
 				{
 					/*等待接收，将接收到的字符入队*/
 					UDP_NetconnReceiveString(g_NetFinshNetconn);
-
+					
 					if(true == NET_FinshFlag)
 					{
 						memset(printBuffer, 0, PRINT_BUFFER_SIZE);
