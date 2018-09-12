@@ -279,7 +279,7 @@
 
   <Group>
     <GroupName>Applications</GroupName>
-    <tvExp>0</tvExp>
+    <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
     <RteFlg>0</RteFlg>
@@ -3578,7 +3578,7 @@
   </Group>
 
   <Group>
-    <GroupName>UDP_Finsh</GroupName>
+    <GroupName>NetFinsh</GroupName>
     <tvExp>1</tvExp>
     <tvExpOptDlg>0</tvExpOptDlg>
     <cbSel>0</cbSel>
@@ -3590,8 +3590,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\components\UDP_Finsh\UDP_FinshApp.c</PathWithFileName>
-      <FilenameWithoutPath>UDP_FinshApp.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\components\NetFinsh\NetFinshApp.c</PathWithFileName>
+      <FilenameWithoutPath>NetFinshApp.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -3602,8 +3602,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>..\..\components\UDP_Finsh\UDP_FinshThread.c</PathWithFileName>
-      <FilenameWithoutPath>UDP_FinshThread.c</FilenameWithoutPath>
+      <PathWithFileName>..\..\components\NetFinsh\NetFinshThread.c</PathWithFileName>
+      <FilenameWithoutPath>NetFinshThread.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

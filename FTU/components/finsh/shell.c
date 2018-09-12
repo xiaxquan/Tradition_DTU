@@ -41,7 +41,7 @@
 
 #include "finsh.h"
 #include "shell.h"
-#include "UDP_FinshApp.h"
+#include "NetFinshApp.h"
 
 #ifdef FINSH_USING_MSH
 #include "msh.h"

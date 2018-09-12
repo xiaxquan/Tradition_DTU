@@ -362,6 +362,7 @@
 #define RT_USING_FTUIDLE                                               (1) // 空闲任务
 #define RT_USING_DPU                                                   (1) // dpu
 #define RT_USING_NET_FINSH                                             (1) // UDP网络实现远程finsh
+#define RT_USING_UDP_SERVE                                             (1) // UDP通信服务
 
 /* thread parameter Configuration */
 #define RT_USING_STATIC_THREAD

@@ -10,7 +10,7 @@
  
 
 /*****************************include***********************************/
-#include "UDP_FinshApp.h"
+#include "NetFinshApp.h"
 #include <string.h>
 #include "board.h"
 #include "rtdef.h"
@@ -18,18 +18,29 @@
 
 /****************************全局变量***********************************/
 struct netconn* g_NetFinshNetconn = NULL;
-bool NET_FinshFlag = false;
+bool NetFinshFlag = false;
+struct netconn* g_UDP_ServeNetconn = NULL;
+bool UDP_ServeFlag = false;
 
-/*接收FIFO*/
+/*finsh接收FIFO*/
 FifoHandle* FinshReceiveFifoHandle = NULL;
 static uint8_t* FinshBuffer = NULL;
 static PointUint8* FinshBufferPack = NULL;
 
-/*打印FIFO*/
+/*打印输出FIFO*/
 FifoHandle* PrintfFifoHandle = NULL;
 static uint8_t* PrintfBuffer = NULL;
 static PointUint8* PrintfBufferPack = NULL;
 
+/*UDP通信服务接收FIFO*/
+FifoHandle* UDP_ServeReceiveFifoHandle = NULL;
+static uint8_t* UDP_ServeReceiveBuffer = NULL;
+static PointUint8* UDP_ServeReceiveBufferPack = NULL;
+
+/*UDP通信服务发送FIFO*/
+FifoHandle* UDP_ServeSendFifoHandle = NULL;
+static uint8_t* UDP_ServeSendBuffer = NULL;
+static PointUint8* UDP_ServeSendBufferPack = NULL;
 
 /*****************************Function**********************************/
 
@@ -115,7 +126,7 @@ int8_t UDP_NetconnSendString(struct netconn* udpNetconn, uint8_t* sendString)
   * @return: 0：成功  1：失败 2：传参错误
   * @updata: 
   */
-uint8_t UDP_NetconnReceiveString(struct netconn* udpNetConn)
+uint8_t UDP_NetconnReceiveString(struct netconn* udpNetConn, FifoHandle* fifoHandle)
 {
 	static struct netbuf* recvNetBuf = NULL;
 	rt_base_t level;			/*开关中断的返回值*/
@@ -133,11 +144,11 @@ uint8_t UDP_NetconnReceiveString(struct netconn* udpNetConn)
 			//的话就只拷贝UDP_DEMO_RX_BUFSIZE中剩余长度的数据,否则的话机拷贝所有的数据
 			if(q->len > NET_FINSH_BUFSIZE)
 			{
-				FinshStringEnqueue(FinshReceiveFifoHandle, q->payload, NET_FINSH_BUFSIZE);
+				FinshStringEnqueue(fifoHandle, q->payload, NET_FINSH_BUFSIZE);
 			}
 			else
 			{
-				FinshStringEnqueue(FinshReceiveFifoHandle, q->payload, q->len);
+				FinshStringEnqueue(fifoHandle, q->payload, q->len);
 			}	
 			if(dataLenth > NET_FINSH_BUFSIZE)
 			{
@@ -189,6 +200,48 @@ void NetFinshFifoFree(void)
 	{
 		rt_free(PrintfBufferPack);
 		PrintfBufferPack = NULL;
+	}
+}
+
+
+/**
+  * @brief : UDP通信服务中的发送和接收队列动态内存释放
+  * @param : none
+  * @return: none
+  * @updata: 
+  */
+void UDP_ServeFifoFree(void)
+{
+	if(NULL != UDP_ServeReceiveFifoHandle)
+	{
+		rt_free(UDP_ServeReceiveFifoHandle);
+		UDP_ServeReceiveFifoHandle = NULL;
+	}
+	if(NULL != UDP_ServeReceiveBuffer)
+	{
+		rt_free(UDP_ServeReceiveBuffer);
+		UDP_ServeReceiveBuffer = NULL;
+	}
+	if(NULL != UDP_ServeReceiveBufferPack)
+	{
+		rt_free(UDP_ServeReceiveBufferPack);
+		UDP_ServeReceiveBufferPack = NULL;
+	}
+	
+	if(NULL != UDP_ServeSendFifoHandle)
+	{
+		rt_free(UDP_ServeSendFifoHandle);
+		UDP_ServeSendFifoHandle = NULL;
+	}
+	if(NULL != UDP_ServeSendBuffer)
+	{
+		rt_free(UDP_ServeSendBuffer);
+		UDP_ServeSendBuffer = NULL;
+	}
+	if(NULL != UDP_ServeSendBufferPack)
+	{
+		rt_free(UDP_ServeSendBufferPack);
+		UDP_ServeSendBufferPack = NULL;
 	}
 
 }
@@ -281,6 +334,92 @@ uint8_t PrintfFifoInit(void)
 
 
 /**
+  * @brief : 使用UDP通信服务的接收fifo初始化
+  * @param : none
+  * @return: 0:成功    1:失败
+  * @updata: 
+  */
+uint8_t UDP_ReceiveFifoInit(void)
+{
+	uint8_t err = 0;
+	UDP_ServeReceiveFifoHandle = rt_malloc(sizeof(FifoHandle));
+	if(NULL == UDP_ServeReceiveFifoHandle)
+	{
+		rt_kprintf("%s:[%s] #-%d: UDP_ServeReceiveFifoHandle Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+	UDP_ServeReceiveBuffer = rt_malloc(sizeof(uint8_t) * UDP_SERVE_BUFSIZE);
+	if(NULL == UDP_ServeReceiveBuffer)
+	{
+		rt_kprintf("%s:[%s] #-%d: UDP_ServeReceiveBuffer Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+	UDP_ServeReceiveBufferPack = rt_malloc(sizeof(PointUint8));
+	if(NULL == UDP_ServeReceiveBufferPack)
+	{
+		rt_kprintf("%s:[%s] #-%d: UDP_ServeReceiveBufferPack Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+
+	if(0 == err)
+	{
+		UDP_ServeReceiveBufferPack->len = UDP_SERVE_BUFSIZE;
+		UDP_ServeReceiveBufferPack->pData = UDP_ServeReceiveBuffer;
+		FifoInit(UDP_ServeReceiveFifoHandle, UDP_ServeReceiveBufferPack);
+	}
+	else
+	{
+		UDP_ServeFifoFree();
+	}
+
+	return err;
+}
+
+
+/**
+  * @brief : 使用UDP通信服务的发送fifo初始化
+  * @param : none
+  * @return: 0:成功    1:失败
+  * @updata: 
+  */
+uint8_t UDP_SendFifoInit(void)
+{
+	uint8_t err = 0;
+	UDP_ServeSendFifoHandle = rt_malloc(sizeof(FifoHandle));
+	if(NULL == UDP_ServeSendFifoHandle)
+	{
+		rt_kprintf("%s:[%s] #-%d: UDP_ServeSendFifoHandle Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+	UDP_ServeSendBuffer = rt_malloc(sizeof(uint8_t) * UDP_SERVE_BUFSIZE);
+	if(NULL == UDP_ServeSendBuffer)
+	{
+		rt_kprintf("%s:[%s] #-%d: UDP_ServeSendBuffer Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+	UDP_ServeSendBufferPack = rt_malloc(sizeof(PointUint8));
+	if(NULL == UDP_ServeSendBufferPack)
+	{
+		rt_kprintf("%s:[%s] #-%d: UDP_ServeSendBufferPack Malloc Fail\r\n", __FILE__, __FUNCTION__, __LINE__);
+		err = 1;
+	}
+
+	if(0 == err)
+	{
+		UDP_ServeSendBufferPack->len = UDP_SERVE_BUFSIZE;
+		UDP_ServeSendBufferPack->pData = UDP_ServeSendBuffer;
+		FifoInit(UDP_ServeSendFifoHandle, UDP_ServeSendBufferPack);
+	}
+	else
+	{
+		UDP_ServeFifoFree();
+	}
+
+	return err;
+}
+
+
+/**
   * @brief : finsh接收到的多个字符入队
   * @param : handle FIFO句柄
   * @param : indata 要入队的字符串
@@ -349,7 +488,7 @@ void NetFinsh_kprintf(const char *fmt, ...)
     if (length > RT_CONSOLEBUF_SIZE - 1)
         length = RT_CONSOLEBUF_SIZE - 1;
 
-	if(true == NET_FinshFlag)		/*UDP_FinshFlag为1说明UDP打印已经初始化，可以使用了*/
+	if(true == NetFinshFlag)		/*UDP_FinshFlag为1说明UDP打印已经初始化，可以使用了*/
 	{
 		FinshStringEnqueue(PrintfFifoHandle, (uint8_t*)rt_log_buf, length);
 	}
@@ -370,6 +509,48 @@ void NetFinsh_kprintf(const char *fmt, ...)
 	
 	va_end(args);
 }
+
+
+/**
+  * @brief : 使用UDP通信的输出函数
+  * @param : 打印的信息
+  * @return: none
+  * @updata: 
+  */
+void UDP_Serve_kprintf(const char *fmt, ...)
+{
+	va_list args;
+    rt_size_t length;
+    char rt_log_buf[RT_CONSOLEBUF_SIZE] = {0};
+
+    va_start(args, fmt);
+	
+	length = rt_vsnprintf(rt_log_buf, sizeof(rt_log_buf) - 1, fmt, args);
+    if (length > RT_CONSOLEBUF_SIZE - 1)
+        length = RT_CONSOLEBUF_SIZE - 1;
+
+	if(true == NetFinshFlag)		/*UDP_FinshFlag为1说明UDP打印已经初始化，可以使用了*/
+	{
+		FinshStringEnqueue(UDP_ServeSendFifoHandle, (uint8_t*)rt_log_buf, length);
+	}
+	else
+	{
+		#if defined(RT_USING_DEVICE) && defined(RT_USING_CONSOLE)
+			static rt_device_t _console_device = RT_NULL;
+		#endif
+
+		_console_device = rt_console_get_device();			/*获取当前控制台输出的串口设备号*/
+		rt_uint16_t old_flag = _console_device->open_flag;
+
+        _console_device->open_flag |= RT_DEVICE_FLAG_STREAM;
+        rt_device_write(_console_device, 0, rt_log_buf, length);
+        _console_device->open_flag = old_flag;
+		
+	}
+	
+	va_end(args);
+}
+
 
 /*****************************File End**********************************/
 
