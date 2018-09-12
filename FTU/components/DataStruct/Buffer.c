@@ -73,7 +73,7 @@ static uint8_t BufferEnqueue( FifoHandle *const fifohanlde, uint8_t const indata
         pInf->count++;
         return true;
     }
-	rt_kprintf("BufferEnqueue OverFlow\r\n");
+//	rt_kprintf("BufferEnqueue OverFlow\r\n");
     //溢出报错
     //TODO:溢出报错机制
     return false;

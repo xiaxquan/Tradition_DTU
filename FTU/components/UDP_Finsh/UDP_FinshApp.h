@@ -17,8 +17,8 @@
 #include "buffer.h"
 
 
-#define NET_FINSH_BUFSIZE		512	//缓冲区大小
-#define NET_PRINTF_BUFSIZE		1024
+#define NET_FINSH_BUFSIZE		512		//finsh接收缓冲区大小
+#define NET_PRINTF_BUFSIZE		2048	//打印输出缓冲区大小
 
 extern struct netconn* g_NetFinshNetconn;
 extern bool NET_FinshFlag;
